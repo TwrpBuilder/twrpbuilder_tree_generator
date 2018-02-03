@@ -58,13 +58,6 @@ TARGET_BOARD_PLATFORM := $platform
 TARGET_BOOTLOADER_BOARD_NAME := $codename
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := $recoverySize 
 
-# Kernel
-TARGET_PREBUILT_KERNEL := device/$brand/$codename/kernel
-BOARD_KERNEL_CMDLINE :=
-BOARD_KERNEL_BASE := 
-BOARD_KERNEL_PAGESIZE := 
-BOARD_MKBOOTIMG_ARGS := --ramdisk_offset
-
 # Recovery
 TARGET_USERIMAGES_USE_EXT4 := true
 
@@ -135,6 +128,5 @@ mkAndroid > Android.mk
 mkAndroidProducts > AndroidProducts.mk
 mkOmni > omni_$codename.mk
 cd ..
-## Clean
-rm build.prop recovery.img mounts
+./mkKernel.sh
 
