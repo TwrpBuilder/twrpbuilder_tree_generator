@@ -6,7 +6,7 @@ mkArch32()
 {
 cat << EOF
 
-include device/generic/twrpbuilder_32/BoardConfig.mk
+include device/generic/twrpbuilder/BoardConfig32.mk
 EOF
 }
 
@@ -14,7 +14,7 @@ mkArch64()
 {
 cat << EOF
 
-include device/generic/twrpbuilder_64/BoardConfig.mk
+include device/generic/twrpbuilder/BoardConfig64.mk
 EOF
 }
 
