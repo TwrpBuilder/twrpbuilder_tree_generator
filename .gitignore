@@ -3,3 +3,6 @@
 *.img
 *.prop
 mounts
+*.mk
+*/kernel
+out/

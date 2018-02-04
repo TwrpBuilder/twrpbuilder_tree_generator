@@ -54,6 +54,7 @@ cat << EOF
 #
 
 LOCAL_PATH := device/$brand/$codename
+
 TARGET_BOARD_PLATFORM := $platform
 TARGET_BOOTLOADER_BOARD_NAME := $codename
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := $recoverySize 
@@ -61,11 +62,6 @@ BOARD_RECOVERYIMAGE_PARTITION_SIZE := $recoverySize
 # Recovery
 TARGET_USERIMAGES_USE_EXT4 := true
 
-# TWRP
-BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_23x41.h\"
-TW_THEME := portrait_hdpi
-TW_INCLUDE_CRYPTO := true
-RECOVERY_SDCARD_ON_DATA := true
 EOF
 }
 
