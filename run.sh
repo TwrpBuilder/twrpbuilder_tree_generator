@@ -7,6 +7,16 @@ export platform=$(cat build.prop | grep ro.board.platform= | cut -d = -f 2)
 export abi=$(cat build.prop | grep ro.product.cpu.abi= | cut -d = -f 2)
 export recoverySize=$(wc -c < recovery.img)
 
+if [ -d $codename ]
+then
+rm -rf $codename
+fi
+
+if [ -d out ]
+then
+rm -rf out
+fi
+
 mkAndroid()
 {
 cat << EOF
