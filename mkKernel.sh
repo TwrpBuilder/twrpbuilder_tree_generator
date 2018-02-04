@@ -1,6 +1,5 @@
 #!/bin/bash
-brand=$(cat build.prop | grep ro.product.brand= | cut -d = -f 2)
-codename=$(cat build.prop | grep ro.build.product= | cut -d = -f 2)
+
 mkdir out
 ./umkbootimg -i recovery.img -o out/ &> out/output.txt
 cd out

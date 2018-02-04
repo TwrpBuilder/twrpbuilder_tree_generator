@@ -6,3 +6,4 @@ mounts
 *.mk
 */kernel
 out/
+*.fstab

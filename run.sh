@@ -1,10 +1,11 @@
 #!/bin/bash
 tar -xvf $1
-brand=$(cat build.prop | grep ro.product.brand= | cut -d = -f 2)
-codename=$(cat build.prop | grep ro.build.product= | cut -d = -f 2)
-model=$(cat build.prop | grep ro.product.model= | cut -d = -f 2)
-platform=$(cat build.prop | grep ro.board.platform= | cut -d = -f 2)
-recoverySize=$(wc -c < recovery.img)
+export brand=$(cat build.prop | grep ro.product.brand= | cut -d = -f 2)
+export codename=$(cat build.prop | grep ro.build.product= | cut -d = -f 2)
+export model=$(cat build.prop | grep ro.product.model= | cut -d = -f 2)
+export platform=$(cat build.prop | grep ro.board.platform= | cut -d = -f 2)
+export abi=$(cat build.prop | grep ro.product.cpu.abi= | cut -d = -f 2)
+export recoverySize=$(wc -c < recovery.img)
 
 mkAndroid()
 {

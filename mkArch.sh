@@ -1,6 +1,4 @@
 #!/bin/bash
-abi=$(cat build.prop | grep ro.product.cpu.abi= | cut -d = -f 2)
-codename=$(cat build.prop | grep ro.build.product= | cut -d = -f 2)
 
 mkArch32()
 {
@@ -30,6 +28,4 @@ else
 echo "Can't find arch using 32 bit"
 mkArch32 >> $codename/BoardConfig.mk
 fi
-
-#Clean 
-rm -rf recovery.img mounts build.prop out/
+./mkFstab.sh
