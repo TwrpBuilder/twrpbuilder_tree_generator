@@ -15,9 +15,9 @@ mkdt()
 {
 if [ $checkdtSize == 0 ]
 then
-echo "BOARD_MKBOOTIMG_ARGS := --ramdisk_offset $ramdiskofsset"
+echo "BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x$ramdiskofsset"
 else
-echo "BOARD_MKBOOTIMG_ARGS := --ramdisk_offset $ramdiskofsset --dt device/$brand/$codename/dt.img"
+echo "BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x$ramdiskofsset --dt device/$brand/$codename/dt.img"
 cp out/recovery.img-dt $codename/dt.img
 fi
 }
@@ -28,7 +28,7 @@ cat << EOF
 # Kernel
 TARGET_PREBUILT_KERNEL := device/$brand/$codename/kernel
 BOARD_KERNEL_CMDLINE := $cmdline androidboot.selinux=permissive
-BOARD_KERNEL_BASE := $kernelbase
+BOARD_KERNEL_BASE := 0x$kernelbase
 BOARD_KERNEL_PAGESIZE := $pagesize
 EOF
 mkdt

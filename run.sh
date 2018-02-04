@@ -57,10 +57,11 @@ LOCAL_PATH := device/$brand/$codename
 
 TARGET_BOARD_PLATFORM := $platform
 TARGET_BOOTLOADER_BOARD_NAME := $codename
-BOARD_RECOVERYIMAGE_PARTITION_SIZE := $recoverySize 
 
 # Recovery
 TARGET_USERIMAGES_USE_EXT4 := true
+BOARD_RECOVERYIMAGE_PARTITION_SIZE := $recoverySize 
+BOARD_FLASH_BLOCK_SIZE := 1000000
 
 EOF
 }
@@ -83,6 +84,9 @@ cat << EOF
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+LOCAL_PATH := device/$brand/$codename
+
 PRODUCT_MAKEFILES := \$(LOCAL_PATH)/omni_$codename.mk
 EOF
 }
