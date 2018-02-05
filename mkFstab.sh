@@ -27,23 +27,7 @@ cat << EOF
 EOF
 }
 
-fetchMounts(){
-for i in $(cat mounts | grep /dev/block/mmcblk | grep -w $1 )
-do
-partition=$(echo $i | grep mmcblk0p)
-if [ ! -z "$partition" ]; then
-echo $partition >> file
-fi
-done
-
-if [[ $1 == "/system" || $1 == "/data" || $1 == "/cache" ]]
-then
-echo $1 ext4 $(cat file)
-fi
-rm file
-}
-
-getBootAndRecovery()
+getMounts()
 {
 for i in $(cat out/etc/recovery.fstab | grep -w $1 )
 do
@@ -57,14 +41,18 @@ if [[ $1 == "/boot" || $1 == "/recovery" ]]
 then
 echo $1 emmc $(cat file)
 fi
+if [[ $1 == "/system" || $1 == "/data" || $1 == "/cache" ]]
+then
+echo $1 ext4 $(cat file)
+fi
 rm file
 }
 copyRight >> $codename/recovery.fstab
-getBootAndRecovery /boot >> $codename/recovery.fstab
-getBootAndRecovery /recovery >> $codename/recovery.fstab
-fetchMounts /system >> $codename/recovery.fstab
-fetchMounts /data >> $codename/recovery.fstab
-fetchMounts /cache >> $codename/recovery.fstab
+getMounts /boot >> $codename/recovery.fstab
+getMounts /recovery >> $codename/recovery.fstab
+getMounts /system >> $codename/recovery.fstab
+getMounts /data >> $codename/recovery.fstab
+getMounts /cache >> $codename/recovery.fstab
 
 #Clean 
 rm -rf recovery.img mounts build.prop out/
