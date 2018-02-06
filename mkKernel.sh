@@ -7,6 +7,7 @@ checkdtSize=$(cat output.txt | grep BOARD_DT_SIZE | cut -d ">" -f 2)
 pagesize=$(cat recovery.img-pagesize)
 cmdline=$(cat recovery.img-cmdline)
 ramdiskofsset=$(cat recovery.img-ramdisk_offset)
+tagsoffset=$(cat recovery.img-tags_offset)
 kernelbase=$(cat recovery.img-base)
 cd ..
 
@@ -16,7 +17,7 @@ if [ $checkdtSize == 0 ]
 then
 echo "BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x$ramdiskofsset"
 else
-echo "BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x$ramdiskofsset --dt device/$brand/$codename/dt.img"
+echo "BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x$ramdiskofsset --tags_offset 0x$tagsoffset --dt device/$brand/$codename/dt.img"
 cp out/recovery.img-dt $codename/dt.img
 fi
 }
