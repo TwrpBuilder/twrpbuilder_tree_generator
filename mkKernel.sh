@@ -15,7 +15,7 @@ mkdt()
 {
 if [ $checkdtSize == 0 ]
 then
-echo "BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x$ramdiskofsset"
+echo "BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x$ramdiskofsset --tags_offset 0x$tagsoffset"
 else
 echo "BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x$ramdiskofsset --tags_offset 0x$tagsoffset --dt device/$brand/$codename/dt.img"
 cp out/recovery.img-dt $codename/dt.img
