@@ -222,33 +222,16 @@ mkCustomboot()
 cd out
 compressionType=$(file --mime-type recovery.img-ramdisk.* | cut -d / -f 2 | cut -d - -f 2)
 cd ..
-if [ $checkdtSize == 0 ]
+if [ $compressionType == "lzma" ]
 then
-	if [ $compressionType == "lzma" ]
-		then
 echo
 echo "# Lzma"
 echo "BOARD_CUSTOM_BOOTIMG_MK := device/generic/twrpbuilder/mkbootimg_lzma.mk"
 elif [ $compressionType == "lz4" ]
-		then
+then
 echo
 echo "# lz4"
 echo "BOARD_CUSTOM_BOOTIMG_MK := device/generic/twrpbuilder/mkbootimg_lz4.mk"
-	fi
-else
-
-	if [ $compressionType == "lzma" ]
-		then
-echo
-echo "# Lzma"
-echo "BOARD_CUSTOM_BOOTIMG_MK := device/generic/twrpbuilder/mkbootimg_dt_lzma.mk"
-elif [ $compressionType == "lz4" ]
-		then
-echo
-echo "# lz4"
-echo "BOARD_CUSTOM_BOOTIMG_MK := device/generic/twrpbuilder/mkbootimg_dt_lz4.mk"
-	fi
-
 fi
 }
 
