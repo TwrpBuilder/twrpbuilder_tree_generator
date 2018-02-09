@@ -1,5 +1,24 @@
 #!/bin/bash
 
+while :
+do
+  case $2 in
+	cm)
+		echo "building tree for cm"
+		sourceType="cm"
+		break
+		;;
+	omni)
+		echo "building tree for omni"
+		sourceType="omni"
+		break
+		;;
+	*)
+		echo "Please enter tree type , possible values : cm and omni   "
+		exit
+		;;
+  esac
+done
 
 if [ -z $1 ]
 then
@@ -7,7 +26,7 @@ echo "Please enter file name"
 exit
 elif [[ $1 == "-h" || $1 == "--help" ]]
 then
-echo "usage:- $0 input_file.tar.gz "
+echo "usage:- $0 input_file.tar.gz cm "
 exit
 elif [ ! -f $1 ]
 then
@@ -140,6 +159,7 @@ EOF
 
 mkOmni()
 {
+pd_name=$(echo $sourceType'_'$codename)
 cat << EOF
 #
 # Copyright (C) 2018 The TwrpBuilder Open-Source Project
@@ -161,7 +181,7 @@ cat << EOF
 PRODUCT_COPY_FILES += device/$brand/$codename/kernel:kernel
 
 PRODUCT_DEVICE := $codename
-PRODUCT_NAME := omni_$codename
+PRODUCT_NAME := $pd_name
 PRODUCT_BRAND := $brand
 PRODUCT_MODEL := $model
 PRODUCT_MANUFACTURER := $brand
@@ -172,8 +192,13 @@ mkdir $codename
 cd $codename
 mkBoardConfig > BoardConfig.mk
 mkAndroid > Android.mk
+if [ "$sourceType" == "cm" ]
+then
+mkOmni > cm.mk
+else
 mkAndroidProducts > AndroidProducts.mk
 mkOmni > omni_$codename.mk
+fi
 cd ..
 
 ## Make Kernel

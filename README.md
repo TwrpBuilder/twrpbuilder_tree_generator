@@ -2,4 +2,4 @@
 
 Usage :-
 
-`./run backup filename.tar.gz`
+`./run backup_filename.tar.gz omni`
