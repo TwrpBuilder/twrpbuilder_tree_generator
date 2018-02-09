@@ -1,4 +1,20 @@
 #!/bin/bash
+
+
+if [ -z $1 ]
+then
+echo "Please enter file name"
+exit
+elif [[ $1 == "-h" || $1 == "--help" ]]
+then
+echo "usage:- $0 input_file.tar.gz "
+exit
+elif [ ! -f $1 ]
+then
+echo "Please enter correct file name"
+exit
+fi
+
 rooted=$(file --mime-type $1 | grep -w 'gzip'  | cut -d / -f 2 | cut -d "-" -f 2)
 non_rooted=$(file --mime-type $1 | grep -w 'zip'  | cut -d / -f 2 | cut -d "-" -f 2)
 
