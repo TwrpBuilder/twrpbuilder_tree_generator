@@ -24,8 +24,6 @@ unzip $1
 sed 's/\[\([^]]*\)\]/\1/g' build.prop | sed 's/: /=/g' | tee > b.prop
 rm build.prop
 mv b.prop build.prop
-rm $1
-tar -czvf $1 build.prop recovery.img
 echo "Making tree for non rooted device"
 elif [ ! -z "$rooted" ]
 then
