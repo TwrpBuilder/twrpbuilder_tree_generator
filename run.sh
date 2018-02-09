@@ -184,7 +184,7 @@ cd ..
 mkdir out
 ./umkbootimg -i recovery.img -o out/ &> out/output.txt
 cd out
-checkdtSize=$(cat output.txt | grep BOARD_DT_SIZE | cut -d ">" -f 2)
+export checkdtSize=$(cat output.txt | grep BOARD_DT_SIZE | cut -d ">" -f 2)
 pagesize=$(cat recovery.img-pagesize)
 cmdline=$(cat recovery.img-cmdline)
 ramdiskofsset=$(cat recovery.img-ramdisk_offset)
@@ -205,7 +205,6 @@ fi
 
 mkKernelInfo(){
 cat << EOF
-
 # Kernel
 TARGET_PREBUILT_KERNEL := device/$brand/$codename/kernel
 BOARD_KERNEL_CMDLINE := $cmdline androidboot.selinux=permissive
@@ -217,6 +216,43 @@ mkdt
 
 mkKernelInfo >> $codename/BoardConfig.mk
 cp out/recovery.img-zImage $codename/kernel
+
+mkCustomboot()
+{
+cd out
+compressionType=$(file --mime-type recovery.img-ramdisk.* | cut -d / -f 2 | cut -d - -f 2)
+cd ..
+if [ $checkdtSize == 0 ]
+then
+	if [ $compressionType == "lzma" ]
+		then
+echo
+echo "# Lzma"
+echo "BOARD_CUSTOM_BOOTIMG_MK := device/generic/twrpbuilder/mkbootimg_lzma.mk"
+elif [ $compressionType == "lz4" ]
+		then
+echo
+echo "# lz4"
+echo "BOARD_CUSTOM_BOOTIMG_MK := device/generic/twrpbuilder/mkbootimg_lz4.mk"
+	fi
+else
+
+	if [ $compressionType == "lzma" ]
+		then
+echo
+echo "# Lzma"
+echo "BOARD_CUSTOM_BOOTIMG_MK := device/generic/twrpbuilder/mkbootimg_dt_lzma.mk"
+elif [ $compressionType == "lz4" ]
+		then
+echo
+echo "# lz4"
+echo "BOARD_CUSTOM_BOOTIMG_MK := device/generic/twrpbuilder/mkbootimg_dt_lz4.mk"
+	fi
+
+fi
+}
+
+mkCustomboot >> $codename/BoardConfig.mk
 
 ## Make Arch
 
