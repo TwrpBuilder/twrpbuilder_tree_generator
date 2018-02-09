@@ -252,7 +252,17 @@ fi
 # Make Fstab
 
 cd out
+compressionType=$(file --mime-type recovery.img-ramdisk.gz | cut -d / -f 2 | cut -d - -f 2)
+if [ $compressionType == "lzma" ]
+then
+echo "Found lzma compression in ramdisk"
+mv recovery.img-ramdisk.gz recovery.img-ramdisk.lzma
+lzma -d recovery.img-ramdisk.lzma
+elif [ $compressionType == "gzip" ]
+then
+echo "Found gzip compression in ramdisk"
 gzip -d recovery.img-ramdisk.gz
+fi
 cpio -idm < recovery.img-ramdisk
 cd ..
 
