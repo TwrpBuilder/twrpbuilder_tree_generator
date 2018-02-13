@@ -305,6 +305,7 @@ getMounts /recovery >> $codename/recovery.fstab
 getMounts /system >> $codename/recovery.fstab
 getMounts /data >> $codename/recovery.fstab
 getMounts /cache >> $codename/recovery.fstab
+echo "/sdcard vfat /dev/block/mmcblk1p1 /dev/block/mmcblk1 flags=display=\"Micro SD\";storage;wipeingui;removable;settingsstorage" >> $codename/recovery.fstab
 echo "Twrp tree ready for $brand $codename"
 #Clean 
 rm -rf recovery.img mounts build.prop out/ 
