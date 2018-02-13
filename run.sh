@@ -70,7 +70,7 @@ then
 rm -rf out
 fi
 
-mkAndroid()
+copyRight()
 {
 cat << EOF
 #
@@ -89,6 +89,14 @@ cat << EOF
 # limitations under the License.
 #
 
+EOF
+}
+
+mkAndroid()
+{
+copyRight
+cat << EOF
+
 ifneq (\$(filter $codename,\$(TARGET_DEVICE)),)
 
 LOCAL_PATH := device/$brand/$codename
@@ -100,22 +108,8 @@ EOF
 }
 
 mkBoardConfig(){
+copyRight
 cat << EOF
-#
-# Copyright (C) 2018 The TwrpBuilder Open-Source Project
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
 LOCAL_PATH := device/$brand/$codename
 
@@ -134,22 +128,8 @@ EOF
 
 mkAndroidProducts()
 {
+copyRight
 cat << EOF
-#
-# Copyright (C) 2018 The TwrpBuilder Open-Source Project
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
 LOCAL_PATH := device/$brand/$codename
 
@@ -160,22 +140,8 @@ EOF
 mkOmni()
 {
 pd_name=$(echo $sourceType'_'$codename)
+copyRight
 cat << EOF
-#
-# Copyright (C) 2018 The TwrpBuilder Open-Source Project
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 \$(call inherit-product, \$(SRC_TARGET_DIR)/product/full_base.mk)
 
 PRODUCT_COPY_FILES += device/$brand/$codename/kernel:kernel
@@ -312,27 +278,6 @@ fi
 cpio -idm < recovery.img-ramdisk
 cd ..
 
-copyRight()
-{
-cat << EOF
-#
-# Copyright (C) 2018 The TwrpBuilder Open-Source Project
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-
-EOF
-}
 
 getMounts()
 {
