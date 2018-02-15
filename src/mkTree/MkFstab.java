@@ -41,11 +41,11 @@ public class MkFstab {
 		String recovery=ShellExecuter.command("cat out/etc/recovery.fstab | grep -w '/recovery' | grep /dev | awk '{ print $1 }'");
 		String output;
 		output=ShellExecuter.CopyRight();
-		output+="/boot emmc " +boot+"\n" + 
-				"/recovery emmc " +recovery+"\n" + 
-				"/system ext4 "+system+"\n" + 
-				"/data ext4 "+data+"\n" + 
-				"/cache ext4 " +cache+"\n" + 
+		output+="/boot emmc " +boot + 
+				"/recovery emmc " +recovery + 
+				"/system ext4 "+system + 
+				"/data ext4 "+data + 
+				"/cache ext4 " +cache + 
 				"/sdcard vfat /dev/block/mmcblk1p1 /dev/block/mmcblk1 flags=display=\"Micro SD\";storage;wipeingui;removable;settingsstorage";
 		return output;
 	}

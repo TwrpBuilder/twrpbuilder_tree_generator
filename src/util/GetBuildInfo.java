@@ -1,7 +1,5 @@
 package util;
 
-import java.io.File;
-
 public class GetBuildInfo {
 
 	private static String model,product,brand,codename,platform,api,size;

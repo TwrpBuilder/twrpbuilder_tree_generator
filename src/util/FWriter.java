@@ -14,9 +14,8 @@ public class FWriter {
 
 	private void run(String name,String data) {
 		  PrintWriter writer;
-		  GetBuildInfo info = null;
 			try {
-				writer = new PrintWriter(info.getCodename()+File.separator+name, "UTF-8");
+				writer = new PrintWriter(GetBuildInfo.getCodename()+File.separator+name, "UTF-8");
 				writer.println(data);
 				writer.close();
 			} catch (FileNotFoundException | UnsupportedEncodingException e) {

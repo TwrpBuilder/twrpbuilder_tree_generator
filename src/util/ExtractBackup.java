@@ -4,10 +4,9 @@ public class ExtractBackup {
 
 	private String rooted;
 	private String not_rooted;
-	private ShellExecuter shell;
 	public ExtractBackup(String name) {
-		rooted=shell.commandnoapp("file --mime-type "+name+" | grep -w 'gzip'  | cut -d / -f 2 | cut -d \"-\" -f 2");
-		not_rooted=shell.commandnoapp("file --mime-type "+name+" | grep -w 'zip'  | cut -d / -f 2 | cut -d \"-\" -f 2");
+		rooted=ShellExecuter.commandnoapp("file --mime-type "+name+" | grep -w 'gzip'  | cut -d / -f 2 | cut -d \"-\" -f 2");
+		not_rooted=ShellExecuter.commandnoapp("file --mime-type "+name+" | grep -w 'zip'  | cut -d / -f 2 | cut -d \"-\" -f 2");
 		if(rooted.equals("gzip"))
 		{
 			extractGzip(name);
@@ -22,10 +21,10 @@ public class ExtractBackup {
 		}
 
 	private void extractGzip(String file) {
-		shell.command("tar -xvf " + file);
+		ShellExecuter.command("tar -xvf " + file);
 		if(GetBuildInfo.getCodename().isEmpty())
 		{
-			shell.command("sed 's/\\[\\([^]]*\\)\\]/\\1/g' build.prop | sed 's/: /=/g' | tee > b.prop && mv -f b.prop build.prop");
+			ShellExecuter.command("sed 's/\\[\\([^]]*\\)\\]/\\1/g' build.prop | sed 's/: /=/g' | tee > b.prop && mv -f b.prop build.prop");
 			if(GetBuildInfo.getCodename().isEmpty())
 			{
 				System.out.println("Failed to get info");
@@ -36,8 +35,8 @@ public class ExtractBackup {
 	}
 	
 	private void extractZip(String file) {
-		shell.command("unzip -o "+ file);
-		shell.command("sed 's/\\[\\([^]]*\\)\\]/\\1/g' build.prop | sed 's/: /=/g' | tee > b.prop && mv -f b.prop build.prop");
+		ShellExecuter.command("unzip -o "+ file);
+		ShellExecuter.command("sed 's/\\[\\([^]]*\\)\\]/\\1/g' build.prop | sed 's/: /=/g' | tee > b.prop && mv -f b.prop build.prop");
 		new GetBuildInfo();
 	}
 }
