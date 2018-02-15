@@ -15,20 +15,18 @@
 
 language: java
 sudo: false
-
 jdk:
-  - oraclejdk8
-
+- oraclejdk8
 script:
-  - "ant build"
-  - "find -type f -name *.jar"
-
+- ant build
+- find -type f -name *.jar
+- pwd
 deploy:
   skip_cleanup: true
   provider: releases
-  api_key: "0c587f9fef6aa7e971344dd24fdfe39cb0fddb25"
-  file_glob: true
-  file: $HOME/TwrpBuilder/Scripts/jar/*.jar
+  api_key:
+    secure: lYECZApcLD2EuQ4VJ5ixIeRVe6MVLQbU5QUbIuV2L1gx04G7UdNuxYIRKVEIGZdiigBJoOx189RTirM62IKIyrb8K3iihukrdCoetU7Ac0vbHSYW4IvT9z3iN6nONy4WHBtmVZzCLDavvOHOOwJVaWtpIvsoxS8Kt2G+9nMh9XGSjRJXWJT5cOq/ED8RLDALJxrLRgVPMbBTK3ahjqi7IK4ebtlA3bDmDQtIWZFyFzdo5Xhve+uWIquIXOyy5/vjdDxL/b/sMAfqcQGSa8jpFt8KO3V9vJOuscXB3X+4TAdABW75mO2LCbmZZMaV6kGR7tkDERrVWZlOSD7nbzP5wkZ/q/OdmnUqEku/DXoUHbdbqnm55h4hC9TgCfjGa/dNCxYAFUmyQTC+5sGV41jsPHF0AHwjEdJzthGvxPcrA1Z9fLoSAfhGygU0OA/9PQwqaqUuUkj70JicRRP/J1+YAvwyRt6Vu2JICvYivIH8t0GT7GB7gRGCwzEtSl2KEih/CWlPPj2L89IzekyGUJNEqiEON11eaaeAFlGWFmHExq+iRmjPisasfPi97uIIONLvTmT0gNV8ru2RzxR+XoJ/hbORgIIpFTNdSo6qVV3nYCB/MpZtMmOk/BSH7va1Mk4q/TpaPds6KDg7N459ldP2srxXwbAuj/wuihUARscp/eE=
+  file: "$HOME/TwrpBuilder/Scripts/jar/*.jar"
   on:
     tags: false
     repo: TwrpBuilder/Scripts
