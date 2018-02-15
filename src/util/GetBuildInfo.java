@@ -26,6 +26,15 @@ public class GetBuildInfo {
 
 	public static String getPlatform() {
 		platform=ShellExecuter.commandnoapp("cat build.prop | grep ro.board.platform= | cut -d = -f 2");
+		if (platform.isEmpty())
+		{
+			platform=ShellExecuter.commandnoapp("cat build.prop | grep ro.mtk.hardware= | cut -d = -f 2");
+			if(platform.isEmpty())
+			{
+				System.out.println("Device not supported");
+				System.exit(1);
+			}
+		}
 		return platform;
 	}
 

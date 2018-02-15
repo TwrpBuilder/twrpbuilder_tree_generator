@@ -19,6 +19,11 @@ public class Clean {
 		{
 			ShellExecuter.commandnoapp("rm -rf out");
 		}
+		
+		if(new File("unpack-MTK.pl").exists())
+		{
+			ShellExecuter.command("rm unpack-MTK.pl");
+		}
 	}
 
 }

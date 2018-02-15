@@ -1,6 +1,8 @@
 package mkTree;
 
+import util.Clean;
 import util.FWriter;
+import util.GetBuildInfo;
 import util.ShellExecuter;
 
 public class MkFstab {
@@ -24,9 +26,12 @@ public class MkFstab {
 			System.out.println("Found lz4 comression in ramdisk");
 		ShellExecuter.command("lz4 -d out/recovery.img-ramdisk.*");
 		new FWriter("recovery.fstab",getMounts());
-		}else 
+		}else if(GetBuildInfo.getPlatform().charAt(0)=='m' && GetBuildInfo.getPlatform().charAt(1) == 't')
 		{
-			System.out.println("Failed to decompress ramdisk");
+			new FWriter("recovery.fstab",getMountsMtk());
+		}else {
+			System.out.println("Failed to decompress ramdisk ");
+			new Clean();
 			System.exit(1);
 		}
 		
@@ -50,4 +55,20 @@ public class MkFstab {
 		return output;
 	}
 	
+	private String getMountsMtk() {
+		String system=ShellExecuter.command("cat recovery.img-ramdisk/etc/recovery.fstab | grep -w '/system' | awk '{ print $3 }'");
+		String data=ShellExecuter.command("cat out/recovery.img-ramdisk/etc/recovery.fstab | grep -w '/data' | awk '{ print $3 }'");
+		String cache=ShellExecuter.command("cat out/recovery.img-ramdisk/etc/recovery.fstab | grep -w '/cache' | awk '{ print $3 }'");
+		String boot=ShellExecuter.command("cat out/recovery.img-ramdisk/etc/recovery.fstab | grep -w '/boot' | awk '{ print $3 }'");
+		String recovery=ShellExecuter.command("cat out/recovery.img-ramdisk/etc/recovery.fstab | grep -w '/recovery' | awk '{ print $3 }'");
+		String output;
+		output=ShellExecuter.CopyRight();
+		output+="/boot emmc " +boot +
+				"/recovery emmc " +recovery + 
+				"/system ext4 "+system + 
+				"/data ext4 "+data + 
+				"/cache ext4 " +cache + 
+				"/sdcard vfat /dev/block/mmcblk1p1 /dev/block/mmcblk1 flags=display=\"Micro SD\";storage;wipeingui;removable;settingsstorage";
+		return output;
+	}
 }
