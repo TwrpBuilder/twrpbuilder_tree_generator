@@ -3,11 +3,14 @@ package mkTree;
 import util.Clean;
 import util.FWriter;
 import util.GetBuildInfo;
+import util.RunCode;
 import util.ShellExecuter;
 
 public class MkFstab {
 	private String compressionType;
 	private boolean lz4,lzma;
+	private int maxTries = 1;
+
 	public MkFstab() {
 		System.out.println("Making fstab");
 		compressionType=ShellExecuter.commandnoapp("cd out && file --mime-type recovery.img-ramdisk.* | cut -d / -f 2 | cut -d '-' -f 2");
@@ -18,25 +21,39 @@ public class MkFstab {
 			new FWriter("recovery.fstab",getMounts());
 			lzma=true;
 			CheckCompression();
+			System.out.println("Check recovery fstab before build\n tree ready for "+ GetBuildInfo.getCodename());
 		}else if(compressionType.equals("gzip"))
 		{
 			System.out.println("Found gzip comression in ramdisk");
 			ShellExecuter.command("gzip -d out/recovery.img-ramdisk.gz");
 			new FWriter("recovery.fstab",getMounts());
-		}else if(compressionType.equals("lz4"))
+			System.out.println("Check recovery fstab before build\n tree ready for "+ GetBuildInfo.getCodename());
+		}
+		else if(compressionType.equals("lz4"))
 		{
 			System.out.println("Found lz4 comression in ramdisk");
 		ShellExecuter.command("lz4 -d out/recovery.img-ramdisk.*");
 		lz4=true;
 		CheckCompression();
 		new FWriter("recovery.fstab",getMounts());
+		System.out.println("Check recovery fstab before build\n tree ready for "+ GetBuildInfo.getCodename());
 		}else if(GetBuildInfo.mtk==true)
 		{
 			new FWriter("recovery.fstab",getMountsMtk());
+			System.out.println("Check recovery fstab before build\n tree ready for "+ GetBuildInfo.getCodename());
 		}else {
-			System.out.println("Failed to decompress ramdisk ");
 			new Clean();
-			System.exit(1);
+			while(true) {
+				if (RunCode.getCount() == maxTries)
+				{
+					System.out.println("failed to uncompress ramdisk retrying with mtk");
+					GetBuildInfo.mtk=true;
+					new Thread(new RunCode(RunCode.getName())).start();
+				}
+				else {
+					break;
+				}
+			}
 		}
 		
 	}

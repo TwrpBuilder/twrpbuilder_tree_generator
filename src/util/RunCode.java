@@ -1,21 +1,18 @@
+package util;
 import mkTree.MkAndroid;
 import mkTree.MkAndroidProducts;
 import mkTree.MkBoardConfig;
 import mkTree.MkFstab;
 import mkTree.MkOmni;
 import mkTree.MkKernel;
-import util.Clean;
-import util.ExtractBackup;
-import util.GetAsset;
-import util.GetBuildInfo;
-import util.ShellExecuter;
 
 public class RunCode  implements Runnable{
 
-	private String name;
-	
+	private static String name;
+	public static int count = 0;
+
 	public RunCode(String name) {
-		this.name=name;
+		RunCode.name=name;
 	}
 	
     private volatile boolean flag = true;
@@ -40,6 +37,15 @@ public class RunCode  implements Runnable{
     		flag=false;
          }
 		new Clean();
+	}
+	
+	public static String getName() {
+		return name;
+	}
+	
+	public static int getCount() {
+		count++;
+		return count;
 	}
 
 }

@@ -1,6 +1,7 @@
 
 import java.io.File;
 
+import util.RunCode;
 import util.ShellExecuter;
 
 public class MainActivity {
@@ -17,16 +18,19 @@ public class MainActivity {
 		{
 			rename=name.replaceAll(" ","_");
 			fname=new File(rename);
+			if (!new File(rename).exists())
+			{
 			ShellExecuter.commandnoapp("mv '"+name +"' "+rename);
+			System.out.println("renaming file name to "+rename);
+			}
 			name=rename;
 		}
-
+		
 		
 		try {
-			System.out.println("Building tree from: "+a[0]);
+			System.out.println("Building tree from: "+name);
 			if (fname.exists())
 			{
-					ShellExecuter.commandnoapp("mv '"+name +"' "+rename);
 					new Thread(new RunCode(name)).start();
 
 			}else {
