@@ -20,5 +20,16 @@ jdk:
   - oraclejdk8
 
 script:
-  - "ant jar"
+  - "ant build"
   - "find -type f -name *.jar"
+
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key: "$GIT_OAUTH_TOKEN_TB"
+  file_glob: true
+  file: $HOME/TwrpBuilder/Scripts/jar/*.jar
+  on:
+    tags: false
+    repo: TwrpBuilder/Scripts
+    branch: master

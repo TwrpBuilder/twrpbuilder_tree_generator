@@ -27,6 +27,7 @@
     </target>
     <target name="clean">
         <delete dir="bin"/>
+        <delete dir="jar"/>
     </target>
     <target depends="clean" name="cleanall"/>
     <target depends="build-subprojects,build-project" name="build"/>
@@ -38,6 +39,7 @@
             <src path="${asset.link}"/>
             <classpath refid="TwrpBuilder.classpath"/>
         </javac>
+        <antcall target="jar"/>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
     <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
@@ -58,4 +60,22 @@
             <classpath refid="TwrpBuilder.classpath"/>
         </java>
     </target>
+<target name="jar">
+    <javac
+      srcdir="src"
+      includes="**/reports/*.java"
+      destdir="bin"
+      deprecation="${javac.deprecation}"
+      source="${javac.source}"
+      target="${javac.target}"
+      includeantruntime="false">
+      <classpath>
+        <path path="${javac.classpath}:${j2ee.platform.classpath}"/>
+      </classpath>
+    </javac>
+
+    <jar destfile="jar/TwrpBuilder.jar"
+         basedir="."
+         includes="**/reports/*.class"/>
+  </target>
 </project>
