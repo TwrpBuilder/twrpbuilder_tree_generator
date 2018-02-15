@@ -20,5 +20,5 @@ jdk:
   - oraclejdk8
 
 script:
-  - "ant build"
+  - "ant jar"
   - "find -type f -name *.jar"
