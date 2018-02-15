@@ -16,7 +16,7 @@ public class MkAndroid {
 	
 	private String getData() {
 		idata =ShellExecuter.CopyRight();
-		idata+="ifneq ($(filter "+GetBuildInfo.getCodename()+",(TARGET_DEVICE)),)\n" + 
+		idata+="ifneq ($(filter "+GetBuildInfo.getCodename()+",$(TARGET_DEVICE)),)\n" + 
 				"\n" + 
 				"LOCAL_PATH := device/"+GetBuildInfo.getBrand()+File.separator+GetBuildInfo.getCodename()+"\n" + 
 				"\n" + 
