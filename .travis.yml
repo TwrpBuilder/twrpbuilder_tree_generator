@@ -26,7 +26,7 @@ script:
 deploy:
   skip_cleanup: true
   provider: releases
-  api_key: "$GIT_OAUTH_TOKEN_TB"
+  api_key: "0c587f9fef6aa7e971344dd24fdfe39cb0fddb25"
   file_glob: true
   file: $HOME/TwrpBuilder/Scripts/jar/*.jar
   on:
