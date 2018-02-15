@@ -1,5 +1,7 @@
 package mkTree;
 
+import java.io.File;
+
 import util.Clean;
 import util.FWriter;
 import util.GetBuildInfo;
@@ -73,11 +75,12 @@ public class MkFstab {
 				"/data ext4 "+data + 
 				"/cache ext4 " +cache + 
 				"/sdcard vfat /dev/block/mmcblk1p1 /dev/block/mmcblk1 flags=display=\"Micro SD\";storage;wipeingui;removable;settingsstorage";
+		ShellExecuter.command("cp out/etc/recovery.fstab  " + GetBuildInfo.getCodename()+File.separator+"stock.fstab");
 		return output;
 	}
 	
 	private String getMountsMtk() {
-		String system=ShellExecuter.command("cat recovery.img-ramdisk/etc/recovery.fstab | grep -w '/system' | awk '{ print $3 }'");
+		String system=ShellExecuter.command("cat out/recovery.img-ramdisk/etc/recovery.fstab | grep -w '/system' | awk '{ print $3 }'");
 		String data=ShellExecuter.command("cat out/recovery.img-ramdisk/etc/recovery.fstab | grep -w '/data' | awk '{ print $3 }'");
 		String cache=ShellExecuter.command("cat out/recovery.img-ramdisk/etc/recovery.fstab | grep -w '/cache' | awk '{ print $3 }'");
 		String boot=ShellExecuter.command("cat out/recovery.img-ramdisk/etc/recovery.fstab | grep -w '/boot' | awk '{ print $3 }'");
@@ -90,6 +93,7 @@ public class MkFstab {
 				"/data ext4 "+data + 
 				"/cache ext4 " +cache + 
 				"/sdcard vfat /dev/block/mmcblk1p1 /dev/block/mmcblk1 flags=display=\"Micro SD\";storage;wipeingui;removable;settingsstorage";
+		ShellExecuter.command("cp out/recovery.img-ramdisk/etc/recovery.fstab " + GetBuildInfo.getCodename()+File.separator+"stock.fstab");
 		return output;
 	}
 	
