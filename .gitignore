@@ -1,9 +1,11 @@
-*.tar
+bin/
 *.gz
+*.zip
+out/
 *.img
+kernel
 *.prop
+*.jar
 mounts
 *.mk
-*/kernel
-out/
 *.fstab
