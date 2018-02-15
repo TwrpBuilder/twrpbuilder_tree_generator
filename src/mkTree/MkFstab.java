@@ -26,7 +26,7 @@ public class MkFstab {
 			System.out.println("Found lz4 comression in ramdisk");
 		ShellExecuter.command("lz4 -d out/recovery.img-ramdisk.*");
 		new FWriter("recovery.fstab",getMounts());
-		}else if(GetBuildInfo.getPlatform().charAt(0)=='m' && GetBuildInfo.getPlatform().charAt(1) == 't')
+		}else if(GetBuildInfo.mtk==true)
 		{
 			new FWriter("recovery.fstab",getMountsMtk());
 		}else {

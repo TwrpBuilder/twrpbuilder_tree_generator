@@ -11,7 +11,7 @@ public class MkKernel {
 	public MkKernel() {
 		System.out.println("Making kernel.mk");
 		ShellExecuter.mkdir("out");
-		 if(GetBuildInfo.getPlatform().charAt(0)=='m' && GetBuildInfo.getPlatform().charAt(1) == 't')
+		 if(GetBuildInfo.mtk==true)
 		 {
 			 ShellExecuter.commandnoapp("chmod 777 unpack-MTK.pl && mv unpack-MTK.pl out/ ");
 			 ShellExecuter.commandnoapp("cp recovery.img out/recovery.img");
