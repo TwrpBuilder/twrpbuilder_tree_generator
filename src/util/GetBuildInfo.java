@@ -28,7 +28,7 @@ public class GetBuildInfo {
 		platform=ShellExecuter.commandnoapp("cat build.prop | grep ro.board.platform= | cut -d = -f 2");
 		if (platform.isEmpty())
 		{
-			platform=ShellExecuter.commandnoapp("cat build.prop | grep ro.mtk.hardware= | cut -d = -f 2");
+			platform=ShellExecuter.commandnoapp("cat build.prop | grep ro.mediatek.platform= | cut -d = -f 2");
 			mtk=true;
 			if(platform.isEmpty())
 			{
