@@ -8,6 +8,7 @@ import util.FWriter;
 public class MkKernel {
 	private String idata;
 	private long l=0;
+	
 	public MkKernel() {
 		System.out.println("Making kernel.mk");
 		ShellExecuter.mkdir("out");
@@ -49,8 +50,7 @@ public class MkKernel {
 		String ramdiskofsset=ShellExecuter.commandnoapp("cat out/recovery.img-ramdisk_offset");
 		String tagsoffset=ShellExecuter.commandnoapp("cat out/recovery.img-tags_offset");
 		String kernelbase=ShellExecuter.commandnoapp("cat out/recovery.img-base");
-
-		idata =ShellExecuter.CopyRight();
+		idata=ShellExecuter.CopyRight();
 		idata+="# Kernel\n" + 
 				"TARGET_PREBUILT_KERNEL := device/"+GetBuildInfo.getBrand()+File.separator+GetBuildInfo.getCodename()+"/kernel\n" + 
 				"BOARD_KERNEL_CMDLINE := "+cmdline+" androidboot.selinux=permissive\n" + 
@@ -75,7 +75,13 @@ public class MkKernel {
 				"TARGET_PREBUILT_KERNEL := device/"+GetBuildInfo.getBrand()+File.separator+GetBuildInfo.getCodename()+"/kernel\n" + 
 				"BOARD_KERNEL_BASE := 0x"+kernelbase+"\n" + 
 				"BOARD_KERNEL_PAGESIZE := "+pagesize+"\n";
-		idata+="BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x"+ramdiskofsset+" --tags_offset 0x"+tagsoffset;
+		idata+="BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x"+ramdiskofsset+" --tags_offset 0x"+tagsoffset+"\n";
+		if(GetBuildInfo.mtk==true)
+		{
+		System.out.println("using mtk custom boot  ");
+		idata+="BOARD_CUSTOM_BOOTIMG_MK := device/generic/twrpbuilder/custombootimg_mtk.mk";
+		}
+		
 		return idata;
 	}
 
