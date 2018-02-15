@@ -9,11 +9,20 @@
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.8"/>
     <property name="source" value="1.8"/>
+    <property name="src-dir" location="src"/>
+    <property name="build-dir" location="build"/>
+    <property name="classes-dir" value="${build-dir}/classes"/>
+    <property name="dist-dir" location="dist"/>
+    <property name="lib-dir" value="lib"/>
+    <property name="jar-dir"     value="jar"/>
+    <property name="main-class"  value="MainActivity"/>
+
     <path id="TwrpBuilder.classpath">
         <pathelement location="bin"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
+        <mkdir dir="${classes-dir}"/>
         <copy includeemptydirs="false" todir="bin">
             <fileset dir="src">
                 <exclude name="**/*.java"/>
@@ -28,6 +37,7 @@
     <target name="clean">
         <delete dir="bin"/>
         <delete dir="jar"/>
+        <delete dir="build"/>
     </target>
     <target depends="clean" name="cleanall"/>
     <target depends="build-subprojects,build-project" name="build"/>
@@ -39,7 +49,6 @@
             <src path="${asset.link}"/>
             <classpath refid="TwrpBuilder.classpath"/>
         </javac>
-        <antcall target="jar"/>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
     <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
@@ -60,22 +69,18 @@
             <classpath refid="TwrpBuilder.classpath"/>
         </java>
     </target>
-<target name="jar">
-    <javac
-      srcdir="src"
-      includes="**/reports/*.java"
-      destdir="bin"
-      deprecation="${javac.deprecation}"
-      source="${javac.source}"
-      target="${javac.target}"
-      includeantruntime="false">
-      <classpath>
-        <path path="${javac.classpath}:${j2ee.platform.classpath}"/>
-      </classpath>
-    </javac>
 
-    <jar destfile="jar/TwrpBuilder.jar"
-         basedir="."
-         includes="**/reports/*.class"/>
-  </target>
+    <target name="compile" depends="init" description="compile the source " >
+        <javac srcdir="${src-dir}" destdir="${classes-dir}" classpathref="TwrpBuilder.classpath" includeantruntime="false" />
+    </target>
+
+    <target name="jar" depends="compile">
+        <jar destfile="${jar-dir}/${ant.project.name}.jar" basedir="${classes-dir}">
+    		<fileset dir="${asset.link}" />
+            <manifest>
+                <attribute name="Main-Class" value="${main-class}"/>
+            </manifest>
+        </jar>
+    </target>
+
 </project>
