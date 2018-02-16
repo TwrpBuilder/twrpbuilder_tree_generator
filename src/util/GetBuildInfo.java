@@ -2,7 +2,7 @@ package util;
 
 public class GetBuildInfo {
 
-	private static String model,product,brand,codename,platform,api,size;
+	private static String model,product,brand,codename,platform,api,size,fingerprint;
 	public static boolean mtk=false;
 	public static String getModel() {
   	model=ShellExecuter.commandnoapp("cat build.prop | grep ro.product.model= | cut -d = -f 2");
@@ -45,6 +45,11 @@ public class GetBuildInfo {
 		return api;
 	}
 
+	public static String getFingerPrint() {
+	fingerprint=ShellExecuter.commandnoapp("cat build.prop | grep ro.build.fingerprint= | cut -d = -f 2");
+	return fingerprint;
+	}
+	
 	public static String getSize() {
 		size=ShellExecuter.commandnoapp("wc -c < recovery.img");
 		return size;

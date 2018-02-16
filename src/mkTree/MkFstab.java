@@ -29,7 +29,8 @@ public class MkFstab {
 			System.out.println("Found gzip comression in ramdisk");
 			ShellExecuter.command("gzip -d out/recovery.img-ramdisk.gz");
 			new FWriter("recovery.fstab",getMounts());
-			System.out.println("Check recovery fstab before build\n tree ready for "+ GetBuildInfo.getCodename());
+			System.out.println("Build fingerPrint: "+GetBuildInfo.getFingerPrint());
+			System.out.println("Check recovery fstab before build\ntree ready for "+ GetBuildInfo.getCodename());
 		}
 		else if(compressionType.equals("lz4"))
 		{
