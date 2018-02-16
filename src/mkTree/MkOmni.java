@@ -1,6 +1,5 @@
 package mkTree;
 
-import java.io.File;
 import util.ShellExecuter;
 import util.FWriter;
 import util.GetBuildInfo;
@@ -17,7 +16,7 @@ public class MkOmni {
 		idata =ShellExecuter.CopyRight();
 		idata+="$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)\n" + 
 				"\n" + 
-				"PRODUCT_COPY_FILES += device/"+GetBuildInfo.getBrand()+File.separator+GetBuildInfo.getCodename()+"/kernel:kernel\n" + 
+				"PRODUCT_COPY_FILES += device/"+GetBuildInfo.getPathS()+"kernel:kernel\n" + 
 				"\n" + 
 				"PRODUCT_DEVICE := "+ GetBuildInfo.getCodename()+"\n" + 
 				"PRODUCT_NAME := omni_"+GetBuildInfo.getCodename()+"\n" + 

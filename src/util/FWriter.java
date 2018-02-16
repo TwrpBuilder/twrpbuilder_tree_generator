@@ -1,6 +1,5 @@
 package util;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -15,7 +14,7 @@ public class FWriter {
 	private void run(String name,String data) {
 		  PrintWriter writer;
 			try {
-				writer = new PrintWriter(GetBuildInfo.getCodename()+File.separator+name, "UTF-8");
+				writer = new PrintWriter(GetBuildInfo.getPathS()+name, "UTF-8");
 				writer.println(data);
 				writer.close();
 			} catch (FileNotFoundException | UnsupportedEncodingException e) {

@@ -43,8 +43,7 @@ public class MkFstab {
 	
 	private void lastMessage() {
 		if(new File("out/etc").exists()) {
-			
-		ShellExecuter.command("mkdir "+GetBuildInfo.getCodename()+"/stock && mv out/etc/* "+GetBuildInfo.getCodename()+File.separator+"stock/");
+		ShellExecuter.command("mkdir "+GetBuildInfo.getPathS()+"stock && mv out/etc/* "+GetBuildInfo.getPathS()+"stock/");
 		}
 		System.out.println("Build fingerPrint: "+GetBuildInfo.getFingerPrint());
 		System.out.println("tree ready for "+ GetBuildInfo.getCodename());
@@ -65,7 +64,7 @@ public class MkFstab {
 		}
 		if(idata!=null)
 		{
-			ShellExecuter.command("echo "+idata +" >> " +GetBuildInfo.getCodename()+"/kernel.mk");
+			ShellExecuter.command("echo "+idata +" >> " +GetBuildInfo.getPath()+"/kernel.mk");
 		}
 	}
 }

@@ -1,5 +1,7 @@
 package util;
 
+import java.io.File;
+
 public class GetBuildInfo {
 
 	private static String model,product,brand,codename,platform,api,size,fingerprint;
@@ -8,7 +10,7 @@ public class GetBuildInfo {
 	return model;
 	}
 	
-	public String getProduct(){
+	public static String getProduct(){
 		product=ShellExecuter.commandnoapp("cat build.prop | grep ro.build.product= | cut -d = -f 2");
 		return product;
 	}
@@ -51,4 +53,16 @@ public class GetBuildInfo {
 		size=ShellExecuter.commandnoapp("wc -c < recovery.img");
 		return size;
 	}
+	
+	public static String getPathS() {
+		String path="device"+File.separator+getBrand()+File.separator+getCodename()+File.separator;
+		return path;
+	}
+	
+	public static String getPath() {
+		String path="device"+File.separator+getBrand()+File.separator+getCodename();
+		return path;
+	}
+
+	
 }

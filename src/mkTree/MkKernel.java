@@ -16,12 +16,12 @@ public class MkKernel {
 		ShellExecuter.command("ls && ./umkbootimg -i recovery.img -o out/ ");
 		if(new File("out/recovery.img-zImage").exists())
 		{
-		ShellExecuter.cp("out/recovery.img-zImage", GetBuildInfo.getCodename()+File.separator+"kernel");
+		ShellExecuter.cp("out/recovery.img-zImage", GetBuildInfo.getPathS()+"kernel");
 		}
 		if(new File("out/recovery.img-dt").length()!=l)
 		{
 		
-			ShellExecuter.cp("out/recovery.img-dt", GetBuildInfo.getCodename()+File.separator+"dt.img");
+			ShellExecuter.cp("out/recovery.img-dt", GetBuildInfo.getPathS()+"dt.img");
 			new FWriter("kernel.mk",getDataQcom(true));
 		}else {
 			new FWriter("kernel.mk",getDataQcom(false));
@@ -37,7 +37,7 @@ public class MkKernel {
 		String kernelbase=ShellExecuter.commandnoapp("cat out/recovery.img-base");
 		idata=ShellExecuter.CopyRight();
 		idata+="# Kernel\n" + 
-				"TARGET_PREBUILT_KERNEL := device/"+GetBuildInfo.getBrand()+File.separator+GetBuildInfo.getCodename()+"/kernel\n" + 
+				"TARGET_PREBUILT_KERNEL := device/"+GetBuildInfo.getPathS()+"kernel\n" + 
 				"BOARD_KERNEL_CMDLINE := "+cmdline+" androidboot.selinux=permissive\n" + 
 				"BOARD_KERNEL_BASE := 0x"+kernelbase+"\n" + 
 				"BOARD_KERNEL_PAGESIZE := "+pagesize+"\n";

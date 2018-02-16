@@ -73,19 +73,20 @@ public class ShellExecuter {
 	}
 	
 	public static boolean mkdir(String name) {
-		File theDir = new File(name);
+		File theDir = new File(name).getAbsoluteFile();
 
 		// if the directory does not exist, create it
-		if (!theDir.exists()) {
-		    System.out.println("creating directory: " + theDir.getName());
+		if (!theDir.isDirectory()) {
+		    System.out.println("creating directory: " + theDir.getAbsolutePath());
 		    boolean result = false;
 
 		    try{
-		        theDir.mkdir();
+		        theDir.mkdirs();
 		        result = true;
 		    } 
 		    catch(SecurityException se){
-		        //handle it
+		    	System.out.println("Failed to make dir");
+		    	System.exit(0);
 		    }        
 		    if(result) {    
 		        System.out.println("Dir created: "+name);  
@@ -94,7 +95,7 @@ public class ShellExecuter {
 		{
 	        System.out.println("Dir: "+name+" already exist");  
 		}
-		return theDir.exists();
+		return theDir.isDirectory();
 
 	}
 	

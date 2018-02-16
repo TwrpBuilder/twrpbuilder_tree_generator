@@ -9,38 +9,31 @@ import mkTree.MkKernel;
 public class RunCode  implements Runnable{
 
 	private static String name;
-	public static int count = 0;
 
 	public RunCode(String name) {
 		RunCode.name=name;
 	}
 	
-    private volatile boolean flag = true;
-
 	@Override
 	public void run() {
 		new ExtractBackup(name);
-        while(flag) {
-    		ShellExecuter.mkdir(GetBuildInfo.getCodename());
-    		new MkAndroid();
-    		new MkAndroidProducts();
-    		new MkOmni();
-    		new GetAsset("umkbootimg");
-    		new MkKernel();
-    		new MkBoardConfig();
-    		new MkFstab();
-    		flag=false;
-         }
+    	if(!ShellExecuter.mkdir(GetBuildInfo.getPathS()))
+    	{
+    		System.out.println("Failed to make dir");
+    		System.exit(0);
+    	}
+    	new MkAndroid();
+    	new MkAndroidProducts();
+    	new MkOmni();
+    	new GetAsset("umkbootimg");
+    	new MkKernel();
+    	new MkBoardConfig();
+    	new MkFstab();
 		new Clean();
 	}
 	
 	public static String getName() {
 		return name;
-	}
-	
-	public static int getCount() {
-		count++;
-		return count;
 	}
 
 }

@@ -1,6 +1,5 @@
 package mkTree;
 
-import java.io.File;
 import util.ShellExecuter;
 import util.FWriter;
 import util.GetBuildInfo;
@@ -18,7 +17,7 @@ public class MkAndroid {
 		idata =ShellExecuter.CopyRight();
 		idata+="ifneq ($(filter "+GetBuildInfo.getCodename()+",$(TARGET_DEVICE)),)\n" + 
 				"\n" + 
-				"LOCAL_PATH := device/"+GetBuildInfo.getBrand()+File.separator+GetBuildInfo.getCodename()+"\n" + 
+				"LOCAL_PATH := device/"+GetBuildInfo.getPath()+"\n" + 
 				"\n" + 
 				"include $(call all-makefiles-under,$(LOCAL_PATH))\n" + 
 				"\n" + 
