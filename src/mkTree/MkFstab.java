@@ -61,7 +61,7 @@ public class MkFstab {
 	}
 	
 	private String getMounts() {
-		ShellExecuter.command("cd out && cpio -idm < recovery.img-ramdisk");
+		ShellExecuter.command("cd out && cpio -i < recovery.img-ramdisk");
 		String system=ShellExecuter.command("cat out/etc/recovery.fstab | grep -w '/system' | grep /dev | awk '{ print $1 }'");
 		String data=ShellExecuter.command("cat out/etc/recovery.fstab | grep -w '/data' | grep /dev | awk '{ print $1 }'");
 		String cache=ShellExecuter.command("cat out/etc/recovery.fstab | grep -w '/cache' | grep /dev | awk '{ print $1 }'");
@@ -75,7 +75,7 @@ public class MkFstab {
 				"/data ext4 "+data + 
 				"/cache ext4 " +cache + 
 				"/sdcard vfat /dev/block/mmcblk1p1 /dev/block/mmcblk1 flags=display=\"Micro SD\";storage;wipeingui;removable;settingsstorage";
-		ShellExecuter.command("cp out/etc/recovery.fstab  " + GetBuildInfo.getCodename()+File.separator+"stock.fstab");
+		ShellExecuter.command("mkdir "+GetBuildInfo.getCodename()+File.separator+"stock && mv out/etc/* " + GetBuildInfo.getCodename()+File.separator+"stock/");
 		return output;
 	}
 	
@@ -93,7 +93,7 @@ public class MkFstab {
 				"/data ext4 "+data + 
 				"/cache ext4 " +cache + 
 				"/sdcard vfat /dev/block/mmcblk1p1 /dev/block/mmcblk1 flags=display=\"Micro SD\";storage;wipeingui;removable;settingsstorage";
-		ShellExecuter.command("cp out/recovery.img-ramdisk/etc/recovery.fstab " + GetBuildInfo.getCodename()+File.separator+"stock.fstab");
+		ShellExecuter.command("mkdir "+GetBuildInfo.getCodename()+File.separator+"stock && mv out/recovery.img-ramdisk/etc/* " + GetBuildInfo.getCodename()+File.separator+"stock/");
 		return output;
 	}
 	
