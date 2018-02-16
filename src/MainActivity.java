@@ -6,7 +6,6 @@ public class MainActivity {
 	
 	private static int status;
 	private static File fname;
-	private static String name;
 	public static void main(String[] a)
 	{
 		try {
@@ -15,8 +14,8 @@ public class MainActivity {
 			{
 				if(!fname.getName().toString().contains(" "))
 				{
-					System.out.println("Building tree using: "+name);
-					new Thread(new RunCode(name)).start();
+					System.out.println("Building tree using: "+fname.getName());
+					new Thread(new RunCode(fname.getName())).start();
 				}else
 				{
 					System.out.println("remove spaces from file name");

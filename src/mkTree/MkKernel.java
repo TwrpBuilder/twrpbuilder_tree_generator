@@ -12,22 +12,8 @@ public class MkKernel {
 	public MkKernel() {
 		System.out.println("Making kernel.mk");
 		ShellExecuter.mkdir("out");
-		 if(GetBuildInfo.mtk==true)
-		 {
-			 ShellExecuter.commandnoapp("chmod 777 unpack-MTK.pl && mv unpack-MTK.pl out/ ");
-			 ShellExecuter.commandnoapp("cp recovery.img out/recovery.img");
-			 ShellExecuter.command("cd out && ./unpack-MTK.pl recovery.img ");
-			 if(new File("out/recovery.img-kernel.img").exists())
-			 {
-				 ShellExecuter.command("cp out/recovery.img-kernel.img "+GetBuildInfo.getCodename()+"/kernel");
-			 }
-			 if(new File("out/recovery.img-args.txt").exists())
-			 {
-					new FWriter("kernel.mk",getDataMtk());
-			 }
-		 }else {
-		ShellExecuter.commandnoapp("chmod 777 umkbootimg");
-		ShellExecuter.command("$(pwd)/umkbootimg -i recovery.img -o out/ ");
+		ShellExecuter.command("chmod 777 umkbootimg");
+		ShellExecuter.command("ls && ./umkbootimg -i recovery.img -o out/ ");
 		if(new File("out/recovery.img-zImage").exists())
 		{
 		ShellExecuter.cp("out/recovery.img-zImage", GetBuildInfo.getCodename()+File.separator+"kernel");
@@ -39,7 +25,6 @@ public class MkKernel {
 			new FWriter("kernel.mk",getDataQcom(true));
 		}else {
 			new FWriter("kernel.mk",getDataQcom(false));
-		}
 		}
 		
 	}
@@ -63,27 +48,5 @@ public class MkKernel {
 		}
 		return idata;
 	}
-	
-	private String getDataMtk() {
-		String pagesize=ShellExecuter.commandnoapp("cat out/recovery.img-args.txt | grep pagesize | cut -d x -f 2");
-		String ramdiskofsset=ShellExecuter.commandnoapp("cat out/recovery.img-args.txt | grep ramdisk_offset | cut -d x -f 2");
-		String tagsoffset=ShellExecuter.commandnoapp("cat out/recovery.img-args.txt | grep tags_offset | cut -d x -f 2");
-		String kernelbase=ShellExecuter.commandnoapp("cat out/recovery.img-args.txt | grep base | cut -d x -f 2");
-
-		idata =ShellExecuter.CopyRight();
-		idata+="# Kernel\n" + 
-				"TARGET_PREBUILT_KERNEL := device/"+GetBuildInfo.getBrand()+File.separator+GetBuildInfo.getCodename()+"/kernel\n" + 
-				"BOARD_KERNEL_BASE := 0x"+kernelbase+"\n" + 
-				"BOARD_KERNEL_PAGESIZE := "+pagesize+"\n";
-		idata+="BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x"+ramdiskofsset+" --tags_offset 0x"+tagsoffset+"\n";
-		if(GetBuildInfo.mtk==true)
-		{
-		System.out.println("using mtk custom boot  ");
-		idata+="BOARD_CUSTOM_BOOTIMG_MK := device/generic/twrpbuilder/custombootimg_mtk.mk";
-		}
-		
-		return idata;
-	}
-
 	
 }

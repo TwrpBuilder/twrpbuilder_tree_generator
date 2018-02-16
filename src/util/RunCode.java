@@ -25,12 +25,7 @@ public class RunCode  implements Runnable{
     		new MkAndroid();
     		new MkAndroidProducts();
     		new MkOmni();
-    		if(GetBuildInfo.getPlatform().charAt(0)=='m' && GetBuildInfo.getPlatform().charAt(1) == 't')
-    		{
-        		new GetAsset("unpack-MTK.pl");
-    		}else {
     		new GetAsset("umkbootimg");
-    		}
     		new MkKernel();
     		new MkBoardConfig();
     		new MkFstab();
