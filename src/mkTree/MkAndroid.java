@@ -17,7 +17,7 @@ public class MkAndroid {
 		idata =ShellExecuter.CopyRight();
 		idata+="ifneq ($(filter "+GetBuildInfo.getCodename()+",$(TARGET_DEVICE)),)\n" + 
 				"\n" + 
-				"LOCAL_PATH := device/"+GetBuildInfo.getPath()+"\n" + 
+				"LOCAL_PATH := "+GetBuildInfo.getPath()+"\n" + 
 				"\n" + 
 				"include $(call all-makefiles-under,$(LOCAL_PATH))\n" + 
 				"\n" + 

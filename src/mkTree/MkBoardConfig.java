@@ -14,7 +14,7 @@ public class MkBoardConfig {
 	
 	private String getData() {
 		idata =ShellExecuter.CopyRight();
-		idata+="LOCAL_PATH := device/"+GetBuildInfo.getPath()+"\n" + 
+		idata+="LOCAL_PATH := "+GetBuildInfo.getPath()+"\n" + 
 				"\n" + 
 				"TARGET_BOARD_PLATFORM := "+GetBuildInfo.getPlatform()+"\n" + 
 				"TARGET_BOOTLOADER_BOARD_NAME := "+GetBuildInfo.getCodename()+"\n" + 

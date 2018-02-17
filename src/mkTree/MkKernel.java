@@ -37,7 +37,7 @@ public class MkKernel {
 		String kernelbase=ShellExecuter.commandnoapp("cat out/recovery.img-base");
 		idata=ShellExecuter.CopyRight();
 		idata+="# Kernel\n" + 
-				"TARGET_PREBUILT_KERNEL := device/"+GetBuildInfo.getPathS()+"kernel\n" + 
+				"TARGET_PREBUILT_KERNEL := "+GetBuildInfo.getPathS()+"kernel\n" + 
 				"BOARD_KERNEL_CMDLINE := "+cmdline+" androidboot.selinux=permissive\n" + 
 				"BOARD_KERNEL_BASE := 0x"+kernelbase+"\n" + 
 				"BOARD_KERNEL_PAGESIZE := "+pagesize+"\n";
