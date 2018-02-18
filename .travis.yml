@@ -17,14 +17,14 @@ language: java
 sudo: false
 jdk:
 - oraclejdk8
-script: "ant build jar"
+script: ant build jar
 deploy:
   skip_cleanup: true
   provider: releases
   api_key:
-    secure: BI6yifFMMoobZ5zjK9Lm1EMCtxlP91dB1uPhGLK4Bu/zKcZT3qeStiMomCB4YCsMty3yF44jxn5x9/LxEHLZLRyaJHiQnJ+FjfowNmcm9Jo03OmPgEIn6M/b3FVY/qDty89KCQ+IcjPn9A0UPMcvmG2uGUuDTiN37qp8AYojsFpPuMVELLy0SRV/DxDWZmwmJoCqoovEdPKgjcq4XPmvW2kvbPzOCti4HWHD7CAtulcFcm+FRM6mP2iVkR10n55D5iWaakzGSjmUhGJuaNQdiApkHI0VZWvRQCFeLs5cBjRvc6S9mfBuuI34faAyz/mknf+FLzTvZOuF2eJn66lQAKQxVZ5WvKa67s7ZR/roU5xmuIbl0VBNgeeowkgKYEAJhnHcFbOPUFNfMGnchCfbTzeX2jXZqygLLG1So+bZRtk9oaXe2fO8hgiA8qwhfSGNM7ZBtbPaw0IF+t1OXIsT0jiLlYTr8nsXVPBLiKZ7/tgAlXHvNUdtEQWKVEYBp0qrNMAwtFxUrPw7mAUaFSp1p08QxK/TT5OTmutGC68bZ8pdPQv0jQE2739wooHJ6qwBkwz43E8l7t3IX8hUC+jhlAwCUiS07RkClXxMAQXrqZQP6YmL5DDW6XD7TzLRbnYfE62d4IJRQ2Dv+r1cNegkkAiOATZTfJ+EjGb3n33mOZI=
-  file: "/home/travis/build/TwrpBuilder/Scripts/jar/TwrpBuilder.jar"
+    secure: LqFaADLutdTtmFligXotCft2uKKz0f/ycLwDKwwFcpJlJOd+YIHYNOoK3zcxfKtjtFw/GfD5rV+WslECYCzWzET27IclBgdwZjvH222RvIWRDwL7saUC+B7BBT6QyZD7q6pqHS96jfuXRxA/Tg+EgYHwfSHKoWVDiz4nRNi0nisPy1zZ3vXy8iF56QgODSDOf2r5JSUMRL5vKW6mP4jkJjVYMStwgbqXs3njR4zp+o7k/tzhPfh6k8jUz7GKyJYqRCqQ990srJYfR2tYYfxvEXwpn+knCEvATNWdx9kBCRxOhi0h8Xwdyxi3/7neT5FuU0KO6Q8n7jF/z+K+zhys4xgsuNSF582uA94mZlbPG6bOGBzhWG8ip1kznYm146KXUAhK7xukU/YeDlTjIDzkjjk2RkWyW0PYIetYpMH17aOaISgv8EK79ZTXUX8fWU6bijPGVo52Ph1O8A3g7SiieXDwjpEwLYPzwC+2Zb+s7lmC2FLElOnZLVf7aN9GMt2N/lRzPtzs8f6rRFtAnitYEGRSfRcmiQrQ6lEnPentY9jIgffGMTJYry2YNMPkQ0+XfGL3MgavhTsPepTr3bTj5vth/t5JyCvKmg3l9G+ukmZXG7CKDRTpHCMAA+X5UY0Mr7WwWb/LeATmRD1i8ipYFHRq0f2+qkVMu3crAxcuHoo=
+  file: "/home/travis/build/TwrpBuilder/twrpbuilder_tree_generator/jar/TwrpBuilder.jar"
   on:
     tags: false
-    repo: TwrpBuilder/Scripts
+    repo: TwrpBuilder/twrpbuilder_tree_generator
     branch: master
