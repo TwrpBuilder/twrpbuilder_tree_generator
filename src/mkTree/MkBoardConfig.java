@@ -26,13 +26,16 @@ public class MkBoardConfig {
 				"BOARD_HAS_NO_REAL_SDCARD := true\n" + 
 				"TW_EXCLUDE_SUPERSU := true\n"
 				+ "include $(LOCAL_PATH)/kernel.mk\n";
-		if(GetBuildInfo.getApi()=="armeabi-v7a")
+		if(GetBuildInfo.getApi().equals("armeabi-v7a"))
 		{
+			System.out.println("Found 32 bit arch");
 			idata+="include device/generic/twrpbuilder/BoardConfig32.mk";
-		}else if(GetBuildInfo.getApi()=="arm64-v8a")
+		}else if(GetBuildInfo.getApi().equals("arm64-v8a"))
 		{
+			System.out.println("Found 64 bit arch");
 			idata+="include device/generic/twrpbuilder/BoardConfig64.mk";
 		}else {
+			System.out.println("no arch defined using 32 bit");
 			idata+="include device/generic/twrpbuilder/BoardConfig32.mk";
 		}
 		return idata;
