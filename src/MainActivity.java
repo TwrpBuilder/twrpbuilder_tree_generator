@@ -1,35 +1,135 @@
 
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
 import util.RunCode;
+
 
 public class MainActivity {
 	
-	private static int status;
-	private static File fname;
-	public static void main(String[] a)
-	{
-		try {
-			fname=new File(a[0]);
-			if (fname.exists())
-			{
-				if(!fname.getName().toString().contains(" "))
-				{
-					System.out.println("Building tree using: "+fname.getName());
-					new Thread(new RunCode(fname.getName())).start();
-				}else
-				{
-					System.out.println("remove spaces from file name");
-					System.exit(0);
-				}
 
-			}else {
-				System.out.println("File not found");
-				System.exit(1);
-			}
-		}catch (ArrayIndexOutOfBoundsException e) {
-			System.out.println("please enter file name");
-			System.exit(status);
-		}		
+	   public static void usePosixParser(final String[] commandLineArguments)
+	   {
+		final CommandLineParser cmdLinePosixParser = new DefaultParser();
+	      final Options posixOptions = constructPosixOptions();
+	      CommandLine commandLine;
+	      try
+	      {
+	         commandLine = cmdLinePosixParser.parse(posixOptions, commandLineArguments);
+	         if ( commandLine.hasOption("f") )
+	         {
+	        	 String g=commandLine.getOptionValue("f");
+	            if (new File(g).exists())
+	            {
+	            	if(!g.contains(" "))
+	            	{
+	            		System.out.println("Building tree using: "+g);
+	            		new Thread(new RunCode(g)).start();
+	            	}
+	            }
+	         }
+	      }
+	      catch (ParseException parseException)  // checked exception
+	      {
+	         System.err.println(
+	              "Encountered exception while parsing using PosixParser:\n"
+	            + parseException.getMessage() );
+	      }
+	   }
 
-	}	
-}
+	   public static Options constructPosixOptions()
+	   {
+	      final Options posixOptions = new Options();
+	      posixOptions.addOption("f","file", true, "Backup File location.");
+	      return posixOptions;
+	   }
+
+	   public static void displayProvidedCommandLineArguments(
+	      final String[] commandLineArguments,
+	      final OutputStream out)
+	   {
+	      final StringBuffer buffer = new StringBuffer();
+	      for ( final String argument : commandLineArguments )
+	      {
+	         buffer.append(argument).append(" ");
+	      }
+	      try
+	      {
+	         out.write((buffer.toString() + "\n").getBytes());
+	      }
+	      catch (IOException ioEx)
+	      {
+	         System.err.println(
+	            "WARNING: Exception encountered trying to write to OutputStream:\n"
+	            + ioEx.getMessage() );
+	         System.out.println(buffer.toString());
+	      }
+	   }
+
+
+	   public static void printUsage(
+	      final String applicationName,
+	      final Options options,
+	      final OutputStream out)
+	   {
+	      final PrintWriter writer = new PrintWriter(out);
+	      final HelpFormatter usageFormatter = new HelpFormatter();
+	      usageFormatter.printUsage(writer, 80, applicationName, options);
+	      writer.flush();
+	   }
+
+
+	   public static void printHelp(
+	      final Options options,
+	      final int printedRowWidth,
+	      final String header,
+	      final String footer,
+	      final int spacesBeforeOption,
+	      final int spacesBeforeOptionDescription,
+	      final boolean displayUsage,
+	      final OutputStream out)
+	   {
+	      final String commandLineSyntax = "java -jar "+ new java.io.File(MainActivity.class.getProtectionDomain()
+	    		  .getCodeSource()
+	    		  .getLocation()
+	    		  .getPath())
+	    		.getName()+" -f backupfile.tar.gz" ;
+	      final PrintWriter writer = new PrintWriter(out);
+	      final HelpFormatter helpFormatter = new HelpFormatter();
+	      helpFormatter.printHelp(
+	         writer,
+	         printedRowWidth,
+	         commandLineSyntax,
+	         header,
+	         options,
+	         spacesBeforeOption,
+	         spacesBeforeOptionDescription,
+	         footer,
+	         displayUsage);
+	      writer.flush();
+	   }
+
+	   public static void main(final String[] commandLineArguments)
+	   {
+	      final String applicationName = "TwrpBuilder";
+	      if (commandLineArguments.length < 1)
+	      {
+	         System.out.println("-- USAGE --");
+	         printUsage(applicationName , constructPosixOptions(), System.out);
+	         System.out.println("-- HELP --");
+	         printHelp(
+	            constructPosixOptions(), 80, "HELP", "End of Help",
+	               3, 5, true, System.out);
+	      }
+	      usePosixParser(commandLineArguments);
+	   }
+	}
