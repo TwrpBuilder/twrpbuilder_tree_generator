@@ -19,6 +19,7 @@
 
     <path id="TwrpBuilder.classpath">
         <pathelement location="bin"/>
+	<pathelement location="lib/commons-cli-1.4.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
