@@ -5,7 +5,7 @@ out/
 *.img
 kernel
 *.prop
-*.jar
+jar/*.jar
 mounts
 *.mk
 *.fstab
