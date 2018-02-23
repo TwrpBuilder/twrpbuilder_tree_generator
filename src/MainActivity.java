@@ -41,6 +41,9 @@ public class MainActivity {
 	            			if(t.equals("mrvl"))
 	            			{
 			            		new Thread(new RunCode(g,"mrvl")).start();
+	            			}else if(t.equals("samsung"))
+	            			{
+	            				
 	            			}
 	            		}else {
 		            		new Thread(new RunCode(g)).start();

@@ -5,15 +5,22 @@ import util.GetBuildInfo;
 import util.ShellExecuter;
 
 public class MkBoardConfig {
-	private String idata;
-
+	private String idata =ShellExecuter.CopyRight();
 	public MkBoardConfig(){
 		new FWriter("BoardConfig.mk",getData());
 
 	}
+	public MkBoardConfig(String type){
+		if(type.equals("mrvl"))
+		{
+			idata+="include device/generic/twrpbuilder/mrvl.mk\n";
+		}
+
+		new FWriter("BoardConfig.mk",getData());
+	
+	}
 	
 	private String getData() {
-		idata =ShellExecuter.CopyRight();
 		idata+="LOCAL_PATH := "+GetBuildInfo.getPath()+"\n" + 
 				"\n" + 
 				"TARGET_BOARD_PLATFORM := "+GetBuildInfo.getPlatform()+"\n" + 
@@ -26,13 +33,9 @@ public class MkBoardConfig {
 				"BOARD_HAS_NO_REAL_SDCARD := true\n" + 
 				"TW_EXCLUDE_SUPERSU := true\n"
 				+ "include $(LOCAL_PATH)/kernel.mk\n";
-		
-		if(GetBuildInfo.getPlatform().equals("mrvl"))
-		{
-			System.out.println("found mrvl platform");
-			idata+="include device/generic/twrpbuilder/mrvl.mk\n";
-		}
-		
+	
+			System.out.println("found "+ GetBuildInfo.getPlatform() + " platform" );
+	
 		if(GetBuildInfo.getApi().equals("armeabi-v7a"))
 		{
 			System.out.println("Found 32 bit arch");
