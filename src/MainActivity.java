@@ -15,7 +15,8 @@ import util.RunCode;
 
 
 public class MainActivity {
-	
+    private static String applicationName = "TwrpBuilder";
+
 
 	   public static void usePosixParser(final String[] commandLineArguments)
 	   {
@@ -37,6 +38,25 @@ public class MainActivity {
 	            	}
 	            }
 	         }
+	         if(commandLine.hasOption("h"))
+	         {
+		         System.out.println("-- USAGE --");
+		         printUsage(applicationName , constructPosixOptions(), System.out);
+		         System.out.println("-- HELP --");
+		         printHelp(
+		            constructPosixOptions(), 80, "HELP", "End of Help",
+		               3, 5, true, System.out);
+
+	         }
+	         
+	         if(commandLine.hasOption("t"))
+	         {
+	        	 String t=commandLine.getOptionValue("t");
+	        	 if(t.equals("mrvl"))
+	        	 {
+	        		 System.out.println("mrvl");
+	        	 }
+	         }
 	      }
 	      catch (ParseException parseException)  // checked exception
 	      {
@@ -48,9 +68,11 @@ public class MainActivity {
 
 	   public static Options constructPosixOptions()
 	   {
-	      final Options posixOptions = new Options();
-	      posixOptions.addOption("f","file", true, "Backup File location.");
-	      return posixOptions;
+	      final Options option = new Options();
+	      option.addOption("f","file", true, "Backup File location.");
+	      option.addOption("h","help",false,"Help");
+	      option.addOption("t","type",true,"processor type");
+	      return option;
 	   }
 
 	   public static void displayProvidedCommandLineArguments(
@@ -120,7 +142,6 @@ public class MainActivity {
 
 	   public static void main(final String[] commandLineArguments)
 	   {
-	      final String applicationName = "TwrpBuilder";
 	      if (commandLineArguments.length < 1)
 	      {
 	         System.out.println("-- USAGE --");

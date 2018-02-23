@@ -26,6 +26,13 @@ public class MkBoardConfig {
 				"BOARD_HAS_NO_REAL_SDCARD := true\n" + 
 				"TW_EXCLUDE_SUPERSU := true\n"
 				+ "include $(LOCAL_PATH)/kernel.mk\n";
+		
+		if(GetBuildInfo.getPlatform().equals("mrvl"))
+		{
+			System.out.println("found mrvl platform");
+			idata+="include device/generic/twrpbuilder/mrvl.mk\n";
+		}
+		
 		if(GetBuildInfo.getApi().equals("armeabi-v7a"))
 		{
 			System.out.println("Found 32 bit arch");
