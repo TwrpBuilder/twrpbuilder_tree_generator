@@ -9,10 +9,24 @@ import mkTree.MkKernel;
 public class RunCode  implements Runnable{
 
 	private static String name;
-
 	public RunCode(String name) {
 		RunCode.name=name;
+        new GetAsset("umkbootimg");
 	}
+	
+	public RunCode(String name,String type) {
+		RunCode.name=name;
+		if(type.equals(null))
+    	{
+        	new GetAsset("umkbootimg");
+    	}
+    	else if(type.equals("mrvl"))
+    	{
+    		new GetAsset("degas-umkbootimg");
+    		ShellExecuter.commandnoapp("mv degas-umkbootimg umkbootimg ");
+    	}
+	}
+	
 	
 	@Override
 	public void run() {
@@ -25,7 +39,6 @@ public class RunCode  implements Runnable{
     	new MkAndroid();
     	new MkAndroidProducts();
     	new MkOmni();
-    	new GetAsset("umkbootimg");
     	new MkKernel();
     	new MkBoardConfig();
     	new MkFstab();

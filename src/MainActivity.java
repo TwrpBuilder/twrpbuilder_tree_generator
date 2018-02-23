@@ -29,12 +29,22 @@ public class MainActivity {
 	         if ( commandLine.hasOption("f") )
 	         {
 	        	 String g=commandLine.getOptionValue("f");
+	        	
 	            if (new File(g).exists())
 	            {
 	            	if(!g.contains(" "))
 	            	{
 	            		System.out.println("Building tree using: "+g);
-	            		new Thread(new RunCode(g)).start();
+	            		if(commandLine.hasOption("t"))
+	            		{
+	            			String t=commandLine.getOptionValue("t");
+	            			if(t.equals("mrvl"))
+	            			{
+			            		new Thread(new RunCode(g,"mrvl")).start();
+	            			}
+	            		}else {
+		            		new Thread(new RunCode(g)).start();
+	            		}
 	            	}
 	            }
 	         }
@@ -49,14 +59,6 @@ public class MainActivity {
 
 	         }
 	         
-	         if(commandLine.hasOption("t"))
-	         {
-	        	 String t=commandLine.getOptionValue("t");
-	        	 if(t.equals("mrvl"))
-	        	 {
-	        		 System.out.println("mrvl");
-	        	 }
-	         }
 	      }
 	      catch (ParseException parseException)  // checked exception
 	      {
