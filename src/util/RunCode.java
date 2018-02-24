@@ -9,8 +9,9 @@ import mkTree.MkKernel;
 public class RunCode  implements Runnable{
 
 	private static String name;
-	private boolean Stype;
+	private boolean mrvl;
 	private static String type;
+	private boolean mtk;
 	public RunCode(String name) {
 		RunCode.name=name;
         new GetAsset("umkbootimg");
@@ -24,7 +25,13 @@ public class RunCode  implements Runnable{
     	{
     		new GetAsset("degas-umkbootimg");
     		ShellExecuter.commandnoapp("mv degas-umkbootimg umkbootimg ");
-    		Stype=true;
+    		mrvl=true;
+    	}
+		else if(type.equals("mt") || type.equals("mtk"))
+    	{
+    		new GetAsset("unpack-MTK.pl");
+    		ShellExecuter.commandnoapp("mv unpack-MTK.pl umkbootimg");
+    		mtk=true;
     	}
 	}
 	
@@ -40,8 +47,13 @@ public class RunCode  implements Runnable{
     	new MkAndroid();
     	new MkAndroidProducts();
     	new MkOmni();
-    	new MkKernel();
-    	if(Stype==true)
+    	if(mtk)
+    	{
+        	new MkKernel(true);
+    	}else {
+    	new MkKernel(false);
+    	}
+    	if(mrvl==true || mtk==true)
     	{
     	new MkBoardConfig(type);
     	}else {

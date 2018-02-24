@@ -15,7 +15,7 @@
 #   - more verbose output when unpacking boot and recovery images (13-01-2013)
 #   - kernel or ramdisk extraction only is now supported (13-01-2013)
 #   - re-written check of needed binaries (13-01-2013)
-#   - ramdisk.cpio.gz deleted after successful extraction (15-01-2013)
+#   - ramdisk.gz deleted after successful extraction (15-01-2013)
 #   - added rgb565 <=> png images conversion (27-01-2013)
 #   - code cleanup and revised verbose output (16-10-2014)
 #   - boot or recovery is now extracted to the working directory (16-10-2014)
@@ -147,22 +147,41 @@ sub unpack_boot {
 	}
 
 	# create file containing extra arguments for further repacking
-	open (ARGSFILE, ">$inputFilename-args.txt")
-		or die_msg("couldn't create file '$inputFilename-args.txt'!");
-	printf ARGSFILE ("--base %#.8x\n--pagesize %d\n--kernel_offset %#.8x\n--ramdisk_offset %#.8x\n--second_offset %#.8x\n--tags_offset %#.8x%s%s", $baseAddr, $pageSize, $kernelOffset, $ram1Offset, $ram2Offset, $tagsOffset, $bootName eq "" ? "" : "\n--board $bootName", $cmdLine eq "" ? "" : "\n--cmdline $cmdLine") or die;
-	close (ARGSFILE);
-	print "\nExtra arguments written to '$inputFilename-args.txt'\n";
+	system("mkdir out");
+	open (PAGEFILE, ">out/$inputFilename-pagesize")
+		or die();
+	printf PAGEFILE ("%d",$pageSize) or die;
+	close (PAGEFILE);
+
+	open (RAMDISKOFF, ">out/$inputFilename-ramdisk_offset")
+		or die();
+	printf RAMDISKOFF ("%.8x",$ram1Offset) or die;
+	close (RAMDISKOFF);
+
+	open (TAGSOFFSET, ">out/$inputFilename-tags_offset")
+		or die();
+	printf TAGSOFFSET ("%.8x",$tagsOffset) or die;
+	close (TAGSOFFSET);
+
+	open (kernelbase, ">out/$inputFilename-base")
+		or die();
+	printf kernelbase ("%.8x",$baseAddr) or die;
+	close (kernelbase);
+
+	open (CMDLINE, ">out/$inputFilename-cmdline")
+		or die();
+	printf CMDLINE ("%s",$cmdLine) or die;
+	close (CMDLINE);
 
 	if ($extract =~ /kernel/) {
 		my $kernel = substr($bootimg, $pageSize, $kernelSize);
-
-		open (KERNELFILE, ">$inputFilename-kernel.img")
-			or die_msg("couldn't create file '$inputFilename-kernel.img'!");
+		open (KERNELFILE, ">out/$inputFilename-zImage")
+			or die_msg("couldn't create file '$inputFilename-zImage'!");
 		binmode (KERNELFILE);
 		print KERNELFILE $kernel or die;
 		close (KERNELFILE);
 
-		print "Kernel written to '$inputFilename-kernel.img'\n";
+		print "Kernel written to '$inputFilename-zImage'\n";
 		$unpack_sucess = 1;
 	}
 
@@ -180,8 +199,8 @@ sub unpack_boot {
 			die_msg("the specified boot image does not appear to contain a valid gzip file!");
 		}
 
-		open (RAMDISKFILE, ">$inputFilename-ramdisk.cpio.gz")
-			or die_msg("couldn't create file '$inputFilename-ramdisk.cpio.gz'!");
+		open (RAMDISKFILE, ">out/$inputFilename-ramdisk.gz")
+			or die_msg("couldn't create file '$inputFilename-ramdisk.gz'!");
 		binmode (RAMDISKFILE);
 		print RAMDISKFILE $ram1 or die;
 		close (RAMDISKFILE);
@@ -191,21 +210,6 @@ sub unpack_boot {
 			print "Removed old ramdisk directory '$inputFilename-ramdisk'\n";
 		}
 
-		mkdir "$inputFilename-ramdisk" or die;
-		chdir "$inputFilename-ramdisk" or die;
-		foreach my $tool ("gzip", "cpio") {
-			die_msg("'$tool' binary not found! Double check your environment setup.")
-				if system ("command -v $tool >/dev/null 2>&1");
-		}
-		if ($debug_mode) {
-			print colored ("\nRamdisk unpack command:", 'yellow') . "\n";
-			print "'gzip -d -c ../$inputFilename-ramdisk.cpio.gz | cpio -i'\n\n";
-		}
-		print "Ramdisk size: ";
-		system ("gzip -d -c ../$inputFilename-ramdisk.cpio.gz | cpio -i");
-		system ("rm ../$inputFilename-ramdisk.cpio.gz") unless ($debug_mode);
-
-		print "Extracted ramdisk contents to directory '$inputFilename-ramdisk'\n";
 		$unpack_sucess = 1;
 	}
 

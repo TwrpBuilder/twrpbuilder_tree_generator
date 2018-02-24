@@ -14,6 +14,8 @@ public class MkBoardConfig {
 		if(type.equals("mrvl"))
 		{
 			idata+="include device/generic/twrpbuilder/mrvl.mk\n";
+		}else if(type.equals("mt") || type.equals("mtk")){
+			idata+="include device/generic/twrpbuilder/mtk.mk\n";
 		}
 
 		new FWriter("BoardConfig.mk",getData());

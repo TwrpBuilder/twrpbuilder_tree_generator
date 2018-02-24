@@ -9,11 +9,18 @@ public class MkKernel {
 	private String idata;
 	private long l=0;
 	
-	public MkKernel() {
+	public MkKernel(boolean mtk) {
 		System.out.println("Making kernel.mk");
 		ShellExecuter.mkdir("out");
 		ShellExecuter.command("chmod 777 umkbootimg");
-		ShellExecuter.command("ls && ./umkbootimg -i recovery.img -o out/ ");
+		if(mtk)
+		{
+			ShellExecuter.command("./umkbootimg recovery.img");
+		}
+		else 
+		{
+		ShellExecuter.command("./umkbootimg -i recovery.img -o out/ ");
+		}
 		if(new File("out/recovery.img-zImage").exists())
 		{
 		ShellExecuter.cp("out/recovery.img-zImage", GetBuildInfo.getPathS()+"kernel");
