@@ -43,7 +43,7 @@ public class MainActivity {
 			            		new Thread(new RunCode(g,"mrvl")).start();
 	            			}else if(t.equals("samsung"))
 	            			{
-	            				System.out.println("this open is not ready yet");
+			            		new Thread(new RunCode(g,"samsung")).start();
 	            			}else if(t.equals("mtk") || t.equals("mt"))
 	            			{
 			            		new Thread(new RunCode(g,"mtk")).start();	

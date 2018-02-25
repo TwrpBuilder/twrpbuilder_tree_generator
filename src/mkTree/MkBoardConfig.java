@@ -5,6 +5,7 @@ import util.GetBuildInfo;
 import util.ShellExecuter;
 
 public class MkBoardConfig {
+	private boolean samsung;
 	private String idata =ShellExecuter.CopyRight();
 	public MkBoardConfig(){
 		new FWriter("BoardConfig.mk",getData());
@@ -16,6 +17,9 @@ public class MkBoardConfig {
 			idata+="include device/generic/twrpbuilder/mrvl.mk\n";
 		}else if(type.equals("mt") || type.equals("mtk")){
 			idata+="include device/generic/twrpbuilder/mtk.mk\n";
+		}else if(type.equals("samsung"))
+		{
+			samsung=true;
 		}
 
 		new FWriter("BoardConfig.mk",getData());
@@ -38,6 +42,11 @@ public class MkBoardConfig {
 	
 			System.out.println("found "+ GetBuildInfo.getPlatform() + " platform" );
 	
+			if(samsung==true)
+			{
+				idata+="BOARD_CUSTOM_BOOTIMG_MK := device/generic/twrpbuilder/seEnforcing.mk\n";	
+			}
+			
 		if(GetBuildInfo.getApi().equals("armeabi-v7a"))
 		{
 			System.out.println("Found 32 bit arch");

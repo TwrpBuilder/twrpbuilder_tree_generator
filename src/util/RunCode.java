@@ -12,6 +12,7 @@ public class RunCode  implements Runnable{
 	private boolean mrvl;
 	private static String type;
 	private boolean mtk;
+	private boolean samsung;
 	public RunCode(String name) {
 		RunCode.name=name;
         new GetAsset("umkbootimg");
@@ -32,6 +33,10 @@ public class RunCode  implements Runnable{
     		new GetAsset("unpack-MTK.pl");
     		ShellExecuter.commandnoapp("mv unpack-MTK.pl umkbootimg");
     		mtk=true;
+    	}else if(type.equals("samsung"))
+    	{
+            new GetAsset("umkbootimg");
+            samsung=true;
     	}
 	}
 	
@@ -53,7 +58,7 @@ public class RunCode  implements Runnable{
     	}else {
     	new MkKernel(false);
     	}
-    	if(mrvl==true || mtk==true)
+    	if(mrvl==true || mtk==true || samsung==true)
     	{
     	new MkBoardConfig(type);
     	}else {
