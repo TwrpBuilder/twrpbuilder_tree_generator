@@ -103,7 +103,7 @@ public class MkFstab {
 	}
 	
 	private String grepPartition(String path,String partition) {
-			String s =ShellExecuter.commandnoapp("for i in $(cat "+path+" | grep -i /"+partition+")\n" + 
+			String s =ShellExecuter.commandnoapp("for i in $(cat "+path+" | grep -wi /"+partition+")\n" + 
 					"do\n" + 
 					"a=$(echo $i | grep /dev)\n" + 
 					"echo $a\n" + 
@@ -111,7 +111,7 @@ public class MkFstab {
 			
 			if(s.equals(""))
 			{
-				s =ShellExecuter.commandnoapp("for i in $(cat "+path+" | grep-i /"+partition+")\n" + 
+				s =ShellExecuter.commandnoapp("for i in $(cat "+path+" | grep -wi /"+partition+")\n" + 
 						"do\n" + 
 						"a=$(echo $i | grep /emmc)\n" + 
 						"echo $a\n" + 
