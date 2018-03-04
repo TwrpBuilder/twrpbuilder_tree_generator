@@ -1,23 +1,34 @@
 package util;
 
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 
 public class FWriter {
 
 	public FWriter(String name,String data)
 	{
-		run(name,data);
+		run(name,data,false);
+	}
+	
+	public FWriter(String name,String data,boolean o)
+	{
+		run(name,data,true);
 	}
 
-	private void run(String name,String data) {
+
+	private void run(String name,String data,boolean over) {
 		  PrintWriter writer;
 			try {
-				writer = new PrintWriter(GetBuildInfo.getPathS()+name, "UTF-8");
+				if(over==true)
+				{
+				writer = new PrintWriter(new FileOutputStream(GetBuildInfo.getPathS()+name, true));
+				}else {
+					writer = new PrintWriter(new FileOutputStream(GetBuildInfo.getPathS()+name, false));	
+				}
 				writer.println(data);
 				writer.close();
-			} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

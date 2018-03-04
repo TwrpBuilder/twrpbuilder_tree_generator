@@ -3,13 +3,14 @@ package mkTree;
 import java.io.File;
 
 import util.Clean;
+import util.FWriter;
 import util.GetBuildInfo;
 import util.ShellExecuter;
 
 public class MkFstab {
 	private String compressionType;
 	private boolean lz4,lzma;
-	
+	private String idata=ShellExecuter.CopyRight();
 	public MkFstab() {
 		System.out.println("Copying fstab");
 		compressionType=ShellExecuter.commandnoapp("cd out && file --mime-type recovery.img-ramdisk.* | cut -d / -f 2 | cut -d '-' -f 2");
@@ -44,10 +45,73 @@ public class MkFstab {
 	private void lastMessage() {
 		if(new File("out/etc").exists()) {
 		ShellExecuter.command("mkdir "+GetBuildInfo.getPathS()+"stock && mv out/etc/* "+GetBuildInfo.getPathS()+"stock/");
+		Fstab("out/etc/recovery.fstab");
 		}
 		System.out.println("Build fingerPrint: "+GetBuildInfo.getFingerPrint());
 		System.out.println("tree ready for "+ GetBuildInfo.getCodename());
 		System.out.println((char)27 + "[31m" +"Waring :- Check recovery fstab before build");
+	}
+	
+	private void Fstab(String path)
+	{
+		makeFstab(grepPartition(path,"boot"));
+		makeFstab(grepPartition(path,"recovery"));
+		makeFstab(grepPartition(path,"system"));
+		makeFstab(grepPartition(path,"data"));
+		makeFstab(grepPartition(path,"cache"));
+		makeFstab("/dev/block/mmcblk1p1");
+	}
+	
+	private void makeFstab(String pPath) {
+		if(pPath.endsWith("boot") || pPath.endsWith("BOOT") || pPath.endsWith("Boot"))
+		{
+			idata+="/boot emmc "+pPath+"\n";
+		}
+		
+		if(pPath.endsWith("recovery") || pPath.endsWith("RECOVERY") || pPath.endsWith("Recovery"))
+		{
+			idata+="/recovery emmc "+pPath+"\n";
+		}
+		
+		if(pPath.endsWith("system") || pPath.endsWith("SYSTEM") || pPath.endsWith("System") || pPath.endsWith("emmc@android"))
+		{
+			idata+="/system ext4 "+pPath+"\n";
+		}
+		
+		if(pPath.endsWith("data") || pPath.endsWith("DATA") || pPath.endsWith("Data"))
+		{
+			idata+="/data ext4 "+pPath+"\n";
+		}
+		
+		if(pPath.endsWith("cache") || pPath.endsWith("CACHE") || pPath.endsWith("Cache"))
+		{
+			idata+="/cache ext4 "+pPath+"\n";
+		}
+		
+		if(pPath.endsWith("mmcblk1p1"))
+		{
+			idata+="/ext_sd vfat /dev/block/mmcblk1p1 /dev/block/mmcblk1 flags=display=\"Micro SDcard\";storage;wipeingui;removable";
+		}
+		
+		new FWriter("recovery.fstab",idata);
+	}
+	
+	private String grepPartition(String path,String partition) {
+			String s =ShellExecuter.commandnoapp("for i in $(cat "+path+" | grep "+partition+")\n" + 
+					"do\n" + 
+					"a=$(echo $i | grep /dev)\n" + 
+					"echo $a\n" + 
+					"done");
+			
+			if(s.equals(""))
+			{
+				s =ShellExecuter.commandnoapp("for i in $(cat "+path+" | grep "+partition+")\n" + 
+						"do\n" + 
+						"a=$(echo $i | grep /emmc)\n" + 
+						"echo $a\n" + 
+						"done");
+			}
+		return s;
 	}
 	
 	private void CheckCompression() {
