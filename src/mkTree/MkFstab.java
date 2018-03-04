@@ -59,6 +59,7 @@ public class MkFstab {
 		makeFstab(grepPartition(path,"system"));
 		makeFstab(grepPartition(path,"data"));
 		makeFstab(grepPartition(path,"cache"));
+		makeFstab(grepPartition(path,"fotakernel"));
 		makeFstab("/dev/block/mmcblk1p1");
 	}
 	
@@ -93,11 +94,16 @@ public class MkFstab {
 			idata+="/ext_sd vfat /dev/block/mmcblk1p1 /dev/block/mmcblk1 flags=display=\"Micro SDcard\";storage;wipeingui;removable";
 		}
 		
+		if(pPath.endsWith("FOTAKernel") || pPath.endsWith("fotakernel"))
+		{
+			idata+="/recovery ext4 "+pPath+"\n";	
+		}
+		
 		new FWriter("recovery.fstab",idata);
 	}
 	
 	private String grepPartition(String path,String partition) {
-			String s =ShellExecuter.commandnoapp("for i in $(cat "+path+" | grep "+partition+")\n" + 
+			String s =ShellExecuter.commandnoapp("for i in $(cat "+path+" | grep -i /"+partition+")\n" + 
 					"do\n" + 
 					"a=$(echo $i | grep /dev)\n" + 
 					"echo $a\n" + 
@@ -105,7 +111,7 @@ public class MkFstab {
 			
 			if(s.equals(""))
 			{
-				s =ShellExecuter.commandnoapp("for i in $(cat "+path+" | grep "+partition+")\n" + 
+				s =ShellExecuter.commandnoapp("for i in $(cat "+path+" | grep-i /"+partition+")\n" + 
 						"do\n" + 
 						"a=$(echo $i | grep /emmc)\n" + 
 						"echo $a\n" + 
