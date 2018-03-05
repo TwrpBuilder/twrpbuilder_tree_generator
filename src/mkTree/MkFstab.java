@@ -108,8 +108,9 @@ public class MkFstab {
 					"a=$(echo $i | grep /dev)\n" + 
 					"echo $a\n" + 
 					"done");
+			System.out.println(s);
 			
-			if(s.equals(""))
+			if(s.isEmpty())
 			{
 				s =ShellExecuter.commandnoapp("for i in $(cat "+path+" | grep -wi /"+partition+")\n" + 
 						"do\n" + 
