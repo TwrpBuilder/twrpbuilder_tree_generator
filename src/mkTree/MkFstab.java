@@ -44,8 +44,8 @@ public class MkFstab {
 	
 	private void lastMessage() {
 		if(new File("out/etc").exists()) {
-		ShellExecuter.command("mkdir "+GetBuildInfo.getPathS()+"stock && mv out/etc/* "+GetBuildInfo.getPathS()+"stock/");
 		Fstab("out/etc/recovery.fstab");
+		ShellExecuter.command("mkdir "+GetBuildInfo.getPathS()+"stock && mv out/etc/* "+GetBuildInfo.getPathS()+"stock/");
 		}
 		System.out.println("Build fingerPrint: "+GetBuildInfo.getFingerPrint());
 		System.out.println("tree ready for "+ GetBuildInfo.getCodename());
