@@ -11,6 +11,7 @@ public class MkFstab {
 	private String compressionType;
 	private boolean lz4,lzma;
 	private String idata=ShellExecuter.CopyRight();
+	public static boolean otg;
 	public MkFstab() {
 		System.out.println("Copying fstab");
 		compressionType=ShellExecuter.commandnoapp("cd out && file --mime-type recovery.img-ramdisk.* | cut -d / -f 2 | cut -d '-' -f 2");
@@ -61,6 +62,10 @@ public class MkFstab {
 		makeFstab(grepPartition(path,"cache"));
 		makeFstab(grepPartition(path,"fotakernel"));
 		makeFstab("/dev/block/mmcblk1p1");
+		if(otg)
+		{
+		makeFstab("/dev/block/sda1");
+		}
 	}
 	
 	private void makeFstab(String pPath) {
@@ -91,7 +96,12 @@ public class MkFstab {
 		
 		if(pPath.endsWith("mmcblk1p1"))
 		{
-			idata+="/ext_sd vfat /dev/block/mmcblk1p1 /dev/block/mmcblk1 flags=display=\"Micro SDcard\";storage;wipeingui;removable";
+			idata+="/ext_sd vfat /dev/block/mmcblk1p1 /dev/block/mmcblk1 flags=display=\"Micro SDcard\";storage;wipeingui;removable\n";
+		}
+		
+		if(pPath.endsWith("sda1"))
+		{
+			idata+="/usb-otg auto /dev/block/sda1	flags=display=\"USB OTG\";storage;wipeingui;removable\n";
 		}
 		
 		if(pPath.endsWith("FOTAKernel") || pPath.endsWith("fotakernel"))

@@ -11,6 +11,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import mkTree.MkFstab;
 import util.RunCode;
 
 
@@ -65,6 +66,11 @@ public class MainActivity {
 
 	         }
 	         
+	         if(commandLine.hasOption("otg"))
+	         {
+	        	MkFstab.otg=true; 
+	         }
+	         
 	      }
 	      catch (ParseException parseException)  // checked exception
 	      {
@@ -80,6 +86,7 @@ public class MainActivity {
 	      option.addOption("f","file", true, "Backup File location.");
 	      option.addOption("h","help",false,"Help");
 	      option.addOption("t","type",true,"processor type");
+	      option.addOption("otg","otg-support",false,"add otg support to fstab");
 	      return option;
 	   }
 

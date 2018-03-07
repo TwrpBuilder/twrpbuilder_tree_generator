@@ -38,6 +38,7 @@ public class MkBoardConfig {
 				"BOARD_FLASH_BLOCK_SIZE := 1000000\n" + 
 				"BOARD_HAS_NO_REAL_SDCARD := true\n" + 
 				"TW_EXCLUDE_SUPERSU := true\n"
+				+ "TW_INPUT_BLACKLIST := \"hbtp_vm\"\n"
 				+ "include $(LOCAL_PATH)/kernel.mk\n";
 	
 			System.out.println("found "+ GetBuildInfo.getPlatform() + " platform" );
