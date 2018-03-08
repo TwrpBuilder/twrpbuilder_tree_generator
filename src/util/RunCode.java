@@ -8,6 +8,7 @@ public class RunCode  implements Runnable{
 	private static String type;
 	private boolean mtk;
 	private boolean samsung;
+	public static boolean extract;
 	public RunCode(String name) {
 		RunCode.name=name;
         new GetAsset("umkbootimg");
@@ -39,7 +40,10 @@ public class RunCode  implements Runnable{
 	
 	@Override
 	public void run() {
+		if(extract)
+		{
 		new ExtractBackup(name);
+		}
     	if(mtk==true )
     	{
         	new MakeTree(true,type);

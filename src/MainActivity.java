@@ -13,6 +13,7 @@ import org.apache.commons.cli.ParseException;
 
 import mkTree.MakeTree;
 import util.RunCode;
+import util.ShellExecuter;
 
 
 public class MainActivity {
@@ -30,7 +31,7 @@ public class MainActivity {
 	         if ( commandLine.hasOption("f") )
 	         {
 	        	 String g=commandLine.getOptionValue("f");
-	        	
+	            	RunCode.extract=true;
 	            if (new File(g).exists())
 	            {
 	            	if(!g.contains(" "))
@@ -71,6 +72,44 @@ public class MainActivity {
 	        	MakeTree.otg=true; 
 	         }
 	         
+	         if(commandLine.hasOption("r"))
+	         {
+	        	 String g=commandLine.getOptionValue("r");
+		            if (new File(g).exists())
+		            {
+		            	if(!g.contains(" "))
+		            	{
+		            		System.out.println("Building tree using: "+g);
+		            		if(!new File("recovery.img").exists())
+		            		{
+		            			ShellExecuter.cp(g,"recovery.img");
+		            		}
+		            		else
+		            		{
+		            			ShellExecuter.command("rm -rf recovery.img");
+		            			ShellExecuter.cp(g,"recovery.img");
+		            		}
+
+		            		if(commandLine.hasOption("t"))
+		            		{
+		            			String t=commandLine.getOptionValue("t");
+		            			if(t.equals("mrvl"))
+		            			{
+				            		new Thread(new RunCode(g,"mrvl")).start();
+		            			}else if(t.equals("samsung"))
+		            			{
+				            		new Thread(new RunCode(g,"samsung")).start();
+		            			}else if(t.equals("mtk") || t.equals("mt"))
+		            			{
+				            		new Thread(new RunCode(g,"mtk")).start();	
+		            			}
+		            		}else {
+			            		new Thread(new RunCode(g)).start();
+		            		}
+		            	}
+		            }
+	         }
+	         
 	      }
 	      catch (ParseException parseException)  // checked exception
 	      {
@@ -83,10 +122,11 @@ public class MainActivity {
 	   public static Options constructPosixOptions()
 	   {
 	      final Options option = new Options();
-	      option.addOption("f","file", true, "Backup File location.");
-	      option.addOption("h","help",false,"Help");
-	      option.addOption("t","type",true,"processor type");
+	      option.addOption("f","file", true, "build using backup file (made from app).");
+	      option.addOption("t","type",true,"supported option :- \n mt , samsung,mrvl");
 	      option.addOption("otg","otg-support",false,"add otg support to fstab");
+	      option.addOption("r","recovery",true,"build using recovery image file");
+	      option.addOption("h","help",false,"print this help");
 	      return option;
 	   }
 
