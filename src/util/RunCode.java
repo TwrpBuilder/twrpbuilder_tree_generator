@@ -1,10 +1,5 @@
 package util;
-import mkTree.MkAndroid;
-import mkTree.MkAndroidProducts;
-import mkTree.MkBoardConfig;
-import mkTree.MkFstab;
-import mkTree.MkOmni;
-import mkTree.MkKernel;
+import mkTree.MakeTree;
 
 public class RunCode  implements Runnable{
 
@@ -33,7 +28,8 @@ public class RunCode  implements Runnable{
     		new GetAsset("unpack-MTK.pl");
     		ShellExecuter.commandnoapp("mv unpack-MTK.pl umkbootimg");
     		mtk=true;
-    	}else if(type.equals("samsung"))
+    	}
+		else if(type.equals("samsung"))
     	{
             new GetAsset("umkbootimg");
             samsung=true;
@@ -44,27 +40,16 @@ public class RunCode  implements Runnable{
 	@Override
 	public void run() {
 		new ExtractBackup(name);
-    	if(!ShellExecuter.mkdir(GetBuildInfo.getPathS()))
+    	if(mtk==true )
     	{
-    		System.out.println("Failed to make dir");
-    		System.exit(0);
+        	new MakeTree(true,type);
+    	}else if (mrvl==true || samsung==true){
+    	new MakeTree(false,type);
     	}
-    	new MkAndroid();
-    	new MkAndroidProducts();
-    	new MkOmni();
-    	if(mtk)
-    	{
-        	new MkKernel(true);
-    	}else {
-    	new MkKernel(false);
-    	}
-    	if(mrvl==true || mtk==true || samsung==true)
-    	{
-    	new MkBoardConfig(type);
-    	}else {
-        	new MkBoardConfig();
-    	}
-    	new MkFstab();
+    	else{
+        	new MakeTree(false,"none");	
+    		}
+
 		new Clean();
 	}
 	

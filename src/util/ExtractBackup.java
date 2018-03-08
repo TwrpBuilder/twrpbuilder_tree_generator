@@ -22,21 +22,11 @@ public class ExtractBackup {
 
 	private void extractGzip(String file) {
 		ShellExecuter.command("tar -xvf " + file);
-		if(GetBuildInfo.getCodename().isEmpty())
-		{
-			ShellExecuter.command("sed 's/\\[\\([^]]*\\)\\]/\\1/g' build.prop | sed 's/: /=/g' | tee > b.prop && mv -f b.prop build.prop");
-			if(GetBuildInfo.getCodename().isEmpty())
-			{
-				System.out.println("Failed to get info");
-				System.exit(0);
-			}
-		}
-		new GetBuildInfo();
 	}
 	
 	private void extractZip(String file) {
 		ShellExecuter.command("unzip -o "+ file);
-		ShellExecuter.command("sed 's/\\[\\([^]]*\\)\\]/\\1/g' build.prop | sed 's/: /=/g' | tee > b.prop && mv -f b.prop build.prop");
+		ShellExecuter.command("sed 's/\\[\\([^]]*\\)\\]/\\1/g' "+GetBuildInfo.propFile()+"  | sed 's/: /=/g' | tee > b.prop && mv -f b.prop build.prop");
 		new GetBuildInfo();
 	}
 }

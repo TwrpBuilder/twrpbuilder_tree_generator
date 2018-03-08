@@ -11,7 +11,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import mkTree.MkFstab;
+import mkTree.MakeTree;
 import util.RunCode;
 
 
@@ -68,7 +68,7 @@ public class MainActivity {
 	         
 	         if(commandLine.hasOption("otg"))
 	         {
-	        	MkFstab.otg=true; 
+	        	MakeTree.otg=true; 
 	         }
 	         
 	      }
