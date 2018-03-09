@@ -66,7 +66,6 @@ public class MakeTree {
 	
 
 	private void extractKernel(boolean mtk) {
-		ShellExecuter.mkdir("out");
 		ShellExecuter.command("chmod 777 umkbootimg");
 		if(mtk)
 		{
@@ -74,6 +73,7 @@ public class MakeTree {
 		}
 		else 
 		{
+		ShellExecuter.mkdir("out");
 		ShellExecuter.command("./umkbootimg -i recovery.img -o out/ ");
 		}
 	}
@@ -208,7 +208,7 @@ public class MakeTree {
 		
 		if(pPath.endsWith("mmcblk1p1"))
 		{
-			fstabIdata+="/ext_sd vfat /dev/block/mmcblk1p1 /dev/block/mmcblk1 flags=display=\"Micro SDcard\";storage;wipeingui;removable\n";
+			fstabIdata+="/external_sd vfat /dev/block/mmcblk1p1 /dev/block/mmcblk1 flags=display=\"Micro SDcard\";storage;wipeingui;removable\n";
 		}
 		
 		if(pPath.endsWith("sda1"))
