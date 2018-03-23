@@ -35,12 +35,25 @@ public class GetBuildInfo {
 
 	public static String getBrand() {
 		brand=ShellExecuter.commandnoapp("cat "+propFile()+" | grep ro.product.brand= | cut -d = -f 2");
-		return brand;
+		               if(brand.contains("-"))
+			               {
+		            	   String newstr=brand.replace("-", "_");
+		            	   return newstr;
+			              }else {
+			            	  return brand;
+			            	 }
 	}
 
 	public static String getCodename() {
 		codename=ShellExecuter.commandnoapp("cat "+propFile()+" | grep ro.build.product= | cut -d = -f 2");
-		return codename;
+        if(codename.contains("-"))
+        {
+        	String newstr=codename.replace("-", "_");
+        	return newstr;
+       }else {
+       	return codename;
+
+       }
 	}
 
 	public static String getPlatform() {
