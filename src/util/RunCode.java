@@ -60,11 +60,10 @@ public class RunCode  implements Runnable{
 		{
 		new ExtractBackup(name);
 		}
-		if (AndroidImageKitchen)
-        {
-            new MakeTree(false,"AIK");
-        }else {
-            if(mtk==true )
+		if (AndroidImageKitchen) {
+			MakeTree.AndroidImageKitchen = true;
+		}
+		if(mtk==true )
             {
                 new MakeTree(true,type);
             }else if (mrvl==true || samsung==true){
@@ -72,7 +71,6 @@ public class RunCode  implements Runnable{
             }
             else{
                 new MakeTree(false,"none");
-            }
         }
 		new Clean();
 	}

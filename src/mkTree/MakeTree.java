@@ -16,6 +16,7 @@ public class MakeTree {
 	private Config config;
 	private String out;
 	private String type;
+	public static boolean AndroidImageKitchen;
 	public MakeTree(boolean mtk,String type){
 		config=new Config();
 		shell=new ShellExecutor();
@@ -68,7 +69,7 @@ public class MakeTree {
 
 	private void extractKernel(boolean mtk) {
 		shell.mkdir(out);
-		if (type.equals("AIK"))
+		if (AndroidImageKitchen)
 		{
 			shell.command("chmod 777 unpackimg.sh && ./unpackimg.sh recovery.img");
 		}else {
