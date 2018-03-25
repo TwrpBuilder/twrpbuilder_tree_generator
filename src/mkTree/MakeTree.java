@@ -71,7 +71,7 @@ public class MakeTree {
 		}
 		else 
 		{
-		ShellExecuter.mkdir("out");
+		ShellExecuter.mkdir(out);
 		ShellExecuter.command("./umkbootimg -i recovery.img -o "+out);
 		}
 	}
@@ -130,21 +130,21 @@ public class MakeTree {
 	}
 	
 	public void extractFstab() {
-		compressionType=ShellExecuter.commandnoapp("cd out && file --mime-type recovery.img-ramdisk.* | cut -d / -f 2 | cut -d '-' -f 2");
+		compressionType=ShellExecuter.commandnoapp("cd "+out+" && file --mime-type recovery.img-ramdisk.* | cut -d / -f 2 | cut -d '-' -f 2");
 		if(compressionType.equals("lzma"))
 		{
 			System.out.println("Found lzma comression in ramdisk");
-			ShellExecuter.command("mv "+out+"recovery.img-ramdisk.gz "+out+"recovery.img-ramdisk.lzma && lzma -d "+out+"recovery.img-ramdisk.lzma  && cd out && cpio -i <recovery.img-ramdisk");
+			ShellExecuter.command("mv "+out+"recovery.img-ramdisk.gz "+out+"recovery.img-ramdisk.lzma && lzma -d "+out+"recovery.img-ramdisk.lzma  && cd "+out+" && cpio -i <recovery.img-ramdisk");
 			lzma=true;
 		}else if(compressionType.equals("gzip"))
 		{
 			System.out.println("Found gzip comression in ramdisk");
-			ShellExecuter.command("gzip -d "+out+"recovery.img-ramdisk.gz && cd out && cpio -i <recovery.img-ramdisk");
+			ShellExecuter.command("gzip -d "+out+"recovery.img-ramdisk.gz && cd "+out+" && cpio -i <recovery.img-ramdisk");
 		}
 		else if(compressionType.equals("lz4"))
 		{
 			System.out.println("Found lz4 comression in ramdisk");
-			ShellExecuter.commandnoapp("cd out && lz4 -d recovery.img-ramdisk.*  recovery.img-ramdisk && cpio -i <recovery.img-ramdisk ");
+			ShellExecuter.commandnoapp("cd "+out+" && lz4 -d recovery.img-ramdisk.*  recovery.img-ramdisk && cpio -i <recovery.img-ramdisk ");
 			lz4=true;
 		}
 		else 

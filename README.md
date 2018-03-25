@@ -6,4 +6,17 @@ Our magic script to generate omni twrp device tree just using a backup which con
 Get latest jar file from here https://github.com/TwrpBuilder/twrpbuilder_tree_generator/releases/latest
 ### Usage :-
 
-`java -jar TwrpBuilder.jar backup_filename.tar.gz`
+```
+-- USAGE --
+usage: TwrpBuilder [-f <arg>] [-h] [-otg] [-r <arg>] [-t <arg>]
+-- HELP --
+usage: java -jar TwrpBuilder.jar -f backupfile.tar.gz [-f <arg>] [-h] [-otg] [-r
+       <arg>] [-t <arg>]
+HELP
+   -f,--file <arg>         build using backup file (made from app).
+   -h,--help               print this help
+   -otg,--otg-support      add otg support to fstab
+   -r,--recovery <arg>     build using recovery image file
+   -t,--type <arg>         supported option :-
+                           mt , samsung,mrvl
+```
