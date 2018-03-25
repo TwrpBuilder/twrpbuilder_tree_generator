@@ -106,8 +106,17 @@ public class MakeTree {
 		String idata;
 		String pagesize=shell.commandnoapp("cat "+out+"recovery.img-pagesize");
 		String cmdline=shell.commandnoapp("cat "+out+"recovery.img-cmdline");
-		String ramdiskofsset=shell.commandnoapp("cat "+out+"recovery.img-ramdisk_offset");
-		String tagsoffset=shell.commandnoapp("cat "+out+"recovery.img-tags_offset");
+		String ramdiskofsset;
+		String tagsoffset;
+		if (AndroidImageKitchen)
+		{
+			ramdiskofsset=shell.commandnoapp("cat "+out+"recovery.img-ramdiskoff");
+			tagsoffset=shell.commandnoapp("cat "+out+"recovery.img-tagsoff");
+		}
+		else {
+			ramdiskofsset=shell.commandnoapp("cat "+out+"recovery.img-ramdisk_offset");
+			tagsoffset=shell.commandnoapp("cat "+out+"recovery.img-tags_offset");
+		}
 		String kernelbase=shell.commandnoapp("cat "+out+"recovery.img-base");
 		idata=copyRight;
 		idata+="# Kernel\n" + 
@@ -124,7 +133,7 @@ public class MakeTree {
 	}
 
 	public void extractFstab() {
-		compressionType=shell.command("cd "+out+" && file -m ../magic recovery.img-ramdisk.* | cut -d: -f2 | awk '{ print $1 }'");
+		compressionType=shell.commandnoapp("cd "+out+" && file --mime-type recovery.img-ramdisk.* | cut -d / -f 2 | cut -d '-' -f 2");
 		if(compressionType.contains("lzma"))
 		{
 			System.out.println("Found lzma comression in ramdisk");
