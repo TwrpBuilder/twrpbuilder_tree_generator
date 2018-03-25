@@ -50,7 +50,12 @@ public class GetBuildInfo {
         {
         	String newstr=codename.replace("-", "_");
         	return newstr;
-       }else {
+       }
+        else if (codename.contains(" "))
+       {
+		String str=codename.replace(" ", "_");
+		return str;
+	}else {
        	return codename;
 
        }

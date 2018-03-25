@@ -14,8 +14,7 @@ public class MakeTree {
 	private boolean lz4,lzma;
 	private String fstabIdata=ShellExecuter.CopyRight();
 	public static boolean otg;
-
-	
+	private GetBuildInfo info;
 	public MakeTree(boolean mtk,String type){
 	
 		if(mtk)
@@ -27,17 +26,17 @@ public class MakeTree {
 		}	
 
 		extractFstab();
-		new GetBuildInfo();
-    	if(!ShellExecuter.mkdir(GetBuildInfo.getPathS()))
+		info=new GetBuildInfo();
+    	if(!ShellExecuter.mkdir(info.getPathS()))
     	{
     		System.out.println("Failed to make dir");
     		System.exit(0);
     	}
     			
-    			if(GetBuildInfo.getCodename().isEmpty())
+    			if(info.getCodename().isEmpty())
 		{
-			ShellExecuter.command("sed 's/\\[\\([^]]*\\)\\]/\\1/g' "+GetBuildInfo.propFile()+" | sed 's/: /=/g' | tee > b.prop && mv -f b.prop build.prop");
-			if(GetBuildInfo.getCodename().isEmpty())
+			ShellExecuter.command("sed 's/\\[\\([^]]*\\)\\]/\\1/g' "+info.propFile()+" | sed 's/: /=/g' | tee > b.prop && mv -f b.prop build.prop");
+			if(info.getCodename().isEmpty())
 			{
 				System.out.println("Failed to get info");
 				new Clean();
@@ -82,12 +81,12 @@ public class MakeTree {
 		System.out.println("Making kernel.mk");
 		if(new File("out/recovery.img-zImage").exists())
 		{
-		ShellExecuter.cp("out/recovery.img-zImage", GetBuildInfo.getPathS()+"kernel");
+		ShellExecuter.cp("out/recovery.img-zImage", info.getPathS()+"kernel");
 		}
 		if(new File("out/recovery.img-dt").length()!=l)
 		{
 		
-			ShellExecuter.cp("out/recovery.img-dt", GetBuildInfo.getPathS()+"dt.img");
+			ShellExecuter.cp("out/recovery.img-dt", info.getPathS()+"dt.img");
 			new FWriter("kernel.mk",getKernelData(true));
 		}else {
 			new FWriter("kernel.mk",getKernelData(false));
@@ -104,12 +103,12 @@ public class MakeTree {
 		String kernelbase=ShellExecuter.commandnoapp("cat out/recovery.img-base");
 		idata=ShellExecuter.CopyRight();
 		idata+="# Kernel\n" + 
-				"TARGET_PREBUILT_KERNEL := "+GetBuildInfo.getPathS()+"kernel\n" + 
+				"TARGET_PREBUILT_KERNEL := "+info.getPathS()+"kernel\n" +
 				"BOARD_KERNEL_CMDLINE := "+cmdline+" androidboot.selinux=permissive\n" + 
 				"BOARD_KERNEL_BASE := 0x"+kernelbase+"\n" + 
 				"BOARD_KERNEL_PAGESIZE := "+pagesize+"\n";
 		if(dt) {
-		idata+="BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x"+ramdiskofsset+" --tags_offset 0x"+tagsoffset+" --dt device/"+GetBuildInfo.getBrand()+File.separator+GetBuildInfo.getCodename()+"/dt.img";
+		idata+="BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x"+ramdiskofsset+" --tags_offset 0x"+tagsoffset+" --dt device/"+info.getBrand()+File.separator+info.getCodename()+"/dt.img";
 		}else {
 		idata+="BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x"+ramdiskofsset+" --tags_offset 0x"+tagsoffset;
 		}
@@ -172,10 +171,10 @@ public class MakeTree {
 	private void FstablastMessage() {
 		if(new File("out/etc").exists()) {
 		Fstab("out/etc/recovery.fstab");
-		ShellExecuter.command("mkdir "+GetBuildInfo.getPathS()+"stock && mv out/etc/* "+GetBuildInfo.getPathS()+"stock/");
+		ShellExecuter.command("mkdir "+info.getPathS()+"stock && mv out/etc/* "+info.getPathS()+"stock/");
 		}
-		System.out.println("Build fingerPrint: "+GetBuildInfo.getFingerPrint());
-		System.out.println("tree ready for "+ GetBuildInfo.getCodename());
+		System.out.println("Build fingerPrint: "+info.getFingerPrint());
+		System.out.println("tree ready for "+ info.getCodename());
 		System.out.println((char)27 + "[31m" +"Waring :- Check recovery fstab before build");
 	}
 	
@@ -257,26 +256,26 @@ public class MakeTree {
 		}
 		if(idata!=null)
 		{
-			ShellExecuter.command("echo "+idata +" >> " +GetBuildInfo.getPath()+"/kernel.mk");
+			ShellExecuter.command("echo "+idata +" >> " +info.getPath()+"/kernel.mk");
 		}
 	}
 	
 	public void MkOmni() {
-		System.out.println("Making omni_"+GetBuildInfo.getCodename()+".mk");
-		new FWriter("omni_"+GetBuildInfo.getCodename()+".mk",getOmniData());
+		System.out.println("Making omni_"+info.getCodename()+".mk");
+		new FWriter("omni_"+info.getCodename()+".mk",getOmniData());
 	}
 	
 	private String getOmniData() {
 		String idata =ShellExecuter.CopyRight();
 		idata+="$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)\n" + 
 				"\n" + 
-				"PRODUCT_COPY_FILES += "+GetBuildInfo.getPathS()+"kernel:kernel\n" + 
+				"PRODUCT_COPY_FILES += "+info.getPathS()+"kernel:kernel\n" +
 				"\n" + 
-				"PRODUCT_DEVICE := "+ GetBuildInfo.getCodename()+"\n" + 
-				"PRODUCT_NAME := omni_"+GetBuildInfo.getCodename()+"\n" + 
-				"PRODUCT_BRAND := "+GetBuildInfo.getBrand()+"\n" + 
-				"PRODUCT_MODEL := "+GetBuildInfo.getModel()+"\n" + 
-				"PRODUCT_MANUFACTURER := "+GetBuildInfo.getBrand();
+				"PRODUCT_DEVICE := "+ info.getCodename()+"\n" +
+				"PRODUCT_NAME := omni_"+info.getCodename()+"\n" +
+				"PRODUCT_BRAND := "+info.getBrand()+"\n" +
+				"PRODUCT_MODEL := "+info.getModel()+"\n" +
+				"PRODUCT_MANUFACTURER := "+info.getBrand();
 		return idata;
 	}
 	
@@ -289,9 +288,9 @@ public class MakeTree {
 	
 	private String getAndroidtData() {
 		String idata =ShellExecuter.CopyRight();
-		idata+="ifneq ($(filter "+GetBuildInfo.getCodename()+",$(TARGET_DEVICE)),)\n" + 
+		idata+="ifneq ($(filter "+info.getCodename()+",$(TARGET_DEVICE)),)\n" +
 				"\n" + 
-				"LOCAL_PATH := "+GetBuildInfo.getPath()+"\n" + 
+				"LOCAL_PATH := "+info.getPath()+"\n" +
 				"\n" + 
 				"include $(call all-makefiles-under,$(LOCAL_PATH))\n" + 
 				"\n" + 
@@ -307,9 +306,9 @@ public class MakeTree {
 	
 	private String getAndroidProductsData() {
 		String idata =ShellExecuter.CopyRight();
-		idata+="LOCAL_PATH := "+GetBuildInfo.getPath()+"\n" + 
+		idata+="LOCAL_PATH := "+info.getPath()+"\n" +
 				"\n" + 
-				"PRODUCT_MAKEFILES := $(LOCAL_PATH)/omni_"+GetBuildInfo.getCodename()+".mk";
+				"PRODUCT_MAKEFILES := $(LOCAL_PATH)/omni_"+info.getCodename()+".mk";
 		return idata;
 	}
 	
@@ -325,21 +324,21 @@ public class MakeTree {
 	
 	private String getBoardData(String type) {
 		String idata =ShellExecuter.CopyRight();
-		idata+="LOCAL_PATH := "+GetBuildInfo.getPath()+"\n" + 
+		idata+="LOCAL_PATH := "+info.getPath()+"\n" +
 				"\n" + 
-				"TARGET_BOARD_PLATFORM := "+GetBuildInfo.getPlatform()+"\n" + 
-				"TARGET_BOOTLOADER_BOARD_NAME := "+GetBuildInfo.getCodename()+"\n" + 
+				"TARGET_BOARD_PLATFORM := "+info.getPlatform()+"\n" +
+				"TARGET_BOOTLOADER_BOARD_NAME := "+info.getCodename()+"\n" +
 				"\n" + 
 				"# Recovery\n" + 
 				"TARGET_USERIMAGES_USE_EXT4 := true\n" + 
-				"BOARD_RECOVERYIMAGE_PARTITION_SIZE := "+GetBuildInfo.getSize()+" \n" + 
+				"BOARD_RECOVERYIMAGE_PARTITION_SIZE := "+info.getSize()+" \n" +
 				"BOARD_FLASH_BLOCK_SIZE := 1000000\n" + 
 				"BOARD_HAS_NO_REAL_SDCARD := true\n" + 
 				"TW_EXCLUDE_SUPERSU := true\n"
 				+ "TW_INPUT_BLACKLIST := \"hbtp_vm\"\n"
 				+ "include $(LOCAL_PATH)/kernel.mk\n";
 	
-			System.out.println("found "+ GetBuildInfo.getPlatform() + " platform" );
+			System.out.println("found "+ info.getPlatform() + " platform" );
 			if(type.equals("samsung"))
 			{
 				idata+="BOARD_CUSTOM_BOOTIMG_MK := device/generic/twrpbuilder/seEnforcing.mk\n";	
@@ -351,11 +350,11 @@ public class MakeTree {
 				idata+="include device/generic/twrpbuilder/mtk.mk\n";
 			}
 
-		if(GetBuildInfo.getApi().equals("armeabi-v7a"))
+		if(info.getApi().equals("armeabi-v7a"))
 		{
 			System.out.println("Found 32 bit arch");
 			idata+="include device/generic/twrpbuilder/BoardConfig32.mk\n";
-		}else if(GetBuildInfo.getApi().equals("arm64-v8a"))
+		}else if(info.getApi().equals("arm64-v8a"))
 		{
 			System.out.println("Found 64 bit arch");
 			idata+="include device/generic/twrpbuilder/BoardConfig64.mk\n";

@@ -11,3 +11,5 @@ mounts
 *.fstab
 jar/
 build/
+.idea/
+TwrpBuilder.iml
