@@ -9,6 +9,7 @@ public class RunCode  implements Runnable{
 	private boolean mtk;
 	private boolean samsung;
 	public static boolean extract;
+	private ShellExecutor shell;
 	public RunCode(String name) {
 		RunCode.name=name;
         new GetAsset("umkbootimg");
@@ -17,17 +18,18 @@ public class RunCode  implements Runnable{
 	public RunCode(String name,String type) {
 		RunCode.name=name;
 		RunCode.type=type;
+		shell=new ShellExecutor();
 
 		if(type.equals("mrvl"))
     	{
     		new GetAsset("degas-umkbootimg");
-    		ShellExecuter.commandnoapp("mv degas-umkbootimg umkbootimg ");
+    		shell.commandnoapp("mv degas-umkbootimg umkbootimg ");
     		mrvl=true;
     	}
 		else if(type.equals("mt") || type.equals("mtk"))
     	{
     		new GetAsset("unpack-MTK.pl");
-    		ShellExecuter.commandnoapp("mv unpack-MTK.pl umkbootimg");
+    		shell.commandnoapp("mv unpack-MTK.pl umkbootimg");
     		mtk=true;
     	}
 		else if(type.equals("samsung"))

@@ -3,26 +3,27 @@ package util;
 import java.io.File;
 
 public class Clean {
-	
+	private ShellExecutor shell;
 	public Clean(){
-		ShellExecuter.commandnoapp("rm -rf build.prop recovery.img " );
+		shell=new ShellExecutor();
+		shell.commandnoapp("rm -rf build.prop recovery.img " );
 		if (new File("mounts").exists())
 		{
-			ShellExecuter.commandnoapp("rm mounts ");
+			shell.commandnoapp("rm mounts ");
 		}
 		if (new File("umkbootimg").exists())
 		{
-			ShellExecuter.commandnoapp("rm umkbootimg");
+			shell.commandnoapp("rm umkbootimg");
 		}
 		
 		if (new File(Config.outDir).exists())
 		{
-			ShellExecuter.commandnoapp("rm -rf "+Config.outDir);
+			shell.commandnoapp("rm -rf "+Config.outDir);
 		}
 		
 		if(new File("unpack-MTK.pl").exists())
 		{
-			ShellExecuter.command("rm unpack-MTK.pl");
+			shell.command("rm unpack-MTK.pl");
 		}
 	}
 

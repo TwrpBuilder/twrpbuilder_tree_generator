@@ -13,11 +13,12 @@ import org.apache.commons.cli.ParseException;
 
 import mkTree.MakeTree;
 import util.RunCode;
-import util.ShellExecuter;
+import util.ShellExecutor;
 
 
 public class MainActivity {
     private static String applicationName = "TwrpBuilder";
+    private static ShellExecutor shell;
 
 
 	   public static void usePosixParser(final String[] commandLineArguments)
@@ -82,12 +83,12 @@ public class MainActivity {
 		            		System.out.println("Building tree using: "+g);
 		            		if(!new File("recovery.img").exists())
 		            		{
-		            			ShellExecuter.cp(g,"recovery.img");
+		            			shell.cp(g,"recovery.img");
 		            		}
 		            		else
 		            		{
-		            			ShellExecuter.command("rm -rf recovery.img");
-		            			ShellExecuter.cp(g,"recovery.img");
+		            			shell.command("rm -rf recovery.img");
+		            			shell.cp(g,"recovery.img");
 		            		}
 
 		            		if(commandLine.hasOption("t"))
@@ -197,6 +198,7 @@ public class MainActivity {
 
 	   public static void main(final String[] commandLineArguments)
 	   {
+	   	shell=new ShellExecutor();
 	      if (commandLineArguments.length < 1)
 	      {
 	         System.out.println("-- USAGE --");

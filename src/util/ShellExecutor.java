@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 
-public class ShellExecuter {
+public class ShellExecutor {
 	public static String command(String command) {
 		Process process;
 		String o=null;

@@ -5,18 +5,19 @@ import java.io.File;
 
 import util.*;
 
-import javax.rmi.CORBA.Util;
-
 public class MakeTree {
 	private long l=0;
 	private String compressionType;
 	private boolean lz4,lzma;
-	private String fstabIdata=ShellExecuter.CopyRight();
+	private ShellExecutor shell;
+	private String copyRight=shell.CopyRight();
 	public static boolean otg;
 	private GetBuildInfo info;
 	private Config config;
 	private String out;
 	public MakeTree(boolean mtk,String type){
+		config=new Config();
+		shell=new ShellExecutor();
 	    out=config.outDir;
 		if(mtk)
 		{
@@ -28,7 +29,7 @@ public class MakeTree {
 
 		extractFstab();
 		info=new GetBuildInfo();
-    	if(!ShellExecuter.mkdir(info.getPathS()))
+    	if(!shell.mkdir(info.getPathS()))
     	{
     		System.out.println("Failed to make dir");
     		System.exit(0);
@@ -36,7 +37,7 @@ public class MakeTree {
     			
     			if(info.getCodename().isEmpty())
 		{
-			ShellExecuter.command("sed 's/\\[\\([^]]*\\)\\]/\\1/g' "+info.propFile()+" | sed 's/: /=/g' | tee > b.prop && mv -f b.prop build.prop");
+			shell.command("sed 's/\\[\\([^]]*\\)\\]/\\1/g' "+info.propFile()+" | sed 's/: /=/g' | tee > b.prop && mv -f b.prop build.prop");
 			if(info.getCodename().isEmpty())
 			{
 				System.out.println("Failed to get info");
@@ -66,15 +67,15 @@ public class MakeTree {
 	
 
 	private void extractKernel(boolean mtk) {
-		ShellExecuter.command("chmod 777 umkbootimg");
+		shell.command("chmod 777 umkbootimg");
 		if(mtk)
 		{
-			ShellExecuter.command("./umkbootimg recovery.img");
+			shell.command("./umkbootimg recovery.img");
 		}
 		else 
 		{
-		ShellExecuter.mkdir(out);
-		ShellExecuter.command("./umkbootimg -i recovery.img -o "+out);
+		shell.mkdir(out);
+		shell.command("./umkbootimg -i recovery.img -o "+out);
 		}
 	}
 
@@ -82,12 +83,12 @@ public class MakeTree {
 		System.out.println("Making kernel.mk");
 		if(new File(out+"recovery.img-zImage").exists())
 		{
-		ShellExecuter.cp(out+"recovery.img-zImage", info.getPathS()+"kernel");
+		shell.cp(out+"recovery.img-zImage", info.getPathS()+"kernel");
 		}
 		if(new File(out+"recovery.img-dt").length()!=l)
 		{
 		
-			ShellExecuter.cp(out+"recovery.img-dt", info.getPathS()+"dt.img");
+			shell.cp(out+"recovery.img-dt", info.getPathS()+"dt.img");
 			new FWriter("kernel.mk",getKernelData(true));
 		}else {
 			new FWriter("kernel.mk",getKernelData(false));
@@ -97,12 +98,12 @@ public class MakeTree {
 	
 	private String getKernelData(boolean dt) {
 		String idata;
-		String pagesize=ShellExecuter.commandnoapp("cat "+out+"recovery.img-pagesize");
-		String cmdline=ShellExecuter.commandnoapp("cat "+out+"recovery.img-cmdline");
-		String ramdiskofsset=ShellExecuter.commandnoapp("cat "+out+"recovery.img-ramdisk_offset");
-		String tagsoffset=ShellExecuter.commandnoapp("cat "+out+"recovery.img-tags_offset");
-		String kernelbase=ShellExecuter.commandnoapp("cat "+out+"recovery.img-base");
-		idata=ShellExecuter.CopyRight();
+		String pagesize=shell.commandnoapp("cat "+out+"recovery.img-pagesize");
+		String cmdline=shell.commandnoapp("cat "+out+"recovery.img-cmdline");
+		String ramdiskofsset=shell.commandnoapp("cat "+out+"recovery.img-ramdisk_offset");
+		String tagsoffset=shell.commandnoapp("cat "+out+"recovery.img-tags_offset");
+		String kernelbase=shell.commandnoapp("cat "+out+"recovery.img-base");
+		idata=copyRight;
 		idata+="# Kernel\n" + 
 				"TARGET_PREBUILT_KERNEL := "+info.getPathS()+"kernel\n" +
 				"BOARD_KERNEL_CMDLINE := "+cmdline+" androidboot.selinux=permissive\n" + 
@@ -117,21 +118,21 @@ public class MakeTree {
 	}
 
 	public void extractFstab() {
-		compressionType=ShellExecuter.commandnoapp("cd "+out+" && file --mime-type recovery.img-ramdisk.* | cut -d / -f 2 | cut -d '-' -f 2");
+		compressionType=shell.commandnoapp("cd "+out+" && file --mime-type recovery.img-ramdisk.* | cut -d / -f 2 | cut -d '-' -f 2");
 		if(compressionType.equals("lzma"))
 		{
 			System.out.println("Found lzma comression in ramdisk");
-			ShellExecuter.command("mv "+out+"recovery.img-ramdisk.gz "+out+"recovery.img-ramdisk.lzma && lzma -d "+out+"recovery.img-ramdisk.lzma  && cd "+out+" && cpio -i <recovery.img-ramdisk");
+			shell.command("mv "+out+"recovery.img-ramdisk.gz "+out+"recovery.img-ramdisk.lzma && lzma -d "+out+"recovery.img-ramdisk.lzma  && cd "+out+" && cpio -i <recovery.img-ramdisk");
 			lzma=true;
 		}else if(compressionType.equals("gzip"))
 		{
 			System.out.println("Found gzip comression in ramdisk");
-			ShellExecuter.command("gzip -d "+out+"recovery.img-ramdisk.gz && cd "+out+" && cpio -i <recovery.img-ramdisk");
+			shell.command("gzip -d "+out+"recovery.img-ramdisk.gz && cd "+out+" && cpio -i <recovery.img-ramdisk");
 		}
 		else if(compressionType.equals("lz4"))
 		{
 			System.out.println("Found lz4 comression in ramdisk");
-			ShellExecuter.commandnoapp("cd "+out+" && lz4 -d recovery.img-ramdisk.*  recovery.img-ramdisk && cpio -i <recovery.img-ramdisk ");
+			shell.commandnoapp("cd "+out+" && lz4 -d recovery.img-ramdisk.*  recovery.img-ramdisk && cpio -i <recovery.img-ramdisk ");
 			lz4=true;
 		}
 		else 
@@ -146,11 +147,11 @@ public class MakeTree {
 	private void FstablastMessage() {
 		if(new File(out+"etc/twrp.fstab").exists()) {
 			Fstab(out+"etc/twrp.fstab");
-			ShellExecuter.command("mkdir "+info.getPathS()+"stock && mv "+out+"etc/* "+info.getPathS()+"stock/");
+			shell.command("mkdir "+info.getPathS()+"stock && mv "+out+"etc/* "+info.getPathS()+"stock/");
 		}else if (new File(out+"etc/recovery.fstab").exists())
 		{
 			Fstab(out+"etc/recovery.fstab");
-			ShellExecuter.command("mkdir "+info.getPathS()+"stock && mv "+out+"etc/* "+info.getPathS()+"stock/");
+			shell.command("mkdir "+info.getPathS()+"stock && mv "+out+"etc/* "+info.getPathS()+"stock/");
 		}
 		System.out.println("Build fingerPrint: "+info.getFingerPrint());
 		System.out.println("tree ready for "+ info.getCodename());
@@ -168,7 +169,7 @@ public class MakeTree {
 
 
 	private boolean checkPartition(String path,String partition){
-		String s=ShellExecuter.commandnoapp("cat "+path+" | grep -iw "+partition);
+		String s=shell.commandnoapp("cat "+path+" | grep -iw "+partition);
 		if (s.contains(partition))
 		{
 			return true;
@@ -180,7 +181,7 @@ public class MakeTree {
 
 	private void Fstab(String path)
 	{
-		String toWrite=ShellExecuter.CopyRight();
+		String toWrite=copyRight;
 		if (checkPartition(path,"boot"))
 		{
 			toWrite+=grepPartition(path,"boot");
@@ -221,7 +222,7 @@ public class MakeTree {
 
 	private String grepPartition(String path,String partition) {
 		String fullpath=null;
-		String s =ShellExecuter.commandnoapp("for i in $(cat "+path+" | grep -wi /"+partition+")\n" +
+		String s =shell.commandnoapp("for i in $(cat "+path+" | grep -wi /"+partition+")\n" +
 				"do\n" +
 				"a=$(echo $i | grep /dev)\n" +
 				"echo $a\n" +
@@ -230,7 +231,7 @@ public class MakeTree {
 
 		if(s.isEmpty())
 		{
-			s =ShellExecuter.commandnoapp("for i in $(cat "+path+" | grep -wi /"+partition+")\n" +
+			s =shell.commandnoapp("for i in $(cat "+path+" | grep -wi /"+partition+")\n" +
 					"do\n" +
 					"a=$(echo $i | grep /emmc)\n" +
 					"echo $a\n" +
@@ -261,7 +262,7 @@ public class MakeTree {
 		}
 		if(idata!=null)
 		{
-			ShellExecuter.command("echo "+idata +" >> " +info.getPath()+"/kernel.mk");
+			shell.command("echo "+idata +" >> " +info.getPath()+"/kernel.mk");
 		}
 	}
 	
@@ -271,7 +272,7 @@ public class MakeTree {
 	}
 	
 	private String getOmniData() {
-		String idata =ShellExecuter.CopyRight();
+		String idata =copyRight;
 		idata+="$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)\n" + 
 				"\n" + 
 				"PRODUCT_COPY_FILES += "+info.getPathS()+"kernel:kernel\n" +
@@ -292,7 +293,7 @@ public class MakeTree {
 	}
 	
 	private String getAndroidtData() {
-		String idata =ShellExecuter.CopyRight();
+		String idata =copyRight;
 		idata+="ifneq ($(filter "+info.getCodename()+",$(TARGET_DEVICE)),)\n" +
 				"\n" + 
 				"LOCAL_PATH := "+info.getPath()+"\n" +
@@ -310,7 +311,7 @@ public class MakeTree {
 	}
 	
 	private String getAndroidProductsData() {
-		String idata =ShellExecuter.CopyRight();
+		String idata =copyRight;
 		idata+="LOCAL_PATH := "+info.getPath()+"\n" +
 				"\n" + 
 				"PRODUCT_MAKEFILES := $(LOCAL_PATH)/omni_"+info.getCodename()+".mk";
@@ -328,7 +329,7 @@ public class MakeTree {
 	}
 	
 	private String getBoardData(String type) {
-		String idata =ShellExecuter.CopyRight();
+		String idata =copyRight;
 		idata+="LOCAL_PATH := "+info.getPath()+"\n" +
 				"\n" + 
 				"TARGET_BOARD_PLATFORM := "+info.getPlatform()+"\n" +
