@@ -168,9 +168,13 @@ public class MakeTree {
 	
 	
 	private void FstablastMessage() {
-		if(new File(out+"etc").exists()) {
-		Fstab(out+"etc/recovery.fstab");
+		if(new File(out+"etc/twrp.fstab").exists()) {
+		Fstab(out+"etc/twrp.fstab");
 		ShellExecuter.command("mkdir "+info.getPathS()+"stock && mv "+out+"etc/* "+info.getPathS()+"stock/");
+		}else if (new File(out+"etc/recovery.fstab").exists())
+		{
+			Fstab(out+"etc/recovery.fstab");
+			ShellExecuter.command("mkdir "+info.getPathS()+"stock && mv "+out+"etc/* "+info.getPathS()+"stock/");
 		}
 		System.out.println("Build fingerPrint: "+info.getFingerPrint());
 		System.out.println("tree ready for "+ info.getCodename());
