@@ -5,6 +5,8 @@ import java.io.File;
 
 import util.*;
 
+import javax.rmi.CORBA.Util;
+
 public class MakeTree {
 	private long l=0;
 	private String compressionType;
@@ -114,21 +116,6 @@ public class MakeTree {
 		return idata;
 	}
 
-	private void Fstab(String path)
-	{
-		makeFstab(grepPartition(path,"boot"));
-		makeFstab(grepPartition(path,"recovery"));
-		makeFstab(grepPartition(path,"system"));
-		makeFstab(grepPartition(path,"data"));
-		makeFstab(grepPartition(path,"cache"));
-		makeFstab(grepPartition(path,"fotakernel"));
-		makeFstab("/dev/block/mmcblk1p1");
-		if(otg)
-		{
-		makeFstab("/dev/block/sda1");
-		}
-	}
-	
 	public void extractFstab() {
 		compressionType=ShellExecuter.commandnoapp("cd "+out+" && file --mime-type recovery.img-ramdisk.* | cut -d / -f 2 | cut -d '-' -f 2");
 		if(compressionType.equals("lzma"))
@@ -155,22 +142,11 @@ public class MakeTree {
 		}
 		
 	}
-	
-	public void MkFstab() {
-		System.out.println("Copying fstab");
-		FstablastMessage();
-		if(lz4==true || lzma==true)
-		{
-			CheckCompression();	
-		}
-	}
-	
-	
-	
+
 	private void FstablastMessage() {
 		if(new File(out+"etc/twrp.fstab").exists()) {
-		Fstab(out+"etc/twrp.fstab");
-		ShellExecuter.command("mkdir "+info.getPathS()+"stock && mv "+out+"etc/* "+info.getPathS()+"stock/");
+			Fstab(out+"etc/twrp.fstab");
+			ShellExecuter.command("mkdir "+info.getPathS()+"stock && mv "+out+"etc/* "+info.getPathS()+"stock/");
 		}else if (new File(out+"etc/recovery.fstab").exists())
 		{
 			Fstab(out+"etc/recovery.fstab");
@@ -180,70 +156,96 @@ public class MakeTree {
 		System.out.println("tree ready for "+ info.getCodename());
 		System.out.println((char)27 + "[31m" +"Waring :- Check recovery fstab before build");
 	}
-	
-	
-	private void makeFstab(String pPath) {
-		if(pPath.endsWith("boot") || pPath.endsWith("BOOT") || pPath.endsWith("Boot"))
+
+	public void MkFstab() {
+		System.out.println("Copying fstab");
+		if(lz4==true || lzma==true)
 		{
-			fstabIdata+="/boot emmc "+pPath+"\n";
+			CheckCompression();
 		}
-		
-		if(pPath.endsWith("recovery") || pPath.endsWith("RECOVERY") || pPath.endsWith("Recovery"))
-		{
-			fstabIdata+="/recovery emmc "+pPath+"\n";
-		}
-		
-		if(pPath.endsWith("system") || pPath.endsWith("SYSTEM") || pPath.endsWith("System") || pPath.endsWith("emmc@android"))
-		{
-			fstabIdata+="/system ext4 "+pPath+"\n";
-		}
-		
-		if(pPath.contains("data") || pPath.contains("DATA") || pPath.contains("Data"))
-		{
-			fstabIdata+="/data ext4 "+pPath+"\n";
-		}
-		
-		if(pPath.endsWith("cache") || pPath.endsWith("CACHE") || pPath.endsWith("Cache"))
-		{
-			fstabIdata+="/cache ext4 "+pPath+"\n";
-		}
-		
-		if(pPath.endsWith("mmcblk1p1"))
-		{
-			fstabIdata+="/external_sd vfat /dev/block/mmcblk1p1 /dev/block/mmcblk1 flags=display=\"Micro SDcard\";storage;wipeingui;removable\n";
-		}
-		
-		if(pPath.endsWith("sda1"))
-		{
-			fstabIdata+="/usb-otg auto /dev/block/sda1	flags=display=\"USB OTG\";storage;wipeingui;removable\n";
-		}
-		
-		if(pPath.endsWith("FOTAKernel") || pPath.endsWith("fotakernel"))
-		{
-			fstabIdata+="/recovery ext4 "+pPath+"\n";	
-		}
-		
-		new FWriter("recovery.fstab",fstabIdata);
+		FstablastMessage();
 	}
-	
+
+
+	private boolean checkPartition(String path,String partition){
+		String s=ShellExecuter.commandnoapp("cat "+path+" | grep -iw "+partition);
+		if (s.contains(partition))
+		{
+			return true;
+		}else
+		{
+			return false;
+		}
+	}
+
+	private void Fstab(String path)
+	{
+		String toWrite=ShellExecuter.CopyRight();
+		if (checkPartition(path,"boot"))
+		{
+			toWrite+=grepPartition(path,"boot");
+		}
+		if (checkPartition(path,"data"))
+		{
+			toWrite+=grepPartition(path,"data");
+		}
+		if (checkPartition(path,"system"))
+		{
+			toWrite+=grepPartition(path,"system");
+		}
+		if (checkPartition(path,"cache"))
+		{
+			toWrite+=grepPartition(path,"cache");
+		}
+		if (checkPartition(path,"fotakernel"))
+		{
+			toWrite+=grepPartition(path,"fotakernel");
+		}
+		if (checkPartition(path,"FOTAKernel"))
+		{
+			toWrite+=grepPartition(path,"FOTAKernel");
+		}
+		if (checkPartition(path,"recovery"))
+		{
+			toWrite+=grepPartition(path,"recovery");
+		}
+		if (otg)
+		{
+			toWrite+="/usb-otg auto /dev/block/sda1 flags=display=\"USB OTG\";storage;wipeingui;removable\n";
+		}
+		toWrite+="/external_sd vfat /dev/block/mmcblk1p1 /dev/block/mmcblk1 flags=display=\"Micro SDcard\";storage;wipeingui;removable\n";
+		new FWriter("recovery.fstab",toWrite);
+	}
+
+
+
 	private String grepPartition(String path,String partition) {
-		String s =ShellExecuter.commandnoapp("for i in $(cat "+path+" | grep -wi /"+partition+")\n" + 
-				"do\n" + 
-				"a=$(echo $i | grep /dev)\n" + 
-				"echo $a\n" + 
+		String fullpath=null;
+		String s =ShellExecuter.commandnoapp("for i in $(cat "+path+" | grep -wi /"+partition+")\n" +
+				"do\n" +
+				"a=$(echo $i | grep /dev)\n" +
+				"echo $a\n" +
 				"done");
 		System.out.println(s);
-		
+
 		if(s.isEmpty())
 		{
-			s =ShellExecuter.commandnoapp("for i in $(cat "+path+" | grep -wi /"+partition+")\n" + 
-					"do\n" + 
-					"a=$(echo $i | grep /emmc)\n" + 
-					"echo $a\n" + 
+			s =ShellExecuter.commandnoapp("for i in $(cat "+path+" | grep -wi /"+partition+")\n" +
+					"do\n" +
+					"a=$(echo $i | grep /emmc)\n" +
+					"echo $a\n" +
 					"done");
 		}
-	return s;
-}
+		if (partition.equals("boot")|| partition.equals("recovery") || partition.equals(" fotakernel") || partition.equals("FOTAKernel"))
+		{
+			return  fullpath="/"+partition+" emmc "+s+"\n";
+		}else if (partition.equals("system") || partition.equals("data") || partition.equals("cache"))
+		{
+			return fullpath="/"+partition+" ext4 "+s+"\n";
+		}else {
+			return null;
+		}
+	}
 	
 	private void CheckCompression() {
 		String idata=null;
