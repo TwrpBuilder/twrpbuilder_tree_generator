@@ -10,11 +10,20 @@ public class RunCode  implements Runnable{
 	private boolean samsung;
 	public static boolean extract;
 	private ShellExecutor shell;
+	public static boolean AndroidImageKitchen;
 	public RunCode(String name) {
 		RunCode.name=name;
-        new GetAsset("umkbootimg");
+        if (AndroidImageKitchen)
+		{
+			System.out.println("Using Android Image Kitchen to extract "+name);
+			new GetAsset("bin");
+			new GetAsset("unpackimg.sh");
+		}else {
+			new GetAsset("umkbootimg");
+			new GetAsset("magic");
+		}
 	}
-	
+
 	public RunCode(String name,String type) {
 		RunCode.name=name;
 		RunCode.type=type;
@@ -37,28 +46,37 @@ public class RunCode  implements Runnable{
             new GetAsset("umkbootimg");
             samsung=true;
     	}
+		if (AndroidImageKitchen)
+		{
+			new GetAsset("bin");
+			new GetAsset("unpackimg.sh");
+		}
 	}
-	
-	
+
+
 	@Override
 	public void run() {
 		if(extract)
 		{
 		new ExtractBackup(name);
 		}
-    	if(mtk==true )
-    	{
-        	new MakeTree(true,type);
-    	}else if (mrvl==true || samsung==true){
-    	new MakeTree(false,type);
-    	}
-    	else{
-        	new MakeTree(false,"none");	
-    		}
-
+		if (AndroidImageKitchen)
+        {
+            new MakeTree(false,"AIK");
+        }else {
+            if(mtk==true )
+            {
+                new MakeTree(true,type);
+            }else if (mrvl==true || samsung==true){
+                new MakeTree(false,type);
+            }
+            else{
+                new MakeTree(false,"none");
+            }
+        }
 		new Clean();
 	}
-	
+
 	public static String getName() {
 		return name;
 	}

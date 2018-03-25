@@ -29,6 +29,11 @@ public class MainActivity {
 	      try
 	      {
 	         commandLine = cmdLinePosixParser.parse(posixOptions, commandLineArguments);
+			  if (commandLine.hasOption("aik"))
+			  {
+				  RunCode.AndroidImageKitchen=true;
+			  }
+
 	         if ( commandLine.hasOption("f") )
 	         {
 	        	 String g=commandLine.getOptionValue("f");
@@ -51,12 +56,14 @@ public class MainActivity {
 	            			{
 			            		new Thread(new RunCode(g,"mtk")).start();	
 	            			}
-	            		}else {
+	            		}
+	            		else {
 		            		new Thread(new RunCode(g)).start();
 	            		}
 	            	}
 	            }
 	         }
+
 	         if(commandLine.hasOption("h"))
 	         {
 		         System.out.println("-- USAGE --");
@@ -110,7 +117,6 @@ public class MainActivity {
 		            	}
 		            }
 	         }
-	         
 	      }
 	      catch (ParseException parseException)  // checked exception
 	      {
@@ -125,6 +131,7 @@ public class MainActivity {
 	      final Options option = new Options();
 	      option.addOption("f","file", true, "build using backup file (made from app).");
 	      option.addOption("t","type",true,"supported option :- \n mt , samsung,mrvl");
+	      option.addOption("aik","Android_Image_Kitchen",false,"Extract backup or recovery.img using Android Image kitchen");
 	      option.addOption("otg","otg-support",false,"add otg support to fstab");
 	      option.addOption("r","recovery",true,"build using recovery image file");
 	      option.addOption("h","help",false,"print this help");

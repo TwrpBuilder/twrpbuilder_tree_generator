@@ -15,10 +15,12 @@ public class MakeTree {
 	private GetBuildInfo info;
 	private Config config;
 	private String out;
+	private String type;
 	public MakeTree(boolean mtk,String type){
 		config=new Config();
 		shell=new ShellExecutor();
 	    out=config.outDir;
+	    this.type=type;
 		if(mtk)
 		{
 			extractKernel(true);
@@ -48,18 +50,16 @@ public class MakeTree {
 		MkAndroid();
 		MkAndroidProducts();
 		MkOmni();
+		mkKernel();
 		if(mtk)
 		{
-		mkKernel(true);
 		MkBoardConfig(type);
 		}else if(type.equals("mrvl") || type.equals("samsung"))
 		{
-			mkKernel(false);
-			MkBoardConfig(type);	
+			MkBoardConfig(type);
 		}
 		else
 		{
-			mkKernel(false);
 			MkBoardConfig();
 		}
 		MkFstab();
@@ -67,19 +67,24 @@ public class MakeTree {
 	
 
 	private void extractKernel(boolean mtk) {
-		shell.command("chmod 777 umkbootimg");
-		if(mtk)
-		{
-			shell.command("./umkbootimg recovery.img");
-		}
-		else 
-		{
 		shell.mkdir(out);
-		shell.command("./umkbootimg -i recovery.img -o "+out);
+		if (type.equals("AIK"))
+		{
+			shell.command("chmod 777 unpackimg.sh && ./unpackimg.sh recovery.img");
+		}else {
+			shell.command("chmod 777 umkbootimg");
+			if(mtk)
+			{
+				shell.command("./umkbootimg recovery.img");
+			}
+			else
+			{
+				shell.command("./umkbootimg -i recovery.img -o "+out);
+			}
 		}
 	}
 
-	private void mkKernel(boolean mtk) {
+	private void mkKernel() {
 		System.out.println("Making kernel.mk");
 		if(new File(out+"recovery.img-zImage").exists())
 		{
@@ -118,18 +123,18 @@ public class MakeTree {
 	}
 
 	public void extractFstab() {
-		compressionType=shell.commandnoapp("cd "+out+" && file --mime-type recovery.img-ramdisk.* | cut -d / -f 2 | cut -d '-' -f 2");
-		if(compressionType.equals("lzma"))
+		compressionType=shell.command("cd "+out+" && file -m ../magic recovery.img-ramdisk.gz | cut -d: -f2 | awk '{ print $1 }'");
+		if(compressionType.contains("lzma"))
 		{
 			System.out.println("Found lzma comression in ramdisk");
 			shell.command("mv "+out+"recovery.img-ramdisk.gz "+out+"recovery.img-ramdisk.lzma && lzma -d "+out+"recovery.img-ramdisk.lzma  && cd "+out+" && cpio -i <recovery.img-ramdisk");
 			lzma=true;
-		}else if(compressionType.equals("gzip"))
+		}else if(compressionType.contains("gzip"))
 		{
 			System.out.println("Found gzip comression in ramdisk");
 			shell.command("gzip -d "+out+"recovery.img-ramdisk.gz && cd "+out+" && cpio -i <recovery.img-ramdisk");
 		}
-		else if(compressionType.equals("lz4"))
+		else if(compressionType.contains("lz4"))
 		{
 			System.out.println("Found lz4 comression in ramdisk");
 			shell.commandnoapp("cd "+out+" && lz4 -d recovery.img-ramdisk.*  recovery.img-ramdisk && cpio -i <recovery.img-ramdisk ");

@@ -8,15 +8,17 @@ Get latest jar file from here https://github.com/TwrpBuilder/twrpbuilder_tree_ge
 
 ```
 -- USAGE --
-usage: TwrpBuilder [-f <arg>] [-h] [-otg] [-r <arg>] [-t <arg>]
+usage: TwrpBuilder [-aik] [-f <arg>] [-h] [-otg] [-r <arg>] [-t <arg>]
 -- HELP --
-usage: java -jar TwrpBuilder.jar -f backupfile.tar.gz [-f <arg>] [-h] [-otg] [-r
-       <arg>] [-t <arg>]
+usage: java -jar TwrpBuilder.jar -f backupfile.tar.gz [-aik] [-f <arg>] [-h]
+       [-otg] [-r <arg>] [-t <arg>]
 HELP
-   -f,--file <arg>         build using backup file (made from app).
-   -h,--help               print this help
-   -otg,--otg-support      add otg support to fstab
-   -r,--recovery <arg>     build using recovery image file
-   -t,--type <arg>         supported option :-
-                           mt , samsung,mrvl
+   -aik,--Android_Image_Kitchen     Extract backup or recovery.img using Android
+                                    Image kitchen
+   -f,--file <arg>                  build using backup file (made from app).
+   -h,--help                        print this help
+   -otg,--otg-support               add otg support to fstab
+   -r,--recovery <arg>              build using recovery image file
+   -t,--type <arg>                  supported option :-
+                                    mt , samsung,mrvl
 ```

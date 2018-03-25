@@ -7,24 +7,37 @@ public class Clean {
 	public Clean(){
 		shell=new ShellExecutor();
 		shell.commandnoapp("rm -rf build.prop recovery.img " );
-		if (new File("mounts").exists())
+		if (file("mounts"))
 		{
 			shell.commandnoapp("rm mounts ");
 		}
-		if (new File("umkbootimg").exists())
+		if (file("umkbootimg"))
 		{
 			shell.commandnoapp("rm umkbootimg");
 		}
 		
-		if (new File(Config.outDir).exists())
+		if (file(Config.outDir))
 		{
 			shell.commandnoapp("rm -rf "+Config.outDir);
 		}
 		
-		if(new File("unpack-MTK.pl").exists())
+		if(file("unpack-MTK.pl"))
 		{
 			shell.command("rm unpack-MTK.pl");
 		}
+		if (file("bin") || file("unpackimg.sh"))
+		{
+			shell.commandnoapp("rm -rf unpackimg.sh bin bin/");
+		}
 	}
 
+	private boolean file(String name){
+		if (new File(name).exists())
+		{
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 }
