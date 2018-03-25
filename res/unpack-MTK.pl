@@ -147,35 +147,35 @@ sub unpack_boot {
 	}
 
 	# create file containing extra arguments for further repacking
-	system("mkdir out");
-	open (PAGEFILE, ">out/$inputFilename-pagesize")
+	system("mkdir tmp");
+	open (PAGEFILE, ">tmp/$inputFilename-pagesize")
 		or die();
 	printf PAGEFILE ("%d",$pageSize) or die;
 	close (PAGEFILE);
 
-	open (RAMDISKOFF, ">out/$inputFilename-ramdisk_offset")
+	open (RAMDISKOFF, ">tmp/$inputFilename-ramdisk_offset")
 		or die();
 	printf RAMDISKOFF ("%.8x",$ram1Offset) or die;
 	close (RAMDISKOFF);
 
-	open (TAGSOFFSET, ">out/$inputFilename-tags_offset")
+	open (TAGSOFFSET, ">tmp/$inputFilename-tags_offset")
 		or die();
 	printf TAGSOFFSET ("%.8x",$tagsOffset) or die;
 	close (TAGSOFFSET);
 
-	open (kernelbase, ">out/$inputFilename-base")
+	open (kernelbase, ">tmp/$inputFilename-base")
 		or die();
 	printf kernelbase ("%.8x",$baseAddr) or die;
 	close (kernelbase);
 
-	open (CMDLINE, ">out/$inputFilename-cmdline")
+	open (CMDLINE, ">tmp/$inputFilename-cmdline")
 		or die();
 	printf CMDLINE ("%s",$cmdLine) or die;
 	close (CMDLINE);
 
 	if ($extract =~ /kernel/) {
 		my $kernel = substr($bootimg, $pageSize, $kernelSize);
-		open (KERNELFILE, ">out/$inputFilename-zImage")
+		open (KERNELFILE, ">tmp/$inputFilename-zImage")
 			or die_msg("couldn't create file '$inputFilename-zImage'!");
 		binmode (KERNELFILE);
 		print KERNELFILE $kernel or die;
@@ -199,7 +199,7 @@ sub unpack_boot {
 			die_msg("the specified boot image does not appear to contain a valid gzip file!");
 		}
 
-		open (RAMDISKFILE, ">out/$inputFilename-ramdisk.gz")
+		open (RAMDISKFILE, ">tmp/$inputFilename-ramdisk.gz")
 			or die_msg("couldn't create file '$inputFilename-ramdisk.gz'!");
 		binmode (RAMDISKFILE);
 		print RAMDISKFILE $ram1 or die;

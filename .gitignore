@@ -13,3 +13,4 @@ jar/
 build/
 .idea/
 TwrpBuilder.iml
+tmp/

@@ -3,10 +3,7 @@ package mkTree;
 
 import java.io.File;
 
-import util.Clean;
-import util.FWriter;
-import util.GetBuildInfo;
-import util.ShellExecuter;
+import util.*;
 
 public class MakeTree {
 	private long l=0;
@@ -15,8 +12,10 @@ public class MakeTree {
 	private String fstabIdata=ShellExecuter.CopyRight();
 	public static boolean otg;
 	private GetBuildInfo info;
+	private Config config;
+	private String out;
 	public MakeTree(boolean mtk,String type){
-	
+	    out=config.outDir;
 		if(mtk)
 		{
 			extractKernel(true);
@@ -73,20 +72,20 @@ public class MakeTree {
 		else 
 		{
 		ShellExecuter.mkdir("out");
-		ShellExecuter.command("./umkbootimg -i recovery.img -o out/ ");
+		ShellExecuter.command("./umkbootimg -i recovery.img -o "+out);
 		}
 	}
 
 	private void mkKernel(boolean mtk) {
 		System.out.println("Making kernel.mk");
-		if(new File("out/recovery.img-zImage").exists())
+		if(new File(out+"recovery.img-zImage").exists())
 		{
-		ShellExecuter.cp("out/recovery.img-zImage", info.getPathS()+"kernel");
+		ShellExecuter.cp(out+"recovery.img-zImage", info.getPathS()+"kernel");
 		}
-		if(new File("out/recovery.img-dt").length()!=l)
+		if(new File(out+"recovery.img-dt").length()!=l)
 		{
 		
-			ShellExecuter.cp("out/recovery.img-dt", info.getPathS()+"dt.img");
+			ShellExecuter.cp(out+"recovery.img-dt", info.getPathS()+"dt.img");
 			new FWriter("kernel.mk",getKernelData(true));
 		}else {
 			new FWriter("kernel.mk",getKernelData(false));
@@ -96,11 +95,11 @@ public class MakeTree {
 	
 	private String getKernelData(boolean dt) {
 		String idata;
-		String pagesize=ShellExecuter.commandnoapp("cat out/recovery.img-pagesize");
-		String cmdline=ShellExecuter.commandnoapp("cat out/recovery.img-cmdline");
-		String ramdiskofsset=ShellExecuter.commandnoapp("cat out/recovery.img-ramdisk_offset");
-		String tagsoffset=ShellExecuter.commandnoapp("cat out/recovery.img-tags_offset");
-		String kernelbase=ShellExecuter.commandnoapp("cat out/recovery.img-base");
+		String pagesize=ShellExecuter.commandnoapp("cat "+out+"recovery.img-pagesize");
+		String cmdline=ShellExecuter.commandnoapp("cat "+out+"recovery.img-cmdline");
+		String ramdiskofsset=ShellExecuter.commandnoapp("cat "+out+"recovery.img-ramdisk_offset");
+		String tagsoffset=ShellExecuter.commandnoapp("cat "+out+"recovery.img-tags_offset");
+		String kernelbase=ShellExecuter.commandnoapp("cat "+out+"recovery.img-base");
 		idata=ShellExecuter.CopyRight();
 		idata+="# Kernel\n" + 
 				"TARGET_PREBUILT_KERNEL := "+info.getPathS()+"kernel\n" +
@@ -135,12 +134,12 @@ public class MakeTree {
 		if(compressionType.equals("lzma"))
 		{
 			System.out.println("Found lzma comression in ramdisk");
-			ShellExecuter.command("mv out/recovery.img-ramdisk.gz out/recovery.img-ramdisk.lzma && lzma -d out/recovery.img-ramdisk.lzma  && cd out && cpio -i <recovery.img-ramdisk");
+			ShellExecuter.command("mv "+out+"recovery.img-ramdisk.gz "+out+"recovery.img-ramdisk.lzma && lzma -d "+out+"recovery.img-ramdisk.lzma  && cd out && cpio -i <recovery.img-ramdisk");
 			lzma=true;
 		}else if(compressionType.equals("gzip"))
 		{
 			System.out.println("Found gzip comression in ramdisk");
-			ShellExecuter.command("gzip -d out/recovery.img-ramdisk.gz && cd out && cpio -i <recovery.img-ramdisk");
+			ShellExecuter.command("gzip -d "+out+"recovery.img-ramdisk.gz && cd out && cpio -i <recovery.img-ramdisk");
 		}
 		else if(compressionType.equals("lz4"))
 		{
@@ -169,9 +168,9 @@ public class MakeTree {
 	
 	
 	private void FstablastMessage() {
-		if(new File("out/etc").exists()) {
-		Fstab("out/etc/recovery.fstab");
-		ShellExecuter.command("mkdir "+info.getPathS()+"stock && mv out/etc/* "+info.getPathS()+"stock/");
+		if(new File(out+"etc").exists()) {
+		Fstab(out+"etc/recovery.fstab");
+		ShellExecuter.command("mkdir "+info.getPathS()+"stock && mv "+out+"etc/* "+info.getPathS()+"stock/");
 		}
 		System.out.println("Build fingerPrint: "+info.getFingerPrint());
 		System.out.println("tree ready for "+ info.getCodename());

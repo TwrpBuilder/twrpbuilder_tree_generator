@@ -15,9 +15,9 @@ public class Clean {
 			ShellExecuter.commandnoapp("rm umkbootimg");
 		}
 		
-		if (new File("out").exists())
+		if (new File(Config.outDir).exists())
 		{
-			ShellExecuter.commandnoapp("rm -rf out");
+			ShellExecuter.commandnoapp("rm -rf "+Config.outDir);
 		}
 		
 		if(new File("unpack-MTK.pl").exists())

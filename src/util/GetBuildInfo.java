@@ -5,7 +5,8 @@ import java.io.File;
 public class GetBuildInfo {
 
 	private static String model,product,brand,codename,platform,api,size,fingerprint;
-	
+	private static  Config config;
+	private static String out=config.outDir;
 	public static String propFile() {
 		String prop=null;
 		if(new File("build.prop").exists())
@@ -13,9 +14,9 @@ public class GetBuildInfo {
 			prop="build.prop";
 		}
 		else
-			if(new File("out/default.prop").exists())
+			if(new File(out+"default.prop").exists())
 			{
-				prop="out/default.prop";
+				prop=out+"default.prop";
 			}
 			else {
 				prop="null";
