@@ -20,6 +20,7 @@
     <path id="TwrpBuilder.classpath">
         <pathelement location="bin"/>
 	<pathelement location="lib/commons-cli-1.4.jar"/>
+	<pathelement location="lib/commons-io-2.6.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
@@ -77,7 +78,7 @@
 
     <target name="jar" depends="compile">
         <jar destfile="${jar-dir}/${ant.project.name}.jar" basedir="${classes-dir}">
-  	  <zipgroupfileset dir="lib" includes="commons-cli-1.4.jar" />
+  	  <zipgroupfileset dir="lib" includes="commons-cli-1.4.jar commons-io-2.6.jar" />
     		<fileset dir="${asset.link}" />
             <manifest>
                 <attribute name="Main-Class" value="${main-class}"/>

@@ -6,28 +6,34 @@ public class Clean {
 	private ShellExecutor shell;
 	public Clean(){
 		shell=new ShellExecutor();
-		shell.commandnoapp("rm -rf build.prop recovery.img " );
+		shell.rm("build.prop" );
+		shell.rm("recovery.img");
 		if (file("mounts"))
 		{
-			shell.commandnoapp("rm mounts ");
+			shell.rm("mounts");
 		}
 		if (file("umkbootimg"))
 		{
-			shell.commandnoapp("rm umkbootimg");
+			shell.rm("umkbootimg");
 		}
 		
 		if (file(Config.outDir))
 		{
-			shell.commandnoapp("rm -rf "+Config.outDir);
+			shell.rm(Config.outDir);
 		}
 		
 		if(file("unpack-MTK.pl"))
 		{
-			shell.command("rm unpack-MTK.pl");
+			shell.rm("unpack-MTK.pl");
 		}
 		if (file("bin") || file("unpackimg.sh"))
 		{
-			shell.commandnoapp("rm -rf unpackimg.sh bin bin/");
+			shell.rm("unpackimg.sh");
+			shell.rm("bin");
+		}
+		if (file("magic"))
+		{
+			shell.rm("magic");
 		}
 	}
 

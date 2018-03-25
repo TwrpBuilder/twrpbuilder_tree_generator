@@ -1,5 +1,7 @@
 package util;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -98,7 +100,26 @@ public class ShellExecutor {
 		return theDir.isDirectory();
 
 	}
-	
+
+	public static boolean rm(String filename){
+		File file=new File(filename);
+		if (file.exists())
+		{
+			if (file.isDirectory())
+			{
+				try {
+					FileUtils.deleteDirectory(file);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			else {
+				file.delete();
+			}
+		}
+		return false;
+	}
+
 	public static void cp( String from, String to ) {
 		File f=new File(from);
 		File t=new File(to); 

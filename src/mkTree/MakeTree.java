@@ -71,7 +71,7 @@ public class MakeTree {
 		shell.mkdir(out);
 		if (AndroidImageKitchen)
 		{
-			shell.command("chmod 777 unpackimg.sh && ./unpackimg.sh recovery.img");
+			System.out.println(shell.command("chmod 777 unpackimg.sh && ./unpackimg.sh recovery.img"));
 		}else {
 			shell.command("chmod 777 umkbootimg");
 			if(mtk)
@@ -124,7 +124,7 @@ public class MakeTree {
 	}
 
 	public void extractFstab() {
-		compressionType=shell.command("cd "+out+" && file -m ../magic recovery.img-ramdisk.gz | cut -d: -f2 | awk '{ print $1 }'");
+		compressionType=shell.command("cd "+out+" && file -m ../magic recovery.img-ramdisk.* | cut -d: -f2 | awk '{ print $1 }'");
 		if(compressionType.contains("lzma"))
 		{
 			System.out.println("Found lzma comression in ramdisk");
