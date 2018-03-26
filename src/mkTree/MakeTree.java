@@ -48,10 +48,7 @@ public class MakeTree {
 				System.exit(0);
 			}
 		}
-		MkAndroid();
-		MkAndroidProducts();
-		MkOmni();
-		mkKernel();
+		BuildMakeFiles();
 		if(mtk)
 		{
 		MkBoardConfig(type);
@@ -65,7 +62,30 @@ public class MakeTree {
 		}
 		MkFstab();
 	}
-	
+
+	private void BuildMakeFiles(){
+		new Thread(() -> {
+            System.out.println("Making omni_"+info.getCodename()+".mk");
+            new FWriter("omni_"+info.getCodename()+".mk",getOmniData());
+            System.out.println("Making Android.mk");
+            new FWriter("Android.mk",getAndroidtData());
+            System.out.println("Making AndroidProducts.mk");
+            new FWriter("AndroidProducts.mk",getAndroidProductsData());
+			System.out.println("Making kernel.mk");
+			if(new File(out+"recovery.img-zImage").exists())
+			{
+				shell.cp(out+"recovery.img-zImage", info.getPathS()+"kernel");
+			}
+			if(new File(out+"recovery.img-dt").length()!=l)
+			{
+
+				shell.cp(out+"recovery.img-dt", info.getPathS()+"dt.img");
+				new FWriter("kernel.mk",getKernelData(true));
+			}else {
+				new FWriter("kernel.mk",getKernelData(false));
+			}
+        }).start();
+	}
 
 	private void extractKernel(boolean mtk) {
 		shell.mkdir(out);
@@ -85,23 +105,6 @@ public class MakeTree {
 		}
 	}
 
-	private void mkKernel() {
-		System.out.println("Making kernel.mk");
-		if(new File(out+"recovery.img-zImage").exists())
-		{
-		shell.cp(out+"recovery.img-zImage", info.getPathS()+"kernel");
-		}
-		if(new File(out+"recovery.img-dt").length()!=l)
-		{
-		
-			shell.cp(out+"recovery.img-dt", info.getPathS()+"dt.img");
-			new FWriter("kernel.mk",getKernelData(true));
-		}else {
-			new FWriter("kernel.mk",getKernelData(false));
-		}
-
-	}
-	
 	private String getKernelData(boolean dt) {
 		String idata;
 		String pagesize=shell.commandnoapp("cat "+out+"recovery.img-pagesize");
@@ -281,12 +284,7 @@ public class MakeTree {
 			shell.command("echo "+idata +" >> " +info.getPath()+"/kernel.mk");
 		}
 	}
-	
-	public void MkOmni() {
-		System.out.println("Making omni_"+info.getCodename()+".mk");
-		new FWriter("omni_"+info.getCodename()+".mk",getOmniData());
-	}
-	
+
 	private String getOmniData() {
 		String idata =copyRight;
 		idata+="$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)\n" + 
@@ -301,13 +299,7 @@ public class MakeTree {
 		return idata;
 	}
 	
-	
-	public void MkAndroid() {
-		System.out.println("Making Android.mk");
-		new FWriter("Android.mk",getAndroidtData());
 
-	}
-	
 	private String getAndroidtData() {
 		String idata =copyRight;
 		idata+="ifneq ($(filter "+info.getCodename()+",$(TARGET_DEVICE)),)\n" +
@@ -320,12 +312,6 @@ public class MakeTree {
 		return idata;
 	}
 
-	public void MkAndroidProducts() {
-		System.out.println("Making AndroidProducts.mk");
-		new FWriter("AndroidProducts.mk",getAndroidProductsData());
-
-	}
-	
 	private String getAndroidProductsData() {
 		String idata =copyRight;
 		idata+="LOCAL_PATH := "+info.getPath()+"\n" +
