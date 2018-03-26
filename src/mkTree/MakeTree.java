@@ -170,6 +170,7 @@ public class MakeTree {
 		}
 		System.out.println("Build fingerPrint: "+info.getFingerPrint());
 		System.out.println("tree ready for "+ info.getCodename());
+		new FWriter(".travis.yml",generateTravis());
 		System.out.println((char)27 + "[31m" +"Waring :- Check recovery fstab before build");
 	}
 
@@ -342,6 +343,45 @@ public class MakeTree {
 		new FWriter("BoardConfig.mk",getBoardData(type));
 	
 	}
+
+	private String generateTravis(){
+	    String data=copyRight;
+	    data+="sudo: required\n" +
+                "services:\n" +
+                "  - docker\n" +
+                "before_install:\n" +
+                "  - docker pull yshalsager/cyanogenmod:latest\n" +
+                "before_script:\n" +
+                "- cd $HOME && mkdir twrp\n" +
+                "- wget -q https://github.com/TwrpBuilder/twrp-sources/releases/download/omni_twrp-5.1.1-20180211/omni_twrp-5.1.1-20180211-norepo.tar.xz\n" +
+                "  -O $HOME/twrp.tar.xz\n" +
+                "- tar -xJf twrp.tar.xz --directory $HOME/twrp/ && rm twrp.tar.xz\n" +
+                "script:\n" +
+                "  - cd $HOME/twrp/ && git clone https://github.com/TwrpBuilder/android_device_"+info.getBrand()+"_"+info.getModel()+".git device/"+info.getBrand()+File.separator+info.getModel()+"\n" +
+                "  - git clone https://github.com/TwrpBuilder/device_generic_twrpbuilder.git device/generic/twrpbuilder\n" +
+                "  - rm -rf bootable/recovery && git clone https://github.com/omnirom/android_bootable_recovery.git bootable/recovery\n" +
+                "  - |\n" +
+                "    docker run --rm -i -e USER_ID=$(id -u) -e GROUP_ID=$(id -g) -v \"$(pwd):/home/cmbuild/twrp/:rw,z\" yshalsager/cyanogenmod bash << EOF\n" +
+                "    cd /home/cmbuild/twrp/\n" +
+                "    source build/envsetup.sh && lunch omni_"+info.getModel()+"-eng && make -j16 recoveryimage\n" +
+                "    exit\n" +
+                "    EOF\n" +
+                "after_success:\n" +
+                "  - export version=$(cat bootable/recovery/variables.h | grep \"define TW_MAIN_VERSION_STR\" | cut -d '\"' -f2)\n" +
+                "  - cp $HOME/twrp/out/target/product/"+info.getModel()+"/recovery.img $HOME/twrp/TWRP-$version-"+info.getModel()+"-$(date +\"%Y%m%d\").img\n" +
+                "\n" +
+                "deploy:\n" +
+                "  skip_cleanup: true\n" +
+                "  provider: releases\n" +
+                "  api_key: \"$GIT_OAUTH_TOKEN_TB\"\n" +
+                "  file_glob: true\n" +
+                "  file: $HOME/twrp/*.img\n" +
+                "  on:\n" +
+                "    tags: false\n" +
+                "    repo: TwrpBuilder/android_device_"+info.getBrand()+"_"+info.getModel()+"\n" +
+                "    branch: master";
+	    return data;
+    }
 	
 	private String getBoardData(String type) {
 		String idata =copyRight;
