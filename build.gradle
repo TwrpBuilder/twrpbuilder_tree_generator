@@ -6,6 +6,27 @@ apply plugin: 'java'
 sourceCompatibility = 1.8
 repositories {
     mavenCentral()
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
+}
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.github.jengelman.gradle.plugins:shadow:2.0.3"
+    }
+}
+
+apply plugin: "com.github.johnrengelman.shadow"
+
+shadowJar {
+    baseName = 'TwrpBuilder'
+    classifier = null
+    version = version
 }
 
 jar {
