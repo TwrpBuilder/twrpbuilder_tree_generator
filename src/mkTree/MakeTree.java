@@ -16,12 +16,14 @@ public class MakeTree {
 	private Config config;
 	private String out;
 	private String type;
+	private boolean mt;
 	public static boolean AndroidImageKitchen;
 	public MakeTree(boolean mtk,String type){
 		config=new Config();
 		shell=new ShellExecutor();
 	    out=config.outDir;
 	    this.type=type;
+	    this.mt=mtk;
 		if(mtk)
 		{
 			extractKernel(true);
@@ -49,18 +51,6 @@ public class MakeTree {
 			}
 		}
 		BuildMakeFiles();
-		if(mtk)
-		{
-		MkBoardConfig(type);
-		}else if(type.equals("mrvl") || type.equals("samsung"))
-		{
-			MkBoardConfig(type);
-		}
-		else
-		{
-			MkBoardConfig();
-		}
-		MkFstab();
 	}
 
 	private void BuildMakeFiles(){
@@ -84,7 +74,22 @@ public class MakeTree {
 			}else {
 				new FWriter("kernel.mk",getKernelData(false));
 			}
-        }).start();
+
+			if(mt)
+			{
+				MkBoardConfig(type);
+			}else if(type.equals("mrvl") || type.equals("samsung"))
+			{
+				MkBoardConfig(type);
+			}
+			else
+			{
+				MkBoardConfig();
+			}
+
+			MkFstab();
+			new Clean();
+		}).start();
 	}
 
 	private void extractKernel(boolean mtk) {
@@ -106,22 +111,13 @@ public class MakeTree {
 	}
 
 	private String getKernelData(boolean dt) {
-		String idata;
-		String pagesize=shell.commandnoapp("cat "+out+"recovery.img-pagesize");
-		String cmdline=shell.commandnoapp("cat "+out+"recovery.img-cmdline");
-		String ramdiskofsset;
-		String tagsoffset;
-		if (AndroidImageKitchen)
-		{
-			ramdiskofsset=shell.commandnoapp("cat "+out+"recovery.img-ramdiskoff");
-			tagsoffset=shell.commandnoapp("cat "+out+"recovery.img-tagsoff");
-		}
-		else {
-			ramdiskofsset=shell.commandnoapp("cat "+out+"recovery.img-ramdisk_offset");
-			tagsoffset=shell.commandnoapp("cat "+out+"recovery.img-tags_offset");
-		}
-		String kernelbase=shell.commandnoapp("cat "+out+"recovery.img-base");
-		idata=copyRight;
+        String idata;
+        String pagesize=shell.commandnoapp("cat "+out+"recovery.img-pagesize");
+        String cmdline=shell.commandnoapp("cat "+out+"recovery.img-cmdline");
+        String ramdiskofsset=shell.commandnoapp("cat "+out+"recovery.img-ramdiskoff");
+        String tagsoffset=shell.commandnoapp("cat "+out+"recovery.img-tagsoff");
+        String kernelbase=shell.commandnoapp("cat "+out+"recovery.img-base");
+        idata=copyRight;
 		idata+="# Kernel\n" + 
 				"TARGET_PREBUILT_KERNEL := "+info.getPathS()+"kernel\n" +
 				"BOARD_KERNEL_CMDLINE := "+cmdline+" androidboot.selinux=permissive\n" + 
@@ -217,6 +213,10 @@ public class MakeTree {
 		{
 			toWrite+=grepPartition(path,"cache");
 		}
+		if (checkPartition(path,"misc"))
+		{
+			toWrite+=grepPartition(path,"misc");
+		}
 		if (checkPartition(path,"fotakernel"))
 		{
 			toWrite+=grepPartition(path,"fotakernel");
@@ -233,6 +233,7 @@ public class MakeTree {
 		{
 			toWrite+="/usb-otg auto /dev/block/sda1 flags=display=\"USB OTG\";storage;wipeingui;removable\n";
 		}
+
 		toWrite+="/external_sd vfat /dev/block/mmcblk1p1 /dev/block/mmcblk1 flags=display=\"Micro SDcard\";storage;wipeingui;removable\n";
 		new FWriter("recovery.fstab",toWrite);
 	}
@@ -247,7 +248,6 @@ public class MakeTree {
 				"echo $a\n" +
 				"done");
 		System.out.println(s);
-
 		if(s.isEmpty())
 		{
 			s =shell.commandnoapp("for i in $(cat "+path+" | grep -wi /"+partition+")\n" +
@@ -256,7 +256,7 @@ public class MakeTree {
 					"echo $a\n" +
 					"done");
 		}
-		if (partition.equals("boot")|| partition.equals("recovery") || partition.equals(" fotakernel") || partition.equals("FOTAKernel"))
+		if (partition.equals("boot")|| partition.equals("recovery") || partition.equals(" fotakernel") || partition.equals("FOTAKernel") || partition.equals("misc"))
 		{
 			return  fullpath="/"+partition+" emmc "+s+"\n";
 		}else if (partition.equals("system") || partition.equals("data") || partition.equals("cache"))

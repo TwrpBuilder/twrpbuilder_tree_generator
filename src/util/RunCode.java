@@ -72,7 +72,6 @@ public class RunCode  implements Runnable{
             else{
                 new MakeTree(false,"none");
         }
-		new Clean();
 	}
 
 	public static String getName() {
