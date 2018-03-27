@@ -183,7 +183,7 @@ public class MainActivity {
 	      final boolean displayUsage,
 	      final OutputStream out)
 	   {
-	      final String commandLineSyntax = "java -jar "+ new java.io.File(MainActivity.class.getProtectionDomain()
+	      final String commandLineSyntax = "java -jar "+ new File(MainActivity.class.getProtectionDomain()
 	    		  .getCodeSource()
 	    		  .getLocation()
 	    		  .getPath())

@@ -14,3 +14,15 @@ build/
 .idea/
 TwrpBuilder.iml
 tmp/
+*.iml
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.idea/vcs.xml
+.idea/misc.xml
+updater/build
