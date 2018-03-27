@@ -1,3 +1,4 @@
+package com.github.twrpbuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,9 +12,9 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import mkTree.MakeTree;
-import util.RunCode;
-import util.ShellExecutor;
+import com.github.twrpbuilder.mkTree.MakeTree;
+import com.github.twrpbuilder.util.RunCode;
+import com.github.twrpbuilder.util.ShellExecutor;
 
 
 public class MainActivity {

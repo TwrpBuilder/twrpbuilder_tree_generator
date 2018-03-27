@@ -1,4 +1,4 @@
-package util;
+package com.github.twrpbuilder.util;
 
 import java.io.File;
 import java.io.FileOutputStream;

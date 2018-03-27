@@ -1,4 +1,4 @@
-package util;
+package com.github.twrpbuilder.util;
 
 import org.apache.commons.io.FileUtils;
 

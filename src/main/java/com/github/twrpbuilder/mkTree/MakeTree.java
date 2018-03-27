@@ -1,9 +1,9 @@
-package mkTree;
+package com.github.twrpbuilder.mkTree;
 
 
 import java.io.File;
 
-import util.*;
+import com.github.twrpbuilder.util.*;
 
 public class MakeTree {
 	private long l=0;
