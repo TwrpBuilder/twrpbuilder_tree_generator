@@ -342,18 +342,18 @@ public class MakeTree {
                 "  -O $HOME/twrp.tar.xz\n" +
                 "- tar -xJf twrp.tar.xz --directory $HOME/twrp/ && rm twrp.tar.xz\n" +
                 "script:\n" +
-                "  - cd $HOME/twrp/ && git clone https://github.com/TwrpBuilder/android_device_"+info.getBrand()+"_"+info.getModel()+".git device/"+info.getBrand()+File.separator+info.getModel()+"\n" +
+                "  - cd $HOME/twrp/ && git clone https://github.com/TwrpBuilder/android_device_"+info.getBrand()+"_"+info.getCodename()+".git device/"+info.getBrand()+File.separator+info.getCodename()+"\n" +
                 "  - git clone https://github.com/TwrpBuilder/device_generic_twrpbuilder.git device/generic/twrpbuilder\n" +
                 "  - rm -rf bootable/recovery && git clone https://github.com/omnirom/android_bootable_recovery.git bootable/recovery\n" +
                 "  - |\n" +
                 "    docker run --rm -i -e USER_ID=$(id -u) -e GROUP_ID=$(id -g) -v \"$(pwd):/home/cmbuild/twrp/:rw,z\" yshalsager/cyanogenmod bash << EOF\n" +
                 "    cd /home/cmbuild/twrp/\n" +
-                "    source build/envsetup.sh && lunch omni_"+info.getModel()+"-eng && make -j16 recoveryimage\n" +
+                "    source build/envsetup.sh && lunch omni_"+info.getCodename()+"-eng && make -j16 recoveryimage\n" +
                 "    exit\n" +
                 "    EOF\n" +
                 "after_success:\n" +
                 "  - export version=$(cat bootable/recovery/variables.h | grep \"define TW_MAIN_VERSION_STR\" | cut -d '\"' -f2)\n" +
-                "  - cp $HOME/twrp/out/target/product/"+info.getModel()+"/recovery.img $HOME/twrp/TWRP-$version-"+info.getModel()+"-$(date +\"%Y%m%d\").img\n" +
+                "  - cp $HOME/twrp/out/target/product/"+info.getCodename()+"/recovery.img $HOME/twrp/TWRP-$version-"+info.getCodename()+"-$(date +\"%Y%m%d\").img\n" +
                 "\n" +
                 "deploy:\n" +
                 "  skip_cleanup: true\n" +
@@ -363,7 +363,7 @@ public class MakeTree {
                 "  file: $HOME/twrp/*.img\n" +
                 "  on:\n" +
                 "    tags: false\n" +
-                "    repo: TwrpBuilder/android_device_"+info.getBrand()+"_"+info.getModel()+"\n" +
+                "    repo: TwrpBuilder/android_device_"+info.getBrand()+"_"+info.getCodename()+"\n" +
                 "    branch: master";
 	    return data;
     }
