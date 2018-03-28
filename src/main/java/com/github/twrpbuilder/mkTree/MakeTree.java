@@ -331,8 +331,7 @@ public class MakeTree {
 	}
 
 	private String generateTravis(){
-	    String data=copyRight;
-	    data+="sudo: required\n" +
+	    String data="sudo: required\n" +
                 "services:\n" +
                 "  - docker\n" +
                 "before_install:\n" +
