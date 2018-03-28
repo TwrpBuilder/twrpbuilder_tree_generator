@@ -21,7 +21,6 @@ public class GetAsset {
         OutputStream resStreamOut = null;
         String jarFolder;
         String resourceName=File.separator+name;
-        System.out.println("This Shit "+resourceName);
         try {
             stream = GetAsset.class.getResourceAsStream(File.separator+"asset"+resourceName);//note that each / is a directory down in the "jar tree" been the jar the root of the tree
             if(stream == null) {
