@@ -38,5 +38,5 @@ jar {
 dependencies {
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
     implementation group: 'commons-io', name: 'commons-io', version: '2.6'
-    implementation group: 'com.google.firebase', name: 'firebase-admin', version: '5.9.0'
+    //implementation group: 'com.google.firebase', name: 'firebase-admin', version: '5.9.0'
 }
