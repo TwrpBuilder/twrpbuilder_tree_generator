@@ -199,46 +199,46 @@ public class MakeTree {
 
 	private void Fstab(String path)
 	{
-		String toWrite=copyRight;
-		if (checkPartition(path,"boot"))
+		/*use existing twrp fstab if exists*/
+		if (path.contains("twrp.fstab"))
 		{
-			toWrite+=grepPartition(path,"boot");
-		}
-		if (checkPartition(path,"data"))
-		{
-			toWrite+=grepPartition(path,"data");
-		}
-		if (checkPartition(path,"system"))
-		{
-			toWrite+=grepPartition(path,"system");
-		}
-		if (checkPartition(path,"cache"))
-		{
-			toWrite+=grepPartition(path,"cache");
-		}
-		if (checkPartition(path,"misc"))
-		{
-			toWrite+=grepPartition(path,"misc");
-		}
-		if (checkPartition(path,"fotakernel"))
-		{
-			toWrite+=grepPartition(path,"fotakernel");
-		}
-		if (checkPartition(path,"FOTAKernel"))
-		{
-			toWrite+=grepPartition(path,"FOTAKernel");
-		}
-		if (checkPartition(path,"recovery"))
-		{
-			toWrite+=grepPartition(path,"recovery");
-		}
-		if (otg)
-		{
-			toWrite+="/usb-otg auto /dev/block/sda1 flags=display=\"USB OTG\";storage;wipeingui;removable\n";
-		}
+			String toWrite = copyRight;
+			toWrite+=shell.command("cat "+path);
+			new FWriter("recovery.fstab", toWrite);
+		}else {
 
-		toWrite+="/external_sd vfat /dev/block/mmcblk1p1 /dev/block/mmcblk1 flags=display=\"Micro SDcard\";storage;wipeingui;removable\n";
-		new FWriter("recovery.fstab",toWrite);
+			String toWrite = copyRight;
+			if (checkPartition(path, "boot")) {
+				toWrite += grepPartition(path, "boot");
+			}
+			if (checkPartition(path, "data")) {
+				toWrite += grepPartition(path, "data");
+			}
+			if (checkPartition(path, "system")) {
+				toWrite += grepPartition(path, "system");
+			}
+			if (checkPartition(path, "cache")) {
+				toWrite += grepPartition(path, "cache");
+			}
+			if (checkPartition(path, "misc")) {
+				toWrite += grepPartition(path, "misc");
+			}
+			if (checkPartition(path, "fotakernel")) {
+				toWrite += grepPartition(path, "fotakernel");
+			}
+			if (checkPartition(path, "FOTAKernel")) {
+				toWrite += grepPartition(path, "FOTAKernel");
+			}
+			if (checkPartition(path, "recovery")) {
+				toWrite += grepPartition(path, "recovery");
+			}
+			if (otg) {
+				toWrite += "/usb-otg auto /dev/block/sda1 flags=display=\"USB OTG\";storage;wipeingui;removable\n";
+			}
+
+			toWrite += "/external_sd vfat /dev/block/mmcblk1p1 /dev/block/mmcblk1 flags=display=\"Micro SDcard\";storage;wipeingui;removable\n";
+			new FWriter("recovery.fstab", toWrite);
+		}
 	}
 
 
