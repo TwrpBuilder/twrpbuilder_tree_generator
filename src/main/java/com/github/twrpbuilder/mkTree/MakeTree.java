@@ -54,41 +54,44 @@ public class MakeTree {
 	}
 
 	private void BuildMakeFiles(){
-		new Thread(() -> {
-            System.out.println("Making omni_"+info.getCodename()+".mk");
-            new FWriter("omni_"+info.getCodename()+".mk",getOmniData());
-            System.out.println("Making Android.mk");
-            new FWriter("Android.mk",getAndroidtData());
-            System.out.println("Making AndroidProducts.mk");
-            new FWriter("AndroidProducts.mk",getAndroidProductsData());
-			System.out.println("Making kernel.mk");
-			if(new File(out+"recovery.img-zImage").exists())
-			{
-				shell.cp(out+"recovery.img-zImage", info.getPathS()+"kernel");
-			}
-			if(new File(out+"recovery.img-dt").length()!=l)
-			{
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				System.out.println("Making omni_"+info.getCodename()+".mk");
+				new FWriter("omni_"+info.getCodename()+".mk",getOmniData());
+				System.out.println("Making Android.mk");
+				new FWriter("Android.mk",getAndroidtData());
+				System.out.println("Making AndroidProducts.mk");
+				new FWriter("AndroidProducts.mk",getAndroidProductsData());
+				System.out.println("Making kernel.mk");
+				if(new File(out+"recovery.img-zImage").exists())
+				{
+					shell.cp(out+"recovery.img-zImage", info.getPathS()+"kernel");
+				}
+				if(new File(out+"recovery.img-dt").length()!=l)
+				{
 
-				shell.cp(out+"recovery.img-dt", info.getPathS()+"dt.img");
-				new FWriter("kernel.mk",getKernelData(true));
-			}else {
-				new FWriter("kernel.mk",getKernelData(false));
-			}
+					shell.cp(out+"recovery.img-dt", info.getPathS()+"dt.img");
+					new FWriter("kernel.mk",getKernelData(true));
+				}else {
+					new FWriter("kernel.mk",getKernelData(false));
+				}
 
-			if(mt)
-			{
-				MkBoardConfig(type);
-			}else if(type.equals("mrvl") || type.equals("samsung"))
-			{
-				MkBoardConfig(type);
-			}
-			else
-			{
-				MkBoardConfig();
-			}
+				if(mt)
+				{
+					MkBoardConfig(type);
+				}else if(type.equals("mrvl") || type.equals("samsung"))
+				{
+					MkBoardConfig(type);
+				}
+				else
+				{
+					MkBoardConfig();
+				}
 
-			MkFstab();
-			new Clean();
+				MkFstab();
+				new Clean();
+			}
 		}).start();
 	}
 
@@ -377,18 +380,27 @@ public class MakeTree {
 				"\n" + 
 				"# Recovery\n" + 
 				"TARGET_USERIMAGES_USE_EXT4 := true\n" + 
-				"BOARD_RECOVERYIMAGE_PARTITION_SIZE := "+info.getSize()+" \n" +
-				"BOARD_FLASH_BLOCK_SIZE := 1000000\n" + 
-				"BOARD_HAS_NO_REAL_SDCARD := true\n" + 
-				"TW_EXCLUDE_SUPERSU := true\n"
-				+ "TW_INPUT_BLACKLIST := \"hbtp_vm\"\n"
-				+ "include $(LOCAL_PATH)/kernel.mk\n";
-	
+				"BOARD_RECOVERYIMAGE_PARTITION_SIZE := "+info.getSize()+"\n" +
+				"BOARD_FLASH_BLOCK_SIZE := 0\n" +
+				"BOARD_HAS_NO_REAL_SDCARD := true\n" +
+				"BOARD_HAS_NO_SELECT_BUTTON := true\n" +
+				"BOARD_SUPPRESS_SECURE_ERASE := true\n" +
+				"BOARD_HAS_NO_MISC_PARTITION := true\n" +
+				"BOARD_RECOVERY_SWIPE := true\n" +
+				"BOARD_USES_MMCUTILS := true\n" +
+				"BOARD_SUPPRESS_EMMC_WIPE := true\n"
+				+ "TW_EXCLUDE_SUPERSU := true\n"
+				+ "TW_INPUT_BLACKLIST := \"hbtp_vm\"\n";
+		if (type.equals("samsung"))
+		{
+			idata+="TW_HAS_DOWNLOAD_MODE := true\n" +
+					"TW_NO_REBOOT_BOOTLOADER := true\n"+
+					"BOARD_CUSTOM_BOOTIMG_MK := device/generic/twrpbuilder/seEnforcing.mk\n";
+		}
+
 			System.out.println("found "+ info.getPlatform() + " platform" );
-			if(type.equals("samsung"))
-			{
-				idata+="BOARD_CUSTOM_BOOTIMG_MK := device/generic/twrpbuilder/seEnforcing.mk\n";	
-			}
+		/*Includes*/
+		idata+="include $(LOCAL_PATH)/kernel.mk\n";
 			if(type.equals("mrvl"))
 			{
 				idata+="include device/generic/twrpbuilder/mrvl.mk\n";
