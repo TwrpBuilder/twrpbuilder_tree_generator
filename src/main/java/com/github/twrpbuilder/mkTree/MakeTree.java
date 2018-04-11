@@ -174,7 +174,8 @@ public class MakeTree {
 		System.out.println("Build fingerPrint: "+info.getFingerPrint());
 		System.out.println("tree ready for "+ info.getCodename());
 		new FWriter(".travis.yml",generateTravis());
-		System.out.println((char)27 + "[31m" +"Waring :- Check recovery fstab before build");
+		System.out.println((char)27 + "[31m" + "Warning :- Check recovery fstab before build");
+		System.out.println((char)27 + "[0m");
 	}
 
 	public void MkFstab() {
