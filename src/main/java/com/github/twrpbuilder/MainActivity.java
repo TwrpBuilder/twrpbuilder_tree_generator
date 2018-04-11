@@ -118,6 +118,10 @@ public class MainActivity {
 		            	}
 		            }
 	         }
+	         if (commandLine.hasOption("l"))
+			 {
+			 	MakeTree.landscape=true;
+			 }
 	      }
 	      catch (ParseException parseException)  // checked exception
 	      {
@@ -130,12 +134,13 @@ public class MainActivity {
 	   public static Options constructPosixOptions()
 	   {
 	      final Options option = new Options();
-	      option.addOption("f","file", true, "build using backup file (made from app).");
-	      option.addOption("t","type",true,"supported option :- \n mt , samsung,mrvl");
-	      option.addOption("aik","Android_Image_Kitchen",false,"Extract backup or recovery.img using Android Image kitchen");
-	      option.addOption("otg","otg-support",false,"add otg support to fstab");
-	      option.addOption("r","recovery",true,"build using recovery image file");
-	      option.addOption("h","help",false,"print this help");
+		   option.addOption("f","file", true, "build using backup file (made from app).");
+		   option.addOption("t","type",true,"supported option :- \n mt , samsung,mrvl");
+		   option.addOption("l","land-scape",false,"enable landscape mode");
+		   option.addOption("aik","Android_Image_Kitchen",false,"Extract backup or recovery.img using Android Image kitchen");
+		   option.addOption("otg","otg-support",false,"add otg support to fstab");
+		   option.addOption("r","recovery",true,"build using recovery image file");
+		   option.addOption("h","help",false,"print this help");
 	      return option;
 	   }
 

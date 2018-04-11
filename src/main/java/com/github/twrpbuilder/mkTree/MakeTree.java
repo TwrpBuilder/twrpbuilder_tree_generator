@@ -18,6 +18,7 @@ public class MakeTree {
 	private String type;
 	private boolean mt;
 	public static boolean AndroidImageKitchen;
+	public static boolean landscape;
 	public MakeTree(boolean mtk,String type){
 		config=new Config();
 		shell=new ShellExecutor();
@@ -391,6 +392,10 @@ public class MakeTree {
 				"BOARD_SUPPRESS_EMMC_WIPE := true\n"
 				+ "TW_EXCLUDE_SUPERSU := true\n"
 				+ "TW_INPUT_BLACKLIST := \"hbtp_vm\"\n";
+		if (landscape)
+        {
+            idata+="TW_THEME := landscape_hdpi\n";
+        }
 		if (type.equals("samsung"))
 		{
 			idata+="TW_HAS_DOWNLOAD_MODE := true\n" +
