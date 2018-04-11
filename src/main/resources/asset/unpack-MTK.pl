@@ -153,12 +153,12 @@ sub unpack_boot {
 	printf PAGEFILE ("%d",$pageSize) or die;
 	close (PAGEFILE);
 
-	open (RAMDISKOFF, ">tmp/$inputFilename-ramdisk_offset")
+	open (RAMDISKOFF, ">tmp/$inputFilename-ramdiskoff")
 		or die();
 	printf RAMDISKOFF ("%.8x",$ram1Offset) or die;
 	close (RAMDISKOFF);
 
-	open (TAGSOFFSET, ">tmp/$inputFilename-tags_offset")
+	open (TAGSOFFSET, ">tmp/$inputFilename-tagsoff")
 		or die();
 	printf TAGSOFFSET ("%.8x",$tagsOffset) or die;
 	close (TAGSOFFSET);
