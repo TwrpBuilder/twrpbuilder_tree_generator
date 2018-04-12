@@ -117,14 +117,13 @@ public class MakeTree {
 	private String getKernelData(boolean dt) {
         String idata;
         String pagesize=shell.commandnoapp("cat "+out+"recovery.img-pagesize");
-        String cmdline=shell.commandnoapp("cat "+out+"recovery.img-cmdline");
         String ramdiskofsset=shell.commandnoapp("cat "+out+"recovery.img-ramdiskoff");
         String tagsoffset=shell.commandnoapp("cat "+out+"recovery.img-tagsoff");
         String kernelbase=shell.commandnoapp("cat "+out+"recovery.img-base");
         idata=copyRight;
 		idata+="# Kernel\n" + 
 				"TARGET_PREBUILT_KERNEL := "+info.getPathS()+"kernel\n" +
-				"BOARD_KERNEL_CMDLINE := "+cmdline+" androidboot.selinux=permissive\n" + 
+				"BOARD_KERNEL_CMDLINE := "+cmdline()+"\n" +
 				"BOARD_KERNEL_BASE := 0x"+kernelbase+"\n" + 
 				"BOARD_KERNEL_PAGESIZE := "+pagesize+"\n";
 		if(dt) {
@@ -133,6 +132,16 @@ public class MakeTree {
 		idata+="BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x"+ramdiskofsset+" --tags_offset 0x"+tagsoffset;
 		}
 		return idata;
+	}
+
+	private String cmdline(){
+		String cm=shell.commandnoapp("cat "+out+"recovery.img-cmdline");
+		if (cm.contains("permissive"))
+		{
+			return cm;
+		}else {
+			return cm+" androidboot.selinux=permissive";
+		}
 	}
 
 	public void extractFstab() {
