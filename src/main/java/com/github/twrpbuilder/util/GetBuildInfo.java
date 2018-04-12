@@ -40,13 +40,16 @@ public class GetBuildInfo {
 
 	public static String getBrand() {
 		brand= shell.commandnoapp("cat "+propFile()+" | grep ro.product.brand= | cut -d = -f 2");
-		               if(brand.contains("-"))
-			               {
-		            	   String newstr=brand.replace("-", "_");
-		            	   return newstr;
-			              }else {
-			            	  return brand;
-			            	 }
+		if(brand.contains("-"))
+		{
+			String newstr=brand.replace("-", "_");
+			return newstr;
+		}else if(brand.contains(" "))
+		{
+			String str=brand.replace(" ", "_");
+			return str;
+		}else {
+			return brand; }
 	}
 
 	public static String getCodename() {
