@@ -2,11 +2,14 @@ package com.github.twrpbuilder.util;
 
 import java.io.File;
 
+import static com.github.twrpbuilder.MainActivity.rName;
+
 public class Clean {
 	private ShellExecutor shell;
 	public Clean(){
 		shell=new ShellExecutor();
 		file("build.prop" );
+		if (rName==null)
 		file(Config.recoveryFile);
 		file("mounts");
 		file("umkbootimg");

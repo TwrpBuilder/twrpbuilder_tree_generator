@@ -15,14 +15,11 @@ import org.apache.commons.cli.ParseException;
 
 import com.github.twrpbuilder.mkTree.MakeTree;
 import com.github.twrpbuilder.util.RunCode;
-import com.github.twrpbuilder.util.ShellExecutor;
 
 
 public class MainActivity {
     private static String applicationName = "TwrpBuilder";
-    private static ShellExecutor shell;
-    private static String recoveryF=Config.recoveryFile;
-
+    public static String rName;
 	   public static void usePosixParser(final String[] commandLineArguments)
 	   {
 		final CommandLineParser cmdLinePosixParser = new DefaultParser();
@@ -90,17 +87,8 @@ public class MainActivity {
 		            	if(!g.contains(" "))
 		            	{
 		            		System.out.println("Building tree using: "+g);
-		            		if(!new File(recoveryF).exists())
-		            		{
-		            			shell.cp(g,recoveryF);
-		            		}
-		            		else
-		            		{
-		            			shell.command("rm -rf "+recoveryF);
-		            			shell.cp(g,recoveryF);
-		            		}
-
-		            		if(commandLine.hasOption("t"))
+                            rName=g;
+							if(commandLine.hasOption("t"))
 		            		{
 		            			String t=commandLine.getOptionValue("t");
 		            			if(t.equals("mrvl"))
@@ -212,7 +200,6 @@ public class MainActivity {
 
 	   public static void main(final String[] commandLineArguments)
 	   {
-	   	shell=new ShellExecutor();
 	      if (commandLineArguments.length < 1)
 	      {
 	         System.out.println("-- USAGE --");

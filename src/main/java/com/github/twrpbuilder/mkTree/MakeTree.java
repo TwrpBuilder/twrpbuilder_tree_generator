@@ -132,7 +132,7 @@ public class MakeTree {
 	}
 
 	private String readRamadiskData(String which){
-		String thinew=shell.commandnoapp("cat "+out+recoveryF+which);
+		String thinew=shell.commandnoapp("cat "+out+recoveryF+"-"+which);
 		return thinew;
 	}
 
