@@ -19,6 +19,7 @@ public class MakeTree {
 	private boolean mt;
 	public static boolean AndroidImageKitchen;
 	public static boolean landscape;
+	private static String recoveryF=Config.recoveryFile;
 	public MakeTree(boolean mtk,String type){
 		config=new Config();
 		shell=new ShellExecutor();
@@ -65,14 +66,14 @@ public class MakeTree {
 				System.out.println("Making AndroidProducts.mk");
 				new FWriter("AndroidProducts.mk",getAndroidProductsData());
 				System.out.println("Making kernel.mk");
-				if(new File(out+"recovery.img-zImage").exists())
+				if(new File(out+recoveryF+"-zImage").exists())
 				{
-					shell.cp(out+"recovery.img-zImage", info.getPathS()+"kernel");
+					shell.cp(out+recoveryF+"-zImage", info.getPathS()+"kernel");
 				}
-				if(new File(out+"recovery.img-dt").length()!=l)
+				if(new File(out+recoveryF+"-dt").length()!=l)
 				{
 
-					shell.cp(out+"recovery.img-dt", info.getPathS()+"dt.img");
+					shell.cp(out+recoveryF+"-dt", info.getPathS()+"dt.img");
 					new FWriter("kernel.mk",getKernelData(true));
 				}else {
 					new FWriter("kernel.mk",getKernelData(false));
@@ -100,42 +101,43 @@ public class MakeTree {
 		shell.mkdir(out);
 		if (AndroidImageKitchen)
 		{
-			System.out.println(shell.command("chmod 777 unpackimg.sh && ./unpackimg.sh recovery.img"));
+			System.out.println(shell.command("chmod 777 unpackimg.sh && ./unpackimg.sh "+recoveryF));
 		}else {
 			shell.command("chmod 777 umkbootimg");
 			if(mtk)
 			{
-				shell.command("./umkbootimg recovery.img");
+				shell.command("./umkbootimg "+recoveryF);
 			}
 			else
 			{
-				shell.command("./umkbootimg -i recovery.img -o "+out);
+				shell.command("./umkbootimg -i "+recoveryF+" -o "+out);
 			}
 		}
 	}
 
 	private String getKernelData(boolean dt) {
         String idata;
-        String pagesize=shell.commandnoapp("cat "+out+"recovery.img-pagesize");
-        String ramdiskofsset=shell.commandnoapp("cat "+out+"recovery.img-ramdiskoff");
-        String tagsoffset=shell.commandnoapp("cat "+out+"recovery.img-tagsoff");
-        String kernelbase=shell.commandnoapp("cat "+out+"recovery.img-base");
         idata=copyRight;
 		idata+="# Kernel\n" + 
 				"TARGET_PREBUILT_KERNEL := "+info.getPathS()+"kernel\n" +
 				"BOARD_KERNEL_CMDLINE := "+cmdline()+"\n" +
-				"BOARD_KERNEL_BASE := 0x"+kernelbase+"\n" + 
-				"BOARD_KERNEL_PAGESIZE := "+pagesize+"\n";
+				"BOARD_KERNEL_BASE := 0x"+readRamadiskData("base")+"\n" +
+				"BOARD_KERNEL_PAGESIZE := "+readRamadiskData("pagesize")+"\n";
 		if(dt) {
-		idata+="BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x"+ramdiskofsset+" --tags_offset 0x"+tagsoffset+" --dt device/"+info.getBrand()+File.separator+info.getCodename()+"/dt.img";
+		idata+="BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x"+readRamadiskData("ramdiskoff")+" --tags_offset 0x"+readRamadiskData("tagsoff")+" --dt device/"+info.getBrand()+File.separator+info.getCodename()+"/dt.img";
 		}else {
-		idata+="BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x"+ramdiskofsset+" --tags_offset 0x"+tagsoffset;
+		idata+="BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x"+readRamadiskData("ramdiskoff")+" --tags_offset 0x"+readRamadiskData("tagsoff");
 		}
 		return idata;
 	}
 
+	private String readRamadiskData(String which){
+		String thinew=shell.commandnoapp("cat "+out+recoveryF+which);
+		return thinew;
+	}
+
 	private String cmdline(){
-		String cm=shell.commandnoapp("cat "+out+"recovery.img-cmdline");
+		String cm=shell.commandnoapp("cat "+out+recoveryF+"-cmdline");
 		if (cm.contains("permissive"))
 		{
 			return cm;
@@ -145,21 +147,21 @@ public class MakeTree {
 	}
 
 	public void extractFstab() {
-		compressionType=shell.commandnoapp("cd "+out+" && file --mime-type recovery.img-ramdisk.* | cut -d / -f 2 | cut -d '-' -f 2");
+		compressionType=shell.commandnoapp("cd "+out+" && file --mime-type "+recoveryF+"-ramdisk.* | cut -d / -f 2 | cut -d '-' -f 2");
 		if(compressionType.contains("lzma"))
 		{
 			System.out.println("Found lzma comression in ramdisk");
-			shell.command("mv "+out+"recovery.img-ramdisk.gz "+out+"recovery.img-ramdisk.lzma && lzma -d "+out+"recovery.img-ramdisk.lzma  && cd "+out+" && cpio -i <recovery.img-ramdisk");
+			shell.command("mv "+out+recoveryF+"-ramdisk.gz "+out+recoveryF+"-ramdisk.lzma && lzma -d "+out+recoveryF+"-ramdisk.lzma  && cd "+out+" && cpio -i <"+recoveryF+"-ramdisk");
 			lzma=true;
 		}else if(compressionType.contains("gzip"))
 		{
 			System.out.println("Found gzip comression in ramdisk");
-			shell.command("gzip -d "+out+"recovery.img-ramdisk.gz && cd "+out+" && cpio -i <recovery.img-ramdisk");
+			shell.command("gzip -d "+out+recoveryF+"-ramdisk.gz && cd "+out+" && cpio -i <"+recoveryF+"-ramdisk");
 		}
 		else if(compressionType.contains("lz4"))
 		{
 			System.out.println("Found lz4 comression in ramdisk");
-			shell.commandnoapp("cd "+out+" && lz4 -d recovery.img-ramdisk.*  recovery.img-ramdisk && cpio -i <recovery.img-ramdisk ");
+			shell.commandnoapp("cd "+out+" && lz4 -d "+recoveryF+"-ramdisk.*  "+recoveryF+"-ramdisk && cpio -i <"+recoveryF+"-ramdisk ");
 			lz4=true;
 		}
 		else 
@@ -367,7 +369,7 @@ public class MakeTree {
                 "    EOF\n" +
                 "after_success:\n" +
                 "  - export version=$(cat bootable/recovery/variables.h | grep \"define TW_MAIN_VERSION_STR\" | cut -d '\"' -f2)\n" +
-                "  - cp $HOME/twrp/out/target/product/"+info.getCodename()+"/recovery.img $HOME/twrp/TWRP-$version-"+info.getCodename()+"-$(date +\"%Y%m%d\").img\n" +
+                "  - cp $HOME/twrp/out/target/product/"+info.getCodename()+File.separator+recoveryF+" $HOME/twrp/TWRP-$version-"+info.getCodename()+"-$(date +\"%Y%m%d\").img\n" +
                 "\n" +
                 "deploy:\n" +
                 "  skip_cleanup: true\n" +

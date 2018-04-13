@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import com.github.twrpbuilder.util.Config;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -20,7 +21,7 @@ import com.github.twrpbuilder.util.ShellExecutor;
 public class MainActivity {
     private static String applicationName = "TwrpBuilder";
     private static ShellExecutor shell;
-
+    private static String recoveryF=Config.recoveryFile;
 
 	   public static void usePosixParser(final String[] commandLineArguments)
 	   {
@@ -89,14 +90,14 @@ public class MainActivity {
 		            	if(!g.contains(" "))
 		            	{
 		            		System.out.println("Building tree using: "+g);
-		            		if(!new File("recovery.img").exists())
+		            		if(!new File(recoveryF).exists())
 		            		{
-		            			shell.cp(g,"recovery.img");
+		            			shell.cp(g,recoveryF);
 		            		}
 		            		else
 		            		{
-		            			shell.command("rm -rf recovery.img");
-		            			shell.cp(g,"recovery.img");
+		            			shell.command("rm -rf "+recoveryF);
+		            			shell.cp(g,recoveryF);
 		            		}
 
 		            		if(commandLine.hasOption("t"))

@@ -94,7 +94,7 @@ public class GetBuildInfo {
 	}
 	
 	public static String getSize() {
-		size= shell.commandnoapp("wc -c < recovery.img");
+		size= shell.commandnoapp("wc -c < "+Config.recoveryFile);
 		return size;
 	}
 	

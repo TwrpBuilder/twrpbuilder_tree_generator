@@ -7,7 +7,7 @@ public class Clean {
 	public Clean(){
 		shell=new ShellExecutor();
 		file("build.prop" );
-		file("recovery.img");
+		file(Config.recoveryFile);
 		file("mounts");
 		file("umkbootimg");
 		file(Config.outDir);
