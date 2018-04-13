@@ -8,7 +8,6 @@ public class Config {
     public static String outDir="tmp"+ File.separator;
     public static String recoveryFile=recovery()+".img";
     public static String recovery(){
-        System.out.println(rName);
         if (rName==null)
         {
             return "recovery";
