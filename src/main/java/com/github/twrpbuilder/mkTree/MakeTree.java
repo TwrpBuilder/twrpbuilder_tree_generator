@@ -5,13 +5,14 @@ import java.io.File;
 
 import com.github.twrpbuilder.util.*;
 
+import static com.github.twrpbuilder.MainActivity.otg;
+
 public class MakeTree {
 	private long l=0;
 	private String compressionType;
 	private boolean lz4,lzma;
 	private ShellExecutor shell;
 	private String copyRight=shell.CopyRight();
-	public static boolean otg;
 	private GetBuildInfo info;
 	private Config config;
 	private String out;
@@ -186,7 +187,7 @@ public class MakeTree {
 		System.out.println("tree ready for "+ info.getCodename());
 		new FWriter(".travis.yml",generateTravis());
 		System.out.println((char)27 + "[31m" + "Warning :- Check recovery fstab before build");
-		System.out.println((char)27 + "[0m");
+		System.out.print("[0m");
 	}
 
 	public void MkFstab() {

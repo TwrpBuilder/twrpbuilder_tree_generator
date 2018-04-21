@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import com.github.twrpbuilder.util.Config;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -20,7 +19,9 @@ import com.github.twrpbuilder.util.RunCode;
 public class MainActivity {
     private static String applicationName = "TwrpBuilder";
     public static String rName;
-	   public static void usePosixParser(final String[] commandLineArguments)
+	public static boolean otg;
+
+	public static void usePosixParser(final String[] commandLineArguments)
 	   {
 		final CommandLineParser cmdLinePosixParser = new DefaultParser();
 	      final Options posixOptions = constructPosixOptions();
@@ -76,7 +77,7 @@ public class MainActivity {
 	         
 	         if(commandLine.hasOption("otg"))
 	         {
-	        	MakeTree.otg=true; 
+	        	otg=true;
 	         }
 	         
 	         if(commandLine.hasOption("r"))
