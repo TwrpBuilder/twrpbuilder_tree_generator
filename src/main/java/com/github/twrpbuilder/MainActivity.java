@@ -61,7 +61,14 @@ public class MainActivity {
 		            		new Thread(new RunCode(g)).start();
 	            		}
 	            	}
+					else {
+						System.out.println("Please remove spaces from filename. ");
+					}
 	            }
+	            else
+                {
+                    System.out.println(g+" does not exist .");
+                }
 	         }
 
 	         if(commandLine.hasOption("h"))
@@ -106,7 +113,14 @@ public class MainActivity {
 			            		new Thread(new RunCode(g)).start();
 		            		}
 		            	}
+		            	else {
+		            		System.out.println("Please remove spaces from filename. ");
+						}
 		            }
+                    else
+                    {
+                        System.out.println(g+" does not exist .");
+                    }
 	         }
 	         if (commandLine.hasOption("l"))
 			 {
