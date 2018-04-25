@@ -21,6 +21,7 @@ public class MakeTree {
 	public static boolean AndroidImageKitchen;
 	public static boolean landscape;
 	private static String recoveryF=Config.recoveryFile;
+	private boolean encrypted;
 	public MakeTree(boolean mtk,String type){
 		config=new Config();
 		shell=new ShellExecutor();
@@ -79,6 +80,7 @@ public class MakeTree {
 				}else {
 					new FWriter("kernel.mk",getKernelData(false));
 				}
+				MkFstab();
 
 				if(mt)
 				{
@@ -91,8 +93,9 @@ public class MakeTree {
 				{
 					MkBoardConfig();
 				}
-
-				MkFstab();
+				System.out.println((char)27 + "[31m" + "Warning :- Check recovery fstab before build"+(char)27 +"[0m");
+				System.out.println("Build fingerPrint: "+info.getFingerPrint());
+				System.out.println("tree ready for "+ info.getCodename());
 				new Clean();
 			}
 		}).start();
@@ -183,11 +186,7 @@ public class MakeTree {
 			Fstab(out+"etc/recovery.fstab");
 			shell.command("mkdir "+info.getPathS()+"stock && mv "+out+"etc/* "+info.getPathS()+"stock/");
 		}
-		System.out.println("Build fingerPrint: "+info.getFingerPrint());
-		System.out.println("tree ready for "+ info.getCodename());
 		new FWriter(".travis.yml",generateTravis());
-		System.out.println((char)27 + "[31m" + "Warning :- Check recovery fstab before build");
-		System.out.print("[0m");
 	}
 
 	public void MkFstab() {
@@ -220,12 +219,22 @@ public class MakeTree {
 			toWrite+=shell.command("cat "+path);
 			new FWriter("recovery.fstab", toWrite);
 		}else {
-
 			String toWrite = copyRight;
 			if (checkPartition(path, "boot")) {
 				toWrite += grepPartition(path, "boot");
 			}
+
+			if(checkPartition(path,"metadata"))
+			{
+				encrypted=true;
+			}
 			if (checkPartition(path, "data")) {
+				if (checkPartition(path,"encrypt"))
+				{
+					encrypted=true;
+					toWrite+=grepPartition(path,"data")+"flags=encryptable="+grepPartition(path,"encrypt")+"\n";
+				}
+				else
 				toWrite += grepPartition(path, "data");
 			}
 			if (checkPartition(path, "system")) {
@@ -414,6 +423,10 @@ public class MakeTree {
 			idata+="TW_HAS_DOWNLOAD_MODE := true\n" +
 					"TW_NO_REBOOT_BOOTLOADER := true\n"+
 					"BOARD_CUSTOM_BOOTIMG_MK := device/generic/twrpbuilder/seEnforcing.mk\n";
+		}
+		if (encrypted)
+		{
+			idata+="TW_INCLUDE_CRYPTO := true\n";
 		}
 
 			System.out.println("found "+ info.getPlatform() + " platform" );

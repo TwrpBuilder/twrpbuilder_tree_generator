@@ -13,7 +13,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import com.github.twrpbuilder.mkTree.MakeTree;
-import com.github.twrpbuilder.util.RunCode;
+import com.github.twrpbuilder.Thread.RunCode;
 
 
 public class MainActivity {
