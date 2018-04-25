@@ -241,14 +241,12 @@ public class MakeTree extends Tools {
         String fullpath = null;
         LinkedList<String> s = command("for i in $(cat " + path + " | grep -wi /" + partition + ")\n" +
                 "do\n" +
-                "a=$(echo $i | grep /dev)\n" +
-                "echo $a\n" +
+                "echo echo $i | grep /dev\n" +
                 "done",true);
         if (s.isEmpty()) {
             s = command("for i in $(cat " + path + " | grep -wi /" + partition + ")\n" +
                     "do\n" +
-                    "a=$(echo $i | grep /emmc)\n" +
-                    "echo $a\n" +
+                    "echo echo $i | grep /emmc\n" +
                     "done",true);
         }
 
