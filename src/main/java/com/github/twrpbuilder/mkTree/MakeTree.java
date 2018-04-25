@@ -85,7 +85,7 @@ public class MakeTree extends Tools {
                     MkBoardConfig();
                 }
                 System.out.println("Build fingerPrint: " + getFingerPrint());
-                System.out.println("tree ready for " + getCodename());
+                System.out.println("tree ready for " + getCodename() +" at device"+seprator+getBrand()+seprator+getCodename());
                 System.out.println((char) 27 + "[31m" + "Warning :- Check recovery fstab before build" + (char) 27 + "[0m");
                 new Clean();
             }
@@ -280,12 +280,12 @@ public class MakeTree extends Tools {
 
         }
 
-        if (fullpath==null)
+        if (fullpath!=null)
         {
-            return null;
+            return fullpath;
         }
         else {
-            return fullpath;
+            return null;
         }
 
     }

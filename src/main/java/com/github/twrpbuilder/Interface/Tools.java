@@ -69,13 +69,27 @@ public class Tools implements ToolsInterface {
     }
 
     public boolean mkdir(String name) {
-        File file = new File(name);
-        if (!file.exists()) {
-            file.mkdir();
-            return true;
-        } else {
-            return file.isDirectory();
+        File theDir = new File(name).getAbsoluteFile();
+
+        // if the directory does not exist, create it
+        if (!theDir.isDirectory()) {
+            boolean result = false;
+
+            try{
+                theDir.mkdirs();
+                result = true;
+            }
+            catch(SecurityException se){
+                System.out.println("Failed to make dir "+name);
+                System.exit(0);
+            }
+            if(result) {
+            }
+        }else
+        {
+            System.out.println("Dir: "+name+" already exist");
         }
+        return theDir.isDirectory();
     }
 
     public boolean rm(String name) {
