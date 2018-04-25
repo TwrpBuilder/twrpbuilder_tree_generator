@@ -7,6 +7,8 @@ import com.github.twrpbuilder.util.Config;
 import com.github.twrpbuilder.util.FWriter;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 import static com.github.twrpbuilder.MainActivity.otg;
 
@@ -236,26 +238,56 @@ public class MakeTree extends Tools {
 
     private String grepPartition(String path, String partition) {
         String fullpath = null;
-        String s = command("for i in $(cat " + path + " | grep -wi /" + partition + ")\n" +
+        LinkedList<String> s = command("for i in $(cat " + path + " | grep -wi /" + partition + ")\n" +
                 "do\n" +
                 "a=$(echo $i | grep /dev)\n" +
                 "echo $a\n" +
-                "done");
-        System.out.println(s);
+                "done",true);
         if (s.isEmpty()) {
             s = command("for i in $(cat " + path + " | grep -wi /" + partition + ")\n" +
                     "do\n" +
                     "a=$(echo $i | grep /emmc)\n" +
                     "echo $a\n" +
-                    "done");
+                    "done",true);
         }
-        if (partition.equals("boot") || partition.equals("recovery") || partition.equals(" fotakernel") || partition.equals("FOTAKernel") || partition.equals("misc")) {
-            return fullpath = "/" + partition + " emmc " + s + "\n";
-        } else if (partition.equals("system") || partition.equals("data") || partition.equals("cache")) {
-            return fullpath = "/" + partition + " ext4 " + s + "\n";
-        } else {
+
+        ListIterator<String> listIterator=s.listIterator();
+        while (listIterator.hasNext())
+        {
+            String o=listIterator.next();
+            if (!o.isEmpty())
+            {
+                if (
+                        partition.equals("boot") ||
+                                partition.equals("recovery") ||
+                                partition.equals(" fotakernel") ||
+                                partition.equals("FOTAKernel") ||
+                                partition.equals("misc")
+                        ) {
+
+                    fullpath = "/" + partition + " emmc " + o + "\n";
+                } else if (partition.equals("system") ||
+                        partition.equals("data") ||
+                        partition.equals("cache")) {
+                    fullpath = "/" + partition + " ext4 " + o + "\n";
+                }
+                else
+                {
+                    fullpath=null;
+                }
+                System.out.println(fullpath.trim());
+            }
+
+        }
+
+        if (fullpath==null)
+        {
             return null;
         }
+        else {
+            return fullpath;
+        }
+
     }
 
     private void CheckCompression() {
