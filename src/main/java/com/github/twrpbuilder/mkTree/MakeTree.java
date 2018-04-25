@@ -269,8 +269,7 @@ public class MakeTree extends Tools {
                     {
                         if (o.contains("/metadata"))
                         {
-                            System.out.println("Suck it");
-                            tmp += o.replace("wait,check,resize,"," ").replace(",","") + "\n";
+                            tmp += o.replace("wait,check,resize,"," flags=").replace(",","") + "\n";
 
                         }
                         else {
