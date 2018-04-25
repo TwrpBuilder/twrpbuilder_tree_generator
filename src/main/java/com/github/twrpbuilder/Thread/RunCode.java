@@ -3,7 +3,6 @@ package com.github.twrpbuilder.Thread;
 import com.github.twrpbuilder.Interface.Tools;
 import com.github.twrpbuilder.mkTree.MakeTree;
 import com.github.twrpbuilder.util.ExtractBackup;
-import com.github.twrpbuilder.util.GetAsset;
 
 public class RunCode extends Tools implements Runnable {
 
@@ -19,11 +18,11 @@ public class RunCode extends Tools implements Runnable {
         RunCode.name = name;
         if (AndroidImageKitchen) {
             System.out.println("Using Android Image Kitchen to extract " + name);
-            new GetAsset("bin");
-            new GetAsset("unpackimg.sh");
+            extract("bin");
+            extract("unpackimg.sh");
         } else {
-            new GetAsset("umkbootimg");
-            new GetAsset("magic");
+            extract("umkbootimg");
+            extract("magic");
         }
     }
 
@@ -32,20 +31,20 @@ public class RunCode extends Tools implements Runnable {
         RunCode.type = type;
 
         if (type.equals("mrvl")) {
-            new GetAsset("degas-umkbootimg");
+            extract("degas-umkbootimg");
             command("mv degas-umkbootimg umkbootimg ");
             mrvl = true;
         } else if (type.equals("mt") || type.equals("mtk")) {
-            new GetAsset("unpack-MTK.pl");
+            extract("unpack-MTK.pl");
             command("mv unpack-MTK.pl umkbootimg");
             mtk = true;
         } else if (type.equals("samsung")) {
-            new GetAsset("umkbootimg");
+            extract("umkbootimg");
             samsung = true;
         }
         if (AndroidImageKitchen) {
-            new GetAsset("bin");
-            new GetAsset("unpackimg.sh");
+            extract("bin");
+            extract("unpackimg.sh");
         }
     }
 

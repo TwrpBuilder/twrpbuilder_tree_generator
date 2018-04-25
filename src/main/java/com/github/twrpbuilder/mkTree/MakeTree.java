@@ -2,9 +2,7 @@ package com.github.twrpbuilder.mkTree;
 
 
 import com.github.twrpbuilder.Interface.Tools;
-import com.github.twrpbuilder.util.Clean;
 import com.github.twrpbuilder.util.Config;
-import com.github.twrpbuilder.util.FWriter;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -47,7 +45,7 @@ public class MakeTree extends Tools {
             command("sed 's/\\[\\([^]]*\\)\\]/\\1/g' " + propFile() + " | sed 's/: /=/g' | tee > b.prop && mv -f b.prop build.prop");
             if (getCodename().isEmpty()) {
                 System.out.println("Failed to get info");
-                new Clean();
+                Clean();
                 System.exit(0);
             }
         }
@@ -59,11 +57,11 @@ public class MakeTree extends Tools {
             @Override
             public void run() {
                 System.out.println("Making omni_" + getCodename() + ".mk");
-                new FWriter("omni_" + getCodename() + ".mk", getOmniData());
+                Write("omni_" + getCodename() + ".mk", getOmniData());
                 System.out.println("Making Android.mk");
-                new FWriter("Android.mk", getAndroidtData());
+                Write("Android.mk", getAndroidtData());
                 System.out.println("Making AndroidProducts.mk");
-                new FWriter("AndroidProducts.mk", getAndroidProductsData());
+                Write("AndroidProducts.mk", getAndroidProductsData());
                 System.out.println("Making kernel.mk");
                 if (fexist(out + recoveryF + "-zImage")) {
                     cp(out + recoveryF + "-zImage", getPathS() + "kernel");
@@ -71,9 +69,9 @@ public class MakeTree extends Tools {
                 if (new File(out + recoveryF + "-dt").length() != l) {
 
                     cp(out + recoveryF + "-dt", getPathS() + "dt.img");
-                    new FWriter("kernel.mk", getKernelData(true));
+                    Write("kernel.mk", getKernelData(true));
                 } else {
-                    new FWriter("kernel.mk", getKernelData(false));
+                    Write("kernel.mk", getKernelData(false));
                 }
                 MkFstab();
 
@@ -87,7 +85,7 @@ public class MakeTree extends Tools {
                 System.out.println("Build fingerPrint: " + getFingerPrint());
                 System.out.println("tree ready for " + getCodename() +" at device"+seprator+getBrand()+seprator+getCodename());
                 System.out.println((char) 27 + "[31m" + "Warning :- Check recovery fstab before build" + (char) 27 + "[0m");
-                new Clean();
+                Clean();
             }
         }).start();
     }
@@ -150,7 +148,7 @@ public class MakeTree extends Tools {
             command("cd " + out + " && lz4 -d " + recoveryF + "-ramdisk.*  " + recoveryF + "-ramdisk && cpio -i <" + recoveryF + "-ramdisk ");
             lz4 = true;
         } else {
-            new Clean();
+            Clean();
             System.out.println("failed to uncompress ramdisk");
             System.exit(0);
         }
@@ -167,7 +165,7 @@ public class MakeTree extends Tools {
             Fstab(out + "etc/recovery.fstab");
             command("mkdir " + getPathS() + "stock && mv " + out + "etc/* " + getPathS() + "stock/");
         }
-        new FWriter(".travis.yml", generateTravis());
+        Write(".travis.yml", generateTravis());
     }
 
     public void MkFstab() {
@@ -192,7 +190,7 @@ public class MakeTree extends Tools {
         if (path.contains("twrp.fstab")) {
             String toWrite = copyRight;
             toWrite += command("cat " + path);
-            new FWriter("recovery.fstab", toWrite);
+            Write("recovery.fstab", toWrite);
         } else {
             String toWrite = copyRight;
             if (checkPartition(path, "boot")) {
@@ -232,7 +230,7 @@ public class MakeTree extends Tools {
             }
 
             toWrite += "/external_sd vfat /dev/block/mmcblk1p1 /dev/block/mmcblk1 flags=display=\"Micro SDcard\";storage;wipeingui;removable\n";
-            new FWriter("recovery.fstab", toWrite);
+            Write("recovery.fstab", toWrite);
         }
     }
 
@@ -340,12 +338,12 @@ public class MakeTree extends Tools {
     }
 
     public void MkBoardConfig() {
-        new FWriter("BoardConfig.mk", getBoardData("none"));
+        Write("BoardConfig.mk", getBoardData("none"));
 
     }
 
     public void MkBoardConfig(String type) {
-        new FWriter("BoardConfig.mk", getBoardData(type));
+        Write("BoardConfig.mk", getBoardData(type));
 
     }
 

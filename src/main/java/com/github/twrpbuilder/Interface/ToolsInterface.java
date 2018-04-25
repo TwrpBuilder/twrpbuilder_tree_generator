@@ -43,4 +43,7 @@ public interface ToolsInterface {
     String getPathS();
 
     String getPath();
+    void Write(String name, String data);
+    void Clean();
+    String extract(String name);
 }

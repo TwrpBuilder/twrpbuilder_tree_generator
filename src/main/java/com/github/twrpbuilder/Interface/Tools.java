@@ -3,12 +3,11 @@ package com.github.twrpbuilder.Interface;
 import com.github.twrpbuilder.util.Config;
 import org.apache.commons.io.FileUtils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.file.Files;
 import java.util.LinkedList;
+
+import static com.github.twrpbuilder.MainActivity.rName;
 
 public class Tools implements ToolsInterface {
 
@@ -235,4 +234,67 @@ public class Tools implements ToolsInterface {
         return path;
     }
 
+    public void Write(String name, String data) {
+        PrintWriter writer;
+        try {
+            writer = new PrintWriter(new FileOutputStream(getPathS() + name, false));
+            writer.println(data);
+            writer.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+    private boolean file(String name) {
+        if (new File(name).exists()) {
+            rm(name);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void Clean() {
+        file("build.prop");
+        if (rName == null)
+            file(Config.recoveryFile);
+        file("mounts");
+        file("umkbootimg");
+        file(Config.outDir);
+        file("unpack-MTK.pl");
+        file("unpackimg.sh");
+        file("bin");
+        file("magic");
+        file("androidbootimg.magic");
+
+    }
+
+    public String extract(String name) {
+        InputStream stream = null;
+        OutputStream resStreamOut = null;
+        String jarFolder=null;
+        String resourceName = seprator + name;
+        try {
+
+            stream = Tools.class.getResourceAsStream(seprator + "asset" + resourceName);
+            if (stream == null) {
+                    throw new Exception("Cannot get resource \"" + resourceName + "\" from Jar file.");
+            }
+
+            int readBytes;
+            byte[] buffer = new byte[4096];
+            jarFolder = new File(Tools.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile().getPath().replace('\\', '/');
+            resStreamOut = new FileOutputStream(jarFolder + resourceName);
+            while ((readBytes = stream.read(buffer)) > 0) {
+                resStreamOut.write(buffer, 0, readBytes);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return jarFolder + resourceName;
+
+    }
 }
