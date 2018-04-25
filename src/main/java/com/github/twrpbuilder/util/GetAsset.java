@@ -1,29 +1,31 @@
 package com.github.twrpbuilder.util;
 
+import com.github.twrpbuilder.Interface.Tools;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-public class GetAsset {
-	
-	public GetAsset(String name){
 
-		try {
-			run(name);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	private String run(String name) throws Exception{
+public class GetAsset extends Tools {
+
+    public GetAsset(String name) {
+
+        try {
+            run(name);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String run(String name) throws Exception {
         InputStream stream = null;
         OutputStream resStreamOut = null;
         String jarFolder;
-        String resourceName=File.separator+name;
+        String resourceName = seprator + name;
         try {
-            stream = GetAsset.class.getResourceAsStream(File.separator+"asset"+resourceName);//note that each / is a directory down in the "jar tree" been the jar the root of the tree
-            if(stream == null) {
+            stream = GetAsset.class.getResourceAsStream(seprator + "asset" + resourceName);
+            if (stream == null) {
                 throw new Exception("Cannot get resource \"" + resourceName + "\" from Jar file.");
             }
 
@@ -42,6 +44,6 @@ public class GetAsset {
         }
         return jarFolder + resourceName;
 
-	}
+    }
 }
 
