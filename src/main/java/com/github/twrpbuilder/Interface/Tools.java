@@ -56,7 +56,6 @@ public class Tools implements ToolsInterface {
         String[] commands = new String[]{"/bin/bash", "-c", run};
         LinkedList<String> linkedList = new LinkedList();
         try {
-            System.out.println(commands[2]);
             process = Runtime.getRuntime().exec(commands);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             while ((o = bufferedReader.readLine()) != null) {
