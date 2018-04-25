@@ -65,7 +65,7 @@ public class MakeTree extends Tools {
                 System.out.println("Making AndroidProducts.mk");
                 new FWriter("AndroidProducts.mk", getAndroidProductsData());
                 System.out.println("Making kernel.mk");
-                if (new File(out + recoveryF + "-zImage").exists()) {
+                if (fexist(out + recoveryF + "-zImage")) {
                     cp(out + recoveryF + "-zImage", getPathS() + "kernel");
                 }
                 if (new File(out + recoveryF + "-dt").length() != l) {
@@ -158,10 +158,12 @@ public class MakeTree extends Tools {
     }
 
     private void FstablastMessage() {
-        if (new File(out + "etc/twrp.fstab").exists()) {
+        if (fexist(out + "etc/twrp.fstab")) {
+            System.out.println("Copying fstab");
             Fstab(out + "etc/twrp.fstab");
             command("mkdir " + getPathS() + "stock && mv " + out + "etc/* " + getPathS() + "stock/");
-        } else if (new File(out + "etc/recovery.fstab").exists()) {
+        } else if (fexist(out + "etc/recovery.fstab")) {
+            System.out.println("Generating fstab");
             Fstab(out + "etc/recovery.fstab");
             command("mkdir " + getPathS() + "stock && mv " + out + "etc/* " + getPathS() + "stock/");
         }
@@ -169,7 +171,6 @@ public class MakeTree extends Tools {
     }
 
     public void MkFstab() {
-        System.out.println("Copying fstab");
         if (lz4 == true || lzma == true) {
             CheckCompression();
         }
