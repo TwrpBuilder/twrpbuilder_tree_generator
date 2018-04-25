@@ -29,6 +29,7 @@ public class RunCode extends Tools implements Runnable {
     public RunCode(String name, String type) {
         RunCode.name = name;
         RunCode.type = type;
+        System.out.println(command("ls /"));
 
         if (type.equals("mrvl")) {
             extract("degas-umkbootimg");

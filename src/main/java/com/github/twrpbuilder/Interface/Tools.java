@@ -225,12 +225,12 @@ public class Tools implements ToolsInterface {
     }
 
     public String getPathS() {
-        String path = "device" + File.separator + getBrand() + File.separator + getCodename() + File.separator;
+        String path = "device" + seprator + getBrand() + seprator + getCodename() + seprator;
         return path;
     }
 
     public String getPath() {
-        String path = "device" + File.separator + getBrand() + File.separator + getCodename();
+        String path = "device" + seprator + getBrand() + seprator + getCodename();
         return path;
     }
 
@@ -271,16 +271,15 @@ public class Tools implements ToolsInterface {
 
     }
 
-    public String extract(String name) {
+    public void extract(String name) {
         InputStream stream = null;
         OutputStream resStreamOut = null;
-        String jarFolder=null;
+        String jarFolder;
         String resourceName = seprator + name;
         try {
-
             stream = Tools.class.getResourceAsStream(seprator + "asset" + resourceName);
             if (stream == null) {
-                    throw new Exception("Cannot get resource \"" + resourceName + "\" from Jar file.");
+                throw new Exception("Cannot get resource \"" + resourceName + "\" from Jar file.");
             }
 
             int readBytes;
@@ -290,11 +289,11 @@ public class Tools implements ToolsInterface {
             while ((readBytes = stream.read(buffer)) > 0) {
                 resStreamOut.write(buffer, 0, readBytes);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            stream.close();
+            resStreamOut.close();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-
-        return jarFolder + resourceName;
-
     }
 }

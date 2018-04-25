@@ -45,5 +45,5 @@ public interface ToolsInterface {
     String getPath();
     void Write(String name, String data);
     void Clean();
-    String extract(String name);
+    void extract(String name);
 }

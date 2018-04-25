@@ -197,15 +197,11 @@ public class MakeTree extends Tools {
                 toWrite += grepPartition(path, "boot");
             }
 
-            if (checkPartition(path, "metadata")) {
+            if (checkPartition(path, "metadata") || checkPartition(path,"encrypt")) {
                 encrypted = true;
             }
             if (checkPartition(path, "data")) {
-                if (checkPartition(path, "encrypt")) {
-                    encrypted = true;
-                    toWrite += grepPartition(path, "data") + "flags=encryptable=" + grepPartition(path, "encrypt") + "\n";
-                } else
-                    toWrite += grepPartition(path, "data");
+                toWrite += grepPartition(path, "data");
             }
             if (checkPartition(path, "system")) {
                 toWrite += grepPartition(path, "system");
@@ -237,14 +233,16 @@ public class MakeTree extends Tools {
 
     private String grepPartition(String path, String partition) {
         String fullpath = null;
+        String tmp="";
+
         LinkedList<String> s = command("for i in $(cat " + path + " | grep -wi /" + partition + ")\n" +
                 "do\n" +
-                "echo echo $i | grep /dev\n" +
+                "echo $i | grep /dev\n" +
                 "done",true);
         if (s.isEmpty()) {
             s = command("for i in $(cat " + path + " | grep -wi /" + partition + ")\n" +
                     "do\n" +
-                    "echo echo $i | grep /emmc\n" +
+                    "echo $i | grep /emmc\n" +
                     "done",true);
         }
 
@@ -265,8 +263,24 @@ public class MakeTree extends Tools {
                     fullpath = "/" + partition + " emmc " + o + "\n";
                 } else if (partition.equals("system") ||
                         partition.equals("data") ||
+                        partition.contains("metadata") ||
                         partition.equals("cache")) {
-                    fullpath = "/" + partition + " ext4 " + o + "\n";
+                    if (partition.equals("data") && o.contains("metadata"))
+                    {
+                        if (o.contains("/metadata"))
+                        {
+                            System.out.println("Suck it");
+                            tmp += o.replace("wait,check,resize,"," ").replace(",","") + "\n";
+
+                        }
+                        else {
+                            tmp += "/" + partition + " ext4 " + o.replace("wait,check,resize,", " ").replace(",", "");
+                        }
+                        fullpath+=tmp;
+
+                    }
+                    else
+                    fullpath = "/" + partition + " ext4 " + o.replace("wait,check,resize,"," ").replace(",","") + "\n";
                 }
                 else
                 {
