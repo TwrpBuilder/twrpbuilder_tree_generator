@@ -17,7 +17,7 @@ public class Tools implements ToolsInterface {
     public String codename;
     public String platform;
     public String api;
-    public String size;
+    public long size;
     public String fingerprint;
     public Config config = null;
     public String out = config.outDir;
@@ -161,17 +161,12 @@ public class Tools implements ToolsInterface {
     }
 
     public String getModel() {
-        model = command("cat " + propFile() + " | grep ro.product.model= | cut -d = -f 2");
+        model = command("cat " + propFile() + " | grep -m 1 ro.product.model= | cut -d = -f 2");
         return model;
     }
 
-    public String getProduct() {
-        product = command("cat " + propFile() + " | grep ro.build.product= | cut -d = -f 2");
-        return product;
-    }
-
     public String getBrand() {
-        brand = command("cat " + propFile() + " | grep ro.product.brand= | cut -d = -f 2");
+        brand = command("cat " + propFile() + " | grep -m 1 ro.product.brand= | cut -d = -f 2");
         if (brand.contains("-")) {
             String newstr = brand.replace("-", "_");
             return newstr;
@@ -184,7 +179,7 @@ public class Tools implements ToolsInterface {
     }
 
     public String getCodename() {
-        codename = command("cat " + propFile() + " | grep ro.build.product= | cut -d = -f 2");
+        codename = command("cat " + propFile() + " | grep  -m 1 ro.build.product= | cut -d = -f 2");
         if (codename.contains("-")) {
             String newstr = codename.replace("-", "_");
             return newstr;
@@ -198,9 +193,9 @@ public class Tools implements ToolsInterface {
     }
 
     public String getPlatform() {
-        platform = command("cat " + propFile() + " | grep ro.board.platform= | cut -d = -f 2");
+        platform = command("cat " + propFile() + " | grep -m 1 ro.board.platform= | cut -d = -f 2");
         if (platform.isEmpty()) {
-            platform = command("cat " + propFile() + " | grep ro.mediatek.platform= | cut -d = -f 2");
+            platform = command("cat " + propFile() + " | grep -m 1 ro.mediatek.platform= | cut -d = -f 2");
             if (platform.isEmpty()) {
                 System.out.println("Device not supported");
                 System.exit(1);
@@ -210,17 +205,17 @@ public class Tools implements ToolsInterface {
     }
 
     public String getApi() {
-        api = command("cat " + propFile() + " | grep ro.product.cpu.abi= | cut -d = -f 2");
+        api = command("cat " + propFile() + " | grep -m 1 ro.product.cpu.abi= | cut -d = -f 2");
         return api;
     }
 
     public String getFingerPrint() {
-        fingerprint = command("cat " + propFile() + " | grep ro.build.fingerprint= | cut -d = -f 2");
+        fingerprint = command("cat " + propFile() + " | grep -m 1 ro.build.fingerprint= | cut -d = -f 2");
         return fingerprint;
     }
 
-    public String getSize() {
-        size = command("wc -c < " + Config.recoveryFile);
+    public Long getSize() {
+        size = new File(Config.recoveryFile).length();
         return size;
     }
 

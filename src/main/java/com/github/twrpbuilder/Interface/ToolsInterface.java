@@ -28,8 +28,6 @@ public interface ToolsInterface {
 
     String getModel();
 
-    String getProduct();
-
     String getBrand();
 
     String getCodename();
