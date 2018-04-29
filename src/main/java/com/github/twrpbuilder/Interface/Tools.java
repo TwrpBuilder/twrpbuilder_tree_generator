@@ -166,7 +166,7 @@ public class Tools implements ToolsInterface {
     }
 
     public String getBrand() {
-        brand = command("cat " + propFile() + " | grep -m 1 ro.product.brand= | cut -d = -f 2");
+        brand = command("cat " + propFile() + " | grep -m 1 ro.product.brand= | cut -d = -f 2").toLowerCase();
         if (brand.contains("-")) {
             String newstr = brand.replace("-", "_");
             return newstr;
@@ -179,7 +179,7 @@ public class Tools implements ToolsInterface {
     }
 
     public String getCodename() {
-        codename = command("cat " + propFile() + " | grep  -m 1 ro.build.product= | cut -d = -f 2");
+        codename = command("cat " + propFile() + " | grep  -m 1 ro.build.product= | cut -d = -f 2").toLowerCase();
         if (codename.contains("-")) {
             String newstr = codename.replace("-", "_");
             return newstr;
@@ -219,20 +219,15 @@ public class Tools implements ToolsInterface {
         return size;
     }
 
-    public String getPathS() {
-        String path = "device" + seprator + getBrand() + seprator + getCodename() + seprator;
-        return path;
-    }
-
     public String getPath() {
-        String path = "device" + seprator + getBrand() + seprator + getCodename();
+        String path = "device" + seprator + getBrand() + seprator + getCodename() + seprator;
         return path;
     }
 
     public void Write(String name, String data) {
         PrintWriter writer;
         try {
-            writer = new PrintWriter(new FileOutputStream(getPathS() + name, false));
+            writer = new PrintWriter(new FileOutputStream(getPath() + name, false));
             writer.println(data);
             writer.close();
         } catch (FileNotFoundException e) {

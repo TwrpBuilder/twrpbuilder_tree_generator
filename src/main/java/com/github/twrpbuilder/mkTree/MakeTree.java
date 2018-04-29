@@ -36,7 +36,7 @@ public class MakeTree extends Tools {
         }
 
         extractFstab();
-        if (!mkdir(getPathS())) {
+        if (!mkdir(getPath())) {
             System.out.println("Failed to make dir");
             System.exit(0);
         }
@@ -64,11 +64,11 @@ public class MakeTree extends Tools {
                 Write("AndroidProducts.mk", getAndroidProductsData());
                 System.out.println("Making kernel.mk");
                 if (fexist(out + recoveryF + "-zImage")) {
-                    cp(out + recoveryF + "-zImage", getPathS() + "kernel");
+                    cp(out + recoveryF + "-zImage", getPath() + "kernel");
                 }
                 if (new File(out + recoveryF + "-dt").length() != l) {
 
-                    cp(out + recoveryF + "-dt", getPathS() + "dt.img");
+                    cp(out + recoveryF + "-dt", getPath() + "dt.img");
                     Write("kernel.mk", getKernelData(true));
                 } else {
                     Write("kernel.mk", getKernelData(false));
@@ -108,12 +108,12 @@ public class MakeTree extends Tools {
         String idata;
         idata = copyRight;
         idata += "# Kernel\n" +
-                "TARGET_PREBUILT_KERNEL := " + getPathS() + "kernel\n" +
+                "TARGET_PREBUILT_KERNEL := $(LOCAL_PATH)/kernel\n" +
                 "BOARD_KERNEL_CMDLINE := " + cmdline() + "\n" +
                 "BOARD_KERNEL_BASE := 0x" + readRamadiskData("base") + "\n" +
                 "BOARD_KERNEL_PAGESIZE := " + readRamadiskData("pagesize") + "\n";
         if (dt) {
-            idata += "BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x" + readRamadiskData("ramdiskoff") + " --tags_offset 0x" + readRamadiskData("tagsoff") + " --dt device/" + getBrand() + seprator + getCodename() + "/dt.img";
+            idata += "BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x" + readRamadiskData("ramdiskoff") + " --tags_offset 0x" + readRamadiskData("tagsoff") + " --dt $(LOCAL_PATH)/dt.img";
         } else {
             idata += "BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x" + readRamadiskData("ramdiskoff") + " --tags_offset 0x" + readRamadiskData("tagsoff");
         }
@@ -159,11 +159,11 @@ public class MakeTree extends Tools {
         if (fexist(out + "etc/twrp.fstab")) {
             System.out.println("Copying fstab");
             Fstab(out + "etc/twrp.fstab");
-            command("mkdir " + getPathS() + "stock && mv " + out + "etc/* " + getPathS() + "stock/");
+            command("mkdir " + getPath() + "stock && mv " + out + "etc/* " + getPath() + "stock/");
         } else if (fexist(out + "etc/recovery.fstab")) {
             System.out.println("Generating fstab");
             Fstab(out + "etc/recovery.fstab");
-            command("mkdir " + getPathS() + "stock && mv " + out + "etc/* " + getPathS() + "stock/");
+            command("mkdir " + getPath() + "stock && mv " + out + "etc/* " + getPath() + "stock/");
         }
         Write(".travis.yml", generateTravis());
     }
@@ -318,9 +318,6 @@ public class MakeTree extends Tools {
     private String getOmniData() {
         String idata = copyRight;
         idata += "$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)\n" +
-                "\n" +
-                "PRODUCT_COPY_FILES += " + getPathS() + "kernel:kernel\n" +
-                "\n" +
                 "PRODUCT_DEVICE := " + getCodename() + "\n" +
                 "PRODUCT_NAME := omni_" + getCodename() + "\n" +
                 "PRODUCT_BRAND := " + getBrand() + "\n" +
@@ -400,7 +397,7 @@ public class MakeTree extends Tools {
 
     private String getBoardData(String type) {
         String idata = copyRight;
-        idata += "LOCAL_PATH := " + getPath() + "\n" +
+        idata += "LOCAL_PATH := " + getPath().substring(0,getPath().length()-1) + "\n" +
                 "\n" +
                 "TARGET_BOARD_PLATFORM := " + getPlatform() + "\n" +
                 "TARGET_BOOTLOADER_BOARD_NAME := " + getCodename() + "\n" +
