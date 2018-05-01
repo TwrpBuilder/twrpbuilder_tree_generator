@@ -269,17 +269,24 @@ public class MakeTree extends Tools {
                     {
                         if (o.contains("/metadata"))
                         {
-                            tmp += o.replace("wait,check,resize,"," flags=").replace(",","") + "\n";
+                            tmp += o
+                                    .replace("wait,check,resize,"," flags=")
+                                    .replace(",","")
+                                    .replace("forceencrypt","encryptable")+ "\n";
 
                         }
                         else {
-                            tmp += "/" + partition + " ext4 " + o.replace("wait,check,resize,", " ").replace(",", "");
+                            tmp += "/" + partition + " ext4 " + o
+                                    .replace("wait,check,resize,", " ")
+                                    .replace(",", "");
                         }
                         fullpath+=tmp;
 
                     }
                     else
-                    fullpath = "/" + partition + " ext4 " + o.replace("wait,check,resize,"," ").replace(",","") + "\n";
+                    fullpath = "/" + partition + " ext4 " + o
+                            .replace("wait,check,resize,"," ")
+                            .replace(",","") + "\n";
                 }
                 else
                 {
