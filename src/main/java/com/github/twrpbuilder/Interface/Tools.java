@@ -179,16 +179,26 @@ public class Tools implements ToolsInterface {
     }
 
     public String getCodename() {
-        codename = command("cat " + propFile() + " | grep  -m 1 ro.build.product= | cut -d = -f 2").toLowerCase();
-        if (codename.contains("-")) {
-            String newstr = codename.replace("-", "_");
+        codename =checkData(command("cat " + propFile() + " | grep  -m 1 ro.build.product= | cut -d = -f 2").toLowerCase());
+        if (codename.equals(getBrand()))
+        {
+            return checkData(getModel()).toLowerCase();
+        }
+        else
+        {
+            return codename;
+        }
+    }
+
+    private String checkData(String data){
+        if (data.contains("-")) {
+            String newstr = data.replace("-", "_");
             return newstr;
-        } else if (codename.contains(" ")) {
-            String str = codename.replace(" ", "_");
+        } else if (data.contains(" ")) {
+            String str = data.replace(" ", "_");
             return str;
         } else {
-            return codename;
-
+            return data;
         }
     }
 
