@@ -284,7 +284,7 @@ public class Tools implements ToolsInterface {
 
             int readBytes;
             byte[] buffer = new byte[4096];
-            jarFolder = new File(Tools.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile().getPath().replace('\\', '/');
+            jarFolder = System.getProperty("user.dir");
             resStreamOut = new FileOutputStream(jarFolder + resourceName);
             while ((readBytes = stream.read(buffer)) > 0) {
                 resStreamOut.write(buffer, 0, readBytes);
