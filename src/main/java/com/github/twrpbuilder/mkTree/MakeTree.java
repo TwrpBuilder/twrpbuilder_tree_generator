@@ -387,7 +387,7 @@ public class MakeTree extends Tools {
                 "    EOF\n" +
                 "after_success:\n" +
                 "  - export version=$(cat bootable/recovery/variables.h | grep \"define TW_MAIN_VERSION_STR\" | cut -d '\"' -f2)\n" +
-                "  - cp $HOME/twrp/out/target/product/" + getCodename() + seprator + recoveryF + " $HOME/twrp/TWRP-$version-" + getCodename() + "-$(date +\"%Y%m%d\").img\n" +
+                "  - cp $HOME/twrp/out/target/product/" + getCodename() + seprator + "recovery.img $HOME/twrp/TWRP-$version-" + getCodename() + "-$(date +\"%Y%m%d\").img\n" +
                 "\n" +
                 "deploy:\n" +
                 "  skip_cleanup: true\n" +

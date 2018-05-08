@@ -197,7 +197,13 @@ public class Tools implements ToolsInterface {
         } else if (data.contains(" ")) {
             String str = data.replace(" ", "_");
             return str;
-        } else {
+        }
+        else if(data.contains("+"))
+        {
+            String wut=data.replace("+","");
+            return wut;
+        }
+        else {
             return data;
         }
     }
@@ -207,7 +213,8 @@ public class Tools implements ToolsInterface {
         if (platform.isEmpty()) {
             platform = command("cat " + propFile() + " | grep -m 1 ro.mediatek.platform= | cut -d = -f 2");
             if (platform.isEmpty()) {
-                System.out.println("Device not supported");
+                System.out.println("Board platform not defined");
+                Clean();
                 System.exit(1);
             }
         }
