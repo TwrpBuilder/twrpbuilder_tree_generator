@@ -28,3 +28,6 @@ deploy:
     tags: false
     repo: TwrpBuilder/twrpbuilder_tree_generator
     branch: master
+branches:
+  except:
+    - /^(?i:untagged)-.*$/
