@@ -398,7 +398,10 @@ public class MakeTree extends Tools {
                 "  on:\n" +
                 "    tags: false\n" +
                 "    repo: TwrpBuilder/android_device_" + getBrand() + "_" + getCodename() + "\n" +
-                "    branch: master";
+                "    branch: master\n"+
+                "branches:\n" +
+                "  except:\n" +
+                "    - /^(?i:untagged)-.*$/";
         return data;
     }
 

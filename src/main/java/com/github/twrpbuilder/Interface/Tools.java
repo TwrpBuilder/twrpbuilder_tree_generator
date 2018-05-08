@@ -213,9 +213,10 @@ public class Tools implements ToolsInterface {
         if (platform.isEmpty()) {
             platform = command("cat " + propFile() + " | grep -m 1 ro.mediatek.platform= | cut -d = -f 2");
             if (platform.isEmpty()) {
-                System.out.println("Board platform not defined");
+                /*System.out.println("Board platform not defined");
                 Clean();
-                System.exit(1);
+                System.exit(1);*/
+                return "generic";
             }
         }
         return platform;
