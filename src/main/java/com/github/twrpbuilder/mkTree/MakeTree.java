@@ -308,10 +308,10 @@ public class MakeTree extends Tools {
     }
 
     private void CheckCompression() {
-        String idata = null;
+        String idata = "";
         if (lzma == true) {
             System.out.println("using lzma custom boot  ");
-            idata += "BOARD_CUSTOM_BOOTIMG_MK := device/generic/twrpbuilder/mkbootimg_lzma.mk";
+            idata += "BOARD_NEEDS_LZMA_MINIGZIP := true";
         }
         if (lz4 == true) {
             System.out.println("using lz4 custom boot  ");
