@@ -222,7 +222,7 @@ public class MakeTree extends Tools {
                 toWrite += grepPartition(path, "recovery");
             }
             if (otg) {
-                toWrite += "/usb-otg auto /dev/block/sda1 flags=display=\"USB OTG\";storage;wipeingui;removable\n";
+                toWrite += "/usb-otg auto /dev/block/sda1 /dev/block/sda flags=display=\"USB OTG\";storage;wipeingui;removable\n";
             }
 
             toWrite += "/external_sd vfat /dev/block/mmcblk1p1 /dev/block/mmcblk1 flags=display=\"Micro SDcard\";storage;wipeingui;removable\n";
