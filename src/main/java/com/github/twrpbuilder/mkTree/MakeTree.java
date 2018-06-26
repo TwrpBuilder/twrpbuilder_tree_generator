@@ -372,13 +372,13 @@ public class MakeTree extends Tools {
                 "  - docker pull surendrajat/twrp-builder:latest\n" +
                 "before_script:\n" +
                 "  - cd $HOME && mkdir twrp\n" +
-                "  - wget -q https://github.com/TwrpBuilder/twrp-sources/releases/download/omni_twrp-5.1.1-20180211/omni_twrp-5.1.1-20180211-norepo.tar.xz\n" +
+                "  - wget -q https://github.com/TwrpBuilder/twrp-sources/releases/download/omni_twrp-5.1.1-cleaned/omni_twrp-5.1.1_cleaned.tar.xz\n" +
                 "    -O $HOME/twrp.tar.xz\n" +
                 "  - tar -xJf twrp.tar.xz --directory $HOME/twrp/ && rm twrp.tar.xz\n" +
                 "script:\n" +
                 "  - cd $HOME/twrp/ && git clone https://github.com/TwrpBuilder/android_device_" + getBrand() + "_" + getCodename() + ".git device/" + getBrand() + seprator + getCodename() + "\n" +
                 "  - git clone https://github.com/TwrpBuilder/device_generic_twrpbuilder.git device/generic/twrpbuilder\n" +
-                "  - rm -rf bootable/recovery && git clone https://github.com/omnirom/android_bootable_recovery.git bootable/recovery\n" +
+                "  - git clone https://github.com/omnirom/android_bootable_recovery.git bootable/recovery --depth=1\n" +
                 "  - |\n" +
                 "    docker run --rm -i -v \"$(pwd):/root/twrp/:rw,z\" surendrajat/twrp-builder bash << EOF\n" +
                 "    cd /root/twrp/\n" +
