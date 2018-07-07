@@ -377,7 +377,7 @@ public class MakeTree extends Tools {
                 "  - tar -xJf twrp.tar.xz --directory $HOME/twrp/ && rm twrp.tar.xz\n" +
                 "script:\n" +
                 "  - cd $HOME/twrp/ && git clone https://github.com/TwrpBuilder/android_device_" + getBrand() + "_" + getCodename() + ".git device/" + getBrand() + seprator + getCodename() + "\n" +
-                "  - git clone https://github.com/TwrpBuilder/device_generic_twrpbuilder.git device/generic/twrpbuilder\n" +
+                "  - git clone https://github.com/TwrpBuilder/android_device_generic_twrpbuilder.git device/generic/twrpbuilder\n" +
                 "  - git clone https://github.com/omnirom/android_bootable_recovery.git bootable/recovery --depth=1\n" +
                 "  - |\n" +
                 "    docker run --rm -i -v \"$(pwd):/root/twrp/:rw,z\" surendrajat/twrp-builder bash << EOF\n" +
