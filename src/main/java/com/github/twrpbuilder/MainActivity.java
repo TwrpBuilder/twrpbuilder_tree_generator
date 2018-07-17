@@ -11,9 +11,8 @@ import java.io.PrintWriter;
 
 
 public class MainActivity {
-    public static String rName;
+    public static String rName, applicationName = "TwrpBuilder";
     public static boolean otg;
-    private static String applicationName = "TwrpBuilder";
 
     public static void usePosixParser(final String[] commandLineArguments) {
         final CommandLineParser cmdLinePosixParser = new DefaultParser();
@@ -90,51 +89,42 @@ public class MainActivity {
                     System.out.println(g + " does not exist .");
                 }
             }
+			
             if (commandLine.hasOption("l")) {
                 MakeTree.landscape = true;
             }
-        } catch (ParseException parseException)  // checked exception
-        {
-            System.err.println(
-                    "Encountered exception while parsing using PosixParser:\n"
-                            + parseException.getMessage());
+			
+        } catch (ParseException parseException)  { // checked exception
+            System.err.println( "Encountered exception while parsing using PosixParser:\n" + parseException.getMessage());
         }
     }
 
     public static Options constructPosixOptions() {
         final Options option = new Options();
-        option.addOption("f", "file", true, "build using backup file (made from app).");
-        option.addOption("t", "type", true, "supported option :- \n mt , samsung,mrvl");
+        option.addOption("f", "file", true, "build using backup file (made by app).");
+        option.addOption("t", "type", true, "supported option :- \n mt, samsung, mrvl");
         option.addOption("l", "land-scape", false, "enable landscape mode");
-        option.addOption("aik", "Android_Image_Kitchen", false, "Extract backup or recovery.img using Android Image kitchen");
+        option.addOption("aik", "Android_Image_Kitchen", false, "Extract backup or recovery.img using Android Image Kitchen");
         option.addOption("otg", "otg-support", false, "add otg support to fstab");
         option.addOption("r", "recovery", true, "build using recovery image file");
         option.addOption("h", "help", false, "print this help");
         return option;
     }
 
-    public static void displayProvidedCommandLineArguments(
-            final String[] commandLineArguments,
-            final OutputStream out) {
+    public static void displayProvidedCommandLineArguments(final String[] commandLineArguments, final OutputStream out) {
         final StringBuffer buffer = new StringBuffer();
         for (final String argument : commandLineArguments) {
             buffer.append(argument).append(" ");
-        }
-        try {
+        } try {
             out.write((buffer.toString() + "\n").getBytes());
         } catch (IOException ioEx) {
-            System.err.println(
-                    "WARNING: Exception encountered trying to write to OutputStream:\n"
-                            + ioEx.getMessage());
+            System.err.println("WARNING: Exception encountered trying to write to OutputStream:\n" + ioEx.getMessage());
             System.out.println(buffer.toString());
         }
     }
 
 
-    public static void printUsage(
-            final String applicationName,
-            final Options options,
-            final OutputStream out) {
+    public static void printUsage(final String applicationName, final Options options, final OutputStream out) {
         final PrintWriter writer = new PrintWriter(out);
         final HelpFormatter usageFormatter = new HelpFormatter();
         usageFormatter.printUsage(writer, 80, applicationName, options);
@@ -142,32 +132,11 @@ public class MainActivity {
     }
 
 
-    public static void printHelp(
-            final Options options,
-            final int printedRowWidth,
-            final String header,
-            final String footer,
-            final int spacesBeforeOption,
-            final int spacesBeforeOptionDescription,
-            final boolean displayUsage,
-            final OutputStream out) {
-        final String commandLineSyntax = "java -jar " + new File(MainActivity.class.getProtectionDomain()
-                .getCodeSource()
-                .getLocation()
-                .getPath())
-                .getName() + " -f backupfile.tar.gz";
+    public static void printHelp(final Options options, final int printedRowWidth, final String header, final String footer, final int spacesBeforeOption, final int spacesBeforeOptionDescription, final boolean displayUsage, final OutputStream out) {
+        final String commandLineSyntax = "java -jar " + new File(MainActivity.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName() + " -f backupfile.tar.gz";
         final PrintWriter writer = new PrintWriter(out);
         final HelpFormatter helpFormatter = new HelpFormatter();
-        helpFormatter.printHelp(
-                writer,
-                printedRowWidth,
-                commandLineSyntax,
-                header,
-                options,
-                spacesBeforeOption,
-                spacesBeforeOptionDescription,
-                footer,
-                displayUsage);
+        helpFormatter.printHelp(writer, printedRowWidth, commandLineSyntax, header, options, spacesBeforeOption, spacesBeforeOptionDescription, footer, displayUsage);
         writer.flush();
     }
 
@@ -176,9 +145,7 @@ public class MainActivity {
             System.out.println("-- USAGE --");
             printUsage(applicationName, constructPosixOptions(), System.out);
             System.out.println("-- HELP --");
-            printHelp(
-                    constructPosixOptions(), 80, "HELP", "End of Help",
-                    3, 5, true, System.out);
+            printHelp(constructPosixOptions(), 80, "HELP", "End of Help",3, 5, true, System.out);
         }
         usePosixParser(commandLineArguments);
     }
