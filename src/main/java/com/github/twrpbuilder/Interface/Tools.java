@@ -11,9 +11,9 @@ import static com.github.twrpbuilder.MainActivity.rName;
 
 public class Tools implements ToolsInterface {
 
+    public Config config = null;
     public String model, product, brand, codename, platform, api, fingerprint, out = config.outDir;
     public long size;
-    public Config config = null;
 
     public boolean fexist(String name) {
         if (new File(name).exists())
