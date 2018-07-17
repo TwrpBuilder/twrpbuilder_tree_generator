@@ -11,16 +11,9 @@ import static com.github.twrpbuilder.MainActivity.rName;
 
 public class Tools implements ToolsInterface {
 
-    public String model;
-    public String product;
-    public String brand;
-    public String codename;
-    public String platform;
-    public String api;
+    public String model, product, brand, codename, platform, api, fingerprint, out = config.outDir;
     public long size;
-    public String fingerprint;
     public Config config = null;
-    public String out = config.outDir;
 
     public boolean fexist(String name) {
         if (new File(name).exists())
@@ -74,18 +67,16 @@ public class Tools implements ToolsInterface {
         if (!theDir.isDirectory()) {
             boolean result = false;
 
-            try{
+            try {
                 theDir.mkdirs();
                 result = true;
-            }
-            catch(SecurityException se){
+            } catch(SecurityException se) {
                 System.out.println("Failed to make dir "+name);
                 System.exit(0);
+            } if(result) {
+                
             }
-            if(result) {
-            }
-        }else
-        {
+        } else {
             System.out.println("Dir: "+name+" already exist");
         }
         return theDir.isDirectory();
@@ -180,30 +171,24 @@ public class Tools implements ToolsInterface {
 
     public String getCodename() {
         codename =checkData(command("cat " + propFile() + " | grep  -m 1 ro.build.product= | cut -d = -f 2").toLowerCase());
-        if (codename.equals(getBrand()))
-        {
+        if (codename.equals(getBrand())) {
             return checkData(getModel()).toLowerCase();
-        }
-        else
-        {
+        } else {
             return codename;
         }
     }
 
-    private String checkData(String data){
+    private String checkData(String data) {
         if (data.contains("-")) {
             String newstr = data.replace("-", "_");
             return newstr;
         } else if (data.contains(" ")) {
             String str = data.replace(" ", "_");
             return str;
-        }
-        else if(data.contains("+"))
-        {
+        } else if(data.contains("+")) {
             String wut=data.replace("+","");
             return wut;
-        }
-        else {
+        } else {
             return data;
         }
     }
@@ -252,7 +237,6 @@ public class Tools implements ToolsInterface {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
     }
 
     private boolean file(String name) {
