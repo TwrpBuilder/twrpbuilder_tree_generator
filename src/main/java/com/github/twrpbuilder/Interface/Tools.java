@@ -276,7 +276,7 @@ public class Tools implements ToolsInterface {
         file("bin");
         file("magic");
         file("androidbootimg.magic");
-
+        file("build.tar.gz");
     }
 
     public void extract(String name) {

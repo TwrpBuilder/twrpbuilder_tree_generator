@@ -8,14 +8,13 @@ public class RunCode extends Tools implements Runnable {
 
     public static boolean extract;
     public static boolean AndroidImageKitchen;
-    private static String name;
     private static String type;
     private boolean mrvl;
     private boolean mtk;
     private boolean samsung;
 
     public RunCode(String name) {
-        RunCode.name = name;
+        cp(name,"build.tar.gz");
         if (AndroidImageKitchen) {
             System.out.println("Using Android Image Kitchen to extract " + name);
             extract("bin");
@@ -27,7 +26,6 @@ public class RunCode extends Tools implements Runnable {
     }
 
     public RunCode(String name, String type) {
-        RunCode.name = name;
         RunCode.type = type;
 
         if (type.equals("mrvl")) {
@@ -48,14 +46,10 @@ public class RunCode extends Tools implements Runnable {
         }
     }
 
-    public static String getName() {
-        return name;
-    }
-
     @Override
     public void run() {
         if (extract) {
-            new ExtractBackup(name);
+            new ExtractBackup("build.tar.gz");
         }
         if (AndroidImageKitchen) {
             MakeTree.AndroidImageKitchen = true;
