@@ -50,7 +50,7 @@ public class MakeTree extends Tools {
                 System.exit(0);
             }
         }
-        if (new File(getPath()).exists())
+        if (new File(getPath()+"kernel.mk").exists())
         {
             System.out.println("Do you want to overwrite "+getPath()+" ?( default: n)");
             Scanner read=new Scanner(System.in);
