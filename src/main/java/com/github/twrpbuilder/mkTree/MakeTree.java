@@ -7,6 +7,7 @@ import com.github.twrpbuilder.util.Config;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.Scanner;
 
 import static com.github.twrpbuilder.MainActivity.otg;
 
@@ -49,6 +50,19 @@ public class MakeTree extends Tools {
                 System.exit(0);
             }
         }
+        if (new File(getPath()).exists())
+        {
+            System.out.println("Do you want to overwrite "+getPath()+" ?( default: n)");
+            Scanner read=new Scanner(System.in);
+            String in=read.nextLine();
+            if (!in.isEmpty() && in.equals("y"))
+                BuildMakeFiles();
+            else {
+                warnings();
+                Clean();
+            }
+        }
+        else
         BuildMakeFiles();
     }
 
@@ -83,11 +97,15 @@ public class MakeTree extends Tools {
                     MkBoardConfig();
                 }
                 System.out.println("Build fingerPrint: " + getFingerPrint());
-                System.out.println("tree ready for " + getCodename() +" at device"+seprator+getBrand()+seprator+getCodename());
-                System.out.println((char) 27 + "[31m" + "Warning :- Check recovery fstab before build" + (char) 27 + "[0m");
+                warnings();
                 Clean();
             }
         }).start();
+    }
+
+    private void warnings(){
+        System.out.println("tree ready for " + getCodename() +" at device"+seprator+getBrand()+seprator+getCodename());
+        System.out.println((char) 27 + "[31m" + "Warning :- Check recovery fstab before build" + (char) 27 + "[0m");
     }
 
     private void extractKernel(boolean mtk) {
