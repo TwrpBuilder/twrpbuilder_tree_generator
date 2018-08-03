@@ -180,7 +180,7 @@ public class Tools implements ToolsInterface {
 
     public String getCodename() {
         codename =checkData(command("cat " + propFile() + " | grep  -m 1 ro.build.product= | cut -d = -f 2").toLowerCase());
-        if (codename.equals(getBrand()))
+        if (codename.equals(getBrand()) || codename.isEmpty())
         {
             return checkData(getModel()).toLowerCase();
         }

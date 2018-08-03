@@ -27,7 +27,7 @@ public class RunCode extends Tools implements Runnable {
 
     public RunCode(String name, String type) {
         RunCode.type = type;
-
+        cp(name,"build.tar.gz");
         if (type.equals("mrvl")) {
             extract("degas-umkbootimg");
             command("mv degas-umkbootimg umkbootimg ");

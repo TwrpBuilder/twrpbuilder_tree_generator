@@ -39,15 +39,15 @@ public class MakeTree extends Tools {
         extractFstab();
         if (!mkdir(getPath())) {
             System.out.println("Failed to make dir");
-            System.exit(0);
+            System.exit(-1);
         }
 
         if (getCodename().isEmpty()) {
             command("sed 's/\\[\\([^]]*\\)\\]/\\1/g' " + propFile() + " | sed 's/: /=/g' | tee > b.prop && mv -f b.prop build.prop");
             if (getCodename().isEmpty()) {
-                System.out.println("Failed to get info");
+                System.out.println("Failed to get codeName");
                 Clean();
-                System.exit(0);
+                System.exit(-1);
             }
         }
         if (new File(getPath()+"kernel.mk").exists())
@@ -168,7 +168,7 @@ public class MakeTree extends Tools {
         } else {
             Clean();
             System.out.println("failed to uncompress ramdisk");
-            System.exit(0);
+            System.exit(-1);
         }
 
     }
@@ -273,7 +273,7 @@ public class MakeTree extends Tools {
                 if (
                         partition.equals("boot") ||
                                 partition.equals("recovery") ||
-                                partition.equals(" fotakernel") ||
+                                partition.equals("fotakernel") ||
                                 partition.equals("FOTAKernel") ||
                                 partition.equals("misc")
                         ) {
