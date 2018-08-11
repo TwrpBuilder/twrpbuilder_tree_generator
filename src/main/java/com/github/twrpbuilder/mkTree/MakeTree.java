@@ -440,7 +440,6 @@ public class MakeTree extends Tools {
                 "BOARD_RECOVERY_SWIPE := true\n" +
                 "BOARD_USES_MMCUTILS := true\n" +
                 "BOARD_SUPPRESS_EMMC_WIPE := true\n"
-                + "TW_EXCLUDE_SUPERSU := true\n"
                 + "TW_INPUT_BLACKLIST := \"hbtp_vm\"\n";
         if (landscape) {
             idata += "TW_THEME := landscape_hdpi\n";
