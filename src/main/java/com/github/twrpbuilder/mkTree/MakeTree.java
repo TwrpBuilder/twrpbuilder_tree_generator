@@ -435,7 +435,6 @@ public class MakeTree extends Tools {
                 "BOARD_RECOVERYIMAGE_PARTITION_SIZE := " + getSize() + "\n" +
                 "BOARD_FLASH_BLOCK_SIZE := 0\n" +
                 "BOARD_HAS_NO_REAL_SDCARD := true\n" +
-                "BOARD_HAS_NO_SELECT_BUTTON := true\n" +
                 "BOARD_SUPPRESS_SECURE_ERASE := true\n" +
                 "BOARD_HAS_NO_MISC_PARTITION := true\n" +
                 "BOARD_RECOVERY_SWIPE := true\n" +
