@@ -21,8 +21,7 @@ script: ./gradlew build && ./gradlew shadowJar
 deploy:
   skip_cleanup: true
   provider: releases
-  api_key:
-    secure: LqFaADLutdTtmFligXotCft2uKKz0f/ycLwDKwwFcpJlJOd+YIHYNOoK3zcxfKtjtFw/GfD5rV+WslECYCzWzET27IclBgdwZjvH222RvIWRDwL7saUC+B7BBT6QyZD7q6pqHS96jfuXRxA/Tg+EgYHwfSHKoWVDiz4nRNi0nisPy1zZ3vXy8iF56QgODSDOf2r5JSUMRL5vKW6mP4jkJjVYMStwgbqXs3njR4zp+o7k/tzhPfh6k8jUz7GKyJYqRCqQ990srJYfR2tYYfxvEXwpn+knCEvATNWdx9kBCRxOhi0h8Xwdyxi3/7neT5FuU0KO6Q8n7jF/z+K+zhys4xgsuNSF582uA94mZlbPG6bOGBzhWG8ip1kznYm146KXUAhK7xukU/YeDlTjIDzkjjk2RkWyW0PYIetYpMH17aOaISgv8EK79ZTXUX8fWU6bijPGVo52Ph1O8A3g7SiieXDwjpEwLYPzwC+2Zb+s7lmC2FLElOnZLVf7aN9GMt2N/lRzPtzs8f6rRFtAnitYEGRSfRcmiQrQ6lEnPentY9jIgffGMTJYry2YNMPkQ0+XfGL3MgavhTsPepTr3bTj5vth/t5JyCvKmg3l9G+ukmZXG7CKDRTpHCMAA+X5UY0Mr7WwWb/LeATmRD1i8ipYFHRq0f2+qkVMu3crAxcuHoo=
+  api_key: "$GIT_OAUTH_TOKEN_TB"
   file: "/home/travis/build/TwrpBuilder/twrpbuilder_tree_generator/build/libs/TwrpBuilder-1.0-SNAPSHOT.jar"
   on:
     tags: false
