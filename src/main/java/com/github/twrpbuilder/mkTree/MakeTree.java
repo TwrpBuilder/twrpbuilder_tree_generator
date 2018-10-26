@@ -183,7 +183,6 @@ public class MakeTree extends Tools {
             Fstab(out + "etc/recovery.fstab");
             command("mkdir " + getPath() + "stock && mv " + out + "etc/* " + getPath() + "stock/");
         }
-        Write(".travis.yml", generateTravis());
     }
 
     public void MkFstab() {
@@ -380,47 +379,6 @@ public class MakeTree extends Tools {
     public void MkBoardConfig(String type) {
         Write("BoardConfig.mk", getBoardData(type));
 
-    }
-
-    private String generateTravis() {
-        String data = "sudo: required\n" +
-                "services:\n" +
-                "  - docker\n" +
-                "before_install:\n" +
-                "  - docker pull surendrajat/twrp-builder:latest\n" +
-                "before_script:\n" +
-                "  - cd $HOME && mkdir twrp\n" +
-                "  - wget -q https://github.com/TwrpBuilder/twrp-sources/releases/download/omni_twrp-5.1.1-cleaned/omni_twrp-5.1.1_cleaned.tar.xz\n" +
-                "    -O $HOME/twrp.tar.xz\n" +
-                "  - tar -xJf twrp.tar.xz --directory $HOME/twrp/ && rm twrp.tar.xz\n" +
-                "script:\n" +
-                "  - cd $HOME/twrp/ && git clone https://github.com/TwrpBuilder/android_device_" + getBrand() + "_" + getCodename() + ".git device/" + getBrand() + seprator + getCodename() + "\n" +
-                "  - git clone https://github.com/TwrpBuilder/android_device_generic_twrpbuilder.git device/generic/twrpbuilder\n" +
-                "  - git clone https://github.com/omnirom/android_bootable_recovery.git bootable/recovery --depth=1\n" +
-                "  - |\n" +
-                "    docker run --rm -i -v \"$(pwd):/root/twrp/:rw,z\" surendrajat/twrp-builder bash << EOF\n" +
-                "    cd /root/twrp/\n" +
-                "    source build/envsetup.sh && lunch omni_" + getCodename() + "-eng && make -j16 recoveryimage\n" +
-                "    exit\n" +
-                "    EOF\n" +
-                "after_success:\n" +
-                "  - export version=$(cat bootable/recovery/variables.h | grep \"define TW_MAIN_VERSION_STR\" | cut -d '\"' -f2)\n" +
-                "  - cp $HOME/twrp/out/target/product/" + getCodename() + seprator + "recovery.img $HOME/twrp/TWRP-$version-" + getCodename() + "-$(date +\"%Y%m%d\").img\n" +
-                "\n" +
-                "deploy:\n" +
-                "  skip_cleanup: true\n" +
-                "  provider: releases\n" +
-                "  api_key: \"$GIT_OAUTH_TOKEN_TB\"\n" +
-                "  file_glob: true\n" +
-                "  file: $HOME/twrp/*.img\n" +
-                "  on:\n" +
-                "    tags: false\n" +
-                "    repo: TwrpBuilder/android_device_" + getBrand() + "_" + getCodename() + "\n" +
-                "    branch: master\n"+
-                "branches:\n" +
-                "  except:\n" +
-                "    - /^(?i:untagged)-.*$/";
-        return data;
     }
 
     private String getBoardData(String type) {
