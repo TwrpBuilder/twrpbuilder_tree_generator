@@ -1,6 +1,7 @@
 package com.github.twrpbuilder.Thread;
 
 import com.github.twrpbuilder.Interface.Tools;
+import com.github.twrpbuilder.Models.DeviceModel;
 import com.github.twrpbuilder.mkTree.MakeTree;
 import com.github.twrpbuilder.util.ExtractBackup;
 
@@ -8,10 +9,7 @@ public class RunCode extends Tools implements Runnable {
 
     public static boolean extract;
     public static boolean AndroidImageKitchen;
-    private static String type;
-    private boolean mrvl;
-    private boolean mtk;
-    private boolean samsung;
+    private DeviceModel deviceModel=new DeviceModel();
 
     public RunCode(String name) {
         cp(name,"build.tar.gz");
@@ -26,19 +24,19 @@ public class RunCode extends Tools implements Runnable {
     }
 
     public RunCode(String name, String type) {
-        RunCode.type = type;
+        deviceModel.setType(type);
         cp(name,"build.tar.gz");
         if (type.equals("mrvl")) {
             extract("degas-umkbootimg");
             command("mv degas-umkbootimg umkbootimg ");
-            mrvl = true;
+            deviceModel.setMrvl(true);
         } else if (type.equals("mt") || type.equals("mtk")) {
             extract("unpack-MTK.pl");
             command("mv unpack-MTK.pl umkbootimg");
-            mtk = true;
+            deviceModel.setMtk(true);
         } else if (type.equals("samsung")) {
             extract("umkbootimg");
-            samsung = true;
+            deviceModel.setSamsung(true);
         }
         if (AndroidImageKitchen) {
             extract("bin");
@@ -54,13 +52,7 @@ public class RunCode extends Tools implements Runnable {
         if (AndroidImageKitchen) {
             MakeTree.AndroidImageKitchen = true;
         }
-        if (mtk == true) {
-            new MakeTree(true, type);
-        } else if (mrvl == true || samsung == true) {
-            new MakeTree(false, type);
-        } else {
-            new MakeTree(false, "none");
-        }
+        new MakeTree(deviceModel);
     }
 
 }

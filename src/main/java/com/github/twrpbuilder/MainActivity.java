@@ -1,5 +1,6 @@
 package com.github.twrpbuilder;
 
+import com.github.twrpbuilder.Interface.Tools;
 import com.github.twrpbuilder.Thread.RunCode;
 import com.github.twrpbuilder.mkTree.MakeTree;
 import org.apache.commons.cli.*;
@@ -10,7 +11,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 
 
-public class MainActivity {
+public class MainActivity extends Tools {
     public static String rName;
     public static boolean otg;
     private static String applicationName = "TwrpBuilder";

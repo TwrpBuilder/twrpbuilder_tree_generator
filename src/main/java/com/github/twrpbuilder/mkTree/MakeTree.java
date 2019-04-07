@@ -2,6 +2,7 @@ package com.github.twrpbuilder.mkTree;
 
 
 import com.github.twrpbuilder.Interface.Tools;
+import com.github.twrpbuilder.Models.DeviceModel;
 import com.github.twrpbuilder.util.Config;
 
 import java.io.File;
@@ -21,30 +22,26 @@ public class MakeTree extends Tools {
     private String copyRight = CopyRight();
     private Config config;
     private String out;
-    private String type;
-    private boolean mt;
-    private boolean encrypted;
+    private DeviceModel deviceModel;
 
-    public MakeTree(boolean mtk, String type) {
+    public MakeTree(DeviceModel deviceModel) {
+        this.deviceModel=deviceModel;
         config = new Config();
         out = config.outDir;
-        this.type = type;
-        this.mt = mtk;
-        if (mtk) {
-            extractKernel(true);
-        } else {
-            extractKernel(false);
-        }
-
+        extractKernel();
         extractFstab();
         if (!mkdir(getPath())) {
             System.out.println("Failed to make dir");
             System.exit(-1);
         }
-
-        if (getCodename().isEmpty()) {
+        //NOTE:// save var in strings instead of reading again
+        deviceModel.setCodename(getCodename());
+        deviceModel.setBrand(getBrand());
+        deviceModel.setModel(getModel());
+        deviceModel.setPlatform(getPlatform());
+        if (deviceModel.getCodename().isEmpty()) {
             command("sed 's/\\[\\([^]]*\\)\\]/\\1/g' " + propFile() + " | sed 's/: /=/g' | tee > b.prop && mv -f b.prop build.prop");
-            if (getCodename().isEmpty()) {
+            if (deviceModel.getCodename().isEmpty()) {
                 System.out.println("Failed to get codeName");
                 Clean();
                 System.exit(-1);
@@ -70,8 +67,8 @@ public class MakeTree extends Tools {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                System.out.println("Making omni_" + getCodename() + ".mk");
-                Write("omni_" + getCodename() + ".mk", getOmniData());
+                System.out.println("Making omni_" + deviceModel.getCodename() + ".mk");
+                Write("omni_" + deviceModel.getCodename() + ".mk", getOmniData());
                 System.out.println("Making Android.mk");
                 Write("Android.mk", getAndroidtData());
                 System.out.println("Making AndroidProducts.mk");
@@ -89,13 +86,6 @@ public class MakeTree extends Tools {
                 }
                 MkFstab();
 
-                if (mt) {
-                    MkBoardConfig(type);
-                } else if (type.equals("mrvl") || type.equals("samsung")) {
-                    MkBoardConfig(type);
-                } else {
-                    MkBoardConfig();
-                }
                 System.out.println("Build fingerPrint: " + getFingerPrint());
                 warnings();
                 Clean();
@@ -104,17 +94,17 @@ public class MakeTree extends Tools {
     }
 
     private void warnings(){
-        System.out.println("tree ready for " + getCodename() +" at device"+seprator+getBrand()+seprator+getCodename());
+        System.out.println("tree ready for " + deviceModel.getCodename() +" at device"+seprator+getBrand()+seprator+deviceModel.getCodename());
         System.out.println((char) 27 + "[31m" + "Warning :- Check recovery fstab before build" + (char) 27 + "[0m");
     }
 
-    private void extractKernel(boolean mtk) {
+    private void extractKernel() {
         mkdir(out);
         if (AndroidImageKitchen) {
             System.out.println(command("chmod 777 unpackimg.sh && ./unpackimg.sh " + recoveryF));
         } else {
             command("chmod 777 umkbootimg");
-            if (mtk) {
+            if (deviceModel.isMtk()) {
                 command("./umkbootimg " + recoveryF);
             } else {
                 command("./umkbootimg -i " + recoveryF + " -o " + out);
@@ -215,7 +205,7 @@ public class MakeTree extends Tools {
             }
 
             if (checkPartition(path, "metadata") || checkPartition(path,"encrypt")) {
-                encrypted = true;
+                deviceModel.setEncrypted(true);
             }
             if (checkPartition(path, "data")) {
                 toWrite += grepPartition(path, "data");
@@ -342,18 +332,18 @@ public class MakeTree extends Tools {
     private String getOmniData() {
         String idata = copyRight;
         idata += "$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)\n" +
-                "PRODUCT_DEVICE := " + getCodename() + "\n" +
-                "PRODUCT_NAME := omni_" + getCodename() + "\n" +
-                "PRODUCT_BRAND := " + getBrand() + "\n" +
-                "PRODUCT_MODEL := " + getModel() + "\n" +
-                "PRODUCT_MANUFACTURER := " + getBrand();
+                "PRODUCT_DEVICE := " + deviceModel.getCodename() + "\n" +
+                "PRODUCT_NAME := omni_" + deviceModel.getCodename() + "\n" +
+                "PRODUCT_BRAND := " + deviceModel.getBrand() + "\n" +
+                "PRODUCT_MODEL := " + deviceModel.getModel() + "\n" +
+                "PRODUCT_MANUFACTURER := " + deviceModel.getBrand();
         return idata;
     }
 
 
     private String getAndroidtData() {
         String idata = copyRight;
-        idata += "ifneq ($(filter " + getCodename() + ",$(TARGET_DEVICE)),)\n" +
+        idata += "ifneq ($(filter " + deviceModel.getCodename() + ",$(TARGET_DEVICE)),)\n" +
                 "\n" +
                 "LOCAL_PATH := " + getPath() + "\n" +
                 "\n" +
@@ -367,26 +357,21 @@ public class MakeTree extends Tools {
         String idata = copyRight;
         idata += "LOCAL_PATH := " + getPath() + "\n" +
                 "\n" +
-                "PRODUCT_MAKEFILES := $(LOCAL_PATH)/omni_" + getCodename() + ".mk";
+                "PRODUCT_MAKEFILES := $(LOCAL_PATH)/omni_" + deviceModel.getCodename() + ".mk";
         return idata;
     }
 
     public void MkBoardConfig() {
-        Write("BoardConfig.mk", getBoardData("none"));
+        Write("BoardConfig.mk", getBoardData());
 
     }
 
-    public void MkBoardConfig(String type) {
-        Write("BoardConfig.mk", getBoardData(type));
-
-    }
-
-    private String getBoardData(String type) {
+    private String getBoardData() {
         String idata = copyRight;
         idata += "LOCAL_PATH := " + getPath().substring(0,getPath().length()-1) + "\n" +
                 "\n" +
-                "TARGET_BOARD_PLATFORM := " + getPlatform() + "\n" +
-                "TARGET_BOOTLOADER_BOARD_NAME := " + getCodename() + "\n" +
+                "TARGET_BOARD_PLATFORM := " + deviceModel.getPlatform() + "\n" +
+                "TARGET_BOOTLOADER_BOARD_NAME := " + deviceModel.getCodename() + "\n" +
                 "\n" +
                 "# Recovery\n" +
                 "TARGET_USERIMAGES_USE_EXT4 := true\n" +
@@ -402,21 +387,21 @@ public class MakeTree extends Tools {
         if (landscape) {
             idata += "TW_THEME := landscape_hdpi\n";
         }
-        if (type.equals("samsung")) {
+        if (deviceModel.isSamsung()) {
             idata += "TW_HAS_DOWNLOAD_MODE := true\n" +
                     "TW_NO_REBOOT_BOOTLOADER := true\n" +
                     "BOARD_CUSTOM_BOOTIMG_MK := device/generic/twrpbuilder/seEnforcing.mk\n";
         }
-        if (encrypted) {
+        if (deviceModel.isEncrypted()) {
             idata += "TW_INCLUDE_CRYPTO := true\n";
         }
 
-        System.out.println("found " + getPlatform() + " platform");
+        System.out.println("found " + deviceModel.getPlatform() + " platform");
         /*Includes*/
         idata += "include $(LOCAL_PATH)/kernel.mk\n";
-        if (type.equals("mrvl")) {
+        if (deviceModel.isMrvl()) {
             idata += "include device/generic/twrpbuilder/mrvl.mk\n";
-        } else if (type.equals("mt") || type.equals("mtk")) {
+        } else if (deviceModel.isMtk() ||deviceModel.isMtk()) {
             idata += "include device/generic/twrpbuilder/mtk.mk\n";
         }
 
