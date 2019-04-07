@@ -14,14 +14,7 @@ import static com.github.twrpbuilder.MainActivity.rName;
 
 public class Tools implements ToolsInterface {
 
-    public String model;
-    public String product;
-    public String brand;
-    public String codename;
-    public String platform;
-    public String api;
     public long size;
-    public String fingerprint;
     public Config config = null;
     public String out = config.outDir;
 
@@ -195,13 +188,13 @@ public class Tools implements ToolsInterface {
                 case "brand":
                     if (chs.contains("-")) {
                         chs = chs.replace("-", "_");
-                    } else if (brand.contains(" ")) {
-                        chs = brand.replace(" ", "_");
+                    } else if (chs.contains(" ")) {
+                        chs = chs.replace(" ", "_");
                     }
                     deviceModel.setBrand(chs);
                     break;
                 case "codename":
-                    if (chs.equals(deviceModel.getBrand()) || codename.isEmpty())
+                    if (chs.equals(deviceModel.getBrand()) || chs.isEmpty())
                     {
                         chs=checkData(deviceModel.getModel()).toLowerCase();
                     }

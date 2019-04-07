@@ -4,6 +4,7 @@ package com.github.twrpbuilder.mkTree;
 import com.github.twrpbuilder.Interface.OnDataRequest;
 import com.github.twrpbuilder.Interface.Tools;
 import com.github.twrpbuilder.Models.DeviceModel;
+import com.github.twrpbuilder.Models.OptionsModel;
 import com.github.twrpbuilder.util.Config;
 
 import java.io.File;
@@ -11,12 +12,10 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Scanner;
 
-import static com.github.twrpbuilder.MainActivity.otg;
 
 public class MakeTree extends Tools {
-    public static boolean AndroidImageKitchen;
-    public static boolean landscape;
-    private static String recoveryF = Config.recoveryFile;
+    public boolean landscape;
+    private String recoveryF = Config.recoveryFile;
     private long l = 0;
     private String compressionType;
     private boolean lz4, lzma;
@@ -24,9 +23,11 @@ public class MakeTree extends Tools {
     private Config config;
     private String out;
     private DeviceModel deviceModel;
+    private OptionsModel optionsModel;
 
-    public MakeTree(DeviceModel d) {
+    public MakeTree(DeviceModel d, OptionsModel optionsModel) {
         this.deviceModel=d;
+        this.optionsModel=optionsModel;
         config = new Config();
         out = config.outDir;
         extractKernel();
@@ -108,7 +109,7 @@ public class MakeTree extends Tools {
 
     private void extractKernel() {
         mkdir(out);
-        if (AndroidImageKitchen) {
+        if (optionsModel.isAndroidImageKitchen()) {
             System.out.println(command("chmod 777 unpackimg.sh && ./unpackimg.sh " + recoveryF));
         } else {
             command("chmod 777 umkbootimg");
@@ -236,7 +237,7 @@ public class MakeTree extends Tools {
             if (checkPartition(path, "recovery")) {
                 toWrite += grepPartition(path, "recovery");
             }
-            if (otg) {
+            if (optionsModel.isOtg()) {
                 toWrite += "/usb-otg auto /dev/block/sda1 /dev/block/sda flags=display=\"USB OTG\";storage;wipeingui;removable\n";
             }
 

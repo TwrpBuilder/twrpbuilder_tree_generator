@@ -1,7 +1,8 @@
 package com.github.twrpbuilder;
 
 import com.github.twrpbuilder.Interface.Tools;
-import com.github.twrpbuilder.Thread.RunCode;
+import com.github.twrpbuilder.Models.OptionsModel;
+import com.github.twrpbuilder.Task.RunCode;
 import com.github.twrpbuilder.mkTree.MakeTree;
 import org.apache.commons.cli.*;
 
@@ -13,36 +14,36 @@ import java.io.PrintWriter;
 
 public class MainActivity extends Tools {
     public static String rName;
-    public static boolean otg;
     private static String applicationName = "TwrpBuilder";
-
     public static void usePosixParser(final String[] commandLineArguments) {
         final CommandLineParser cmdLinePosixParser = new DefaultParser();
         final Options posixOptions = constructPosixOptions();
+        final OptionsModel optionsModel=new OptionsModel();
         CommandLine commandLine;
         try {
             commandLine = cmdLinePosixParser.parse(posixOptions, commandLineArguments);
             if (commandLine.hasOption("aik")) {
-                RunCode.AndroidImageKitchen = true;
+                optionsModel.setAndroidImageKitchen(true);
             }
 
             if (commandLine.hasOption("f")) {
                 String g = commandLine.getOptionValue("f");
-                RunCode.extract = true;
+                optionsModel.setExtract(true);
                 if (new File(g).exists()) {
                     if (!g.contains(" ")) {
                         System.out.println("Building tree using: " + g);
                         if (commandLine.hasOption("t")) {
                             String t = commandLine.getOptionValue("t");
                             if (t.equals("mrvl")) {
-                                new Thread(new RunCode(g, "mrvl")).start();
+                                new RunCode(g, "mrvl",optionsModel).start();
+                                new RunCode(g, "mrvl",optionsModel).start();
                             } else if (t.equals("samsung")) {
-                                new Thread(new RunCode(g, "samsung")).start();
+                                new RunCode(g, "samsung",optionsModel).start();
                             } else if (t.equals("mtk") || t.equals("mt")) {
-                                new Thread(new RunCode(g, "mtk")).start();
+                                new RunCode(g, "mtk",optionsModel).start();
                             }
                         } else {
-                            new Thread(new RunCode(g)).start();
+                            new Thread(new RunCode(g,optionsModel)).start();
                         }
                     } else {
                         System.out.println("Please remove spaces from filename. ");
@@ -63,7 +64,7 @@ public class MainActivity extends Tools {
             }
 
             if (commandLine.hasOption("otg")) {
-                otg = true;
+                optionsModel.setOtg(true);
             }
 
             if (commandLine.hasOption("r")) {
@@ -75,14 +76,14 @@ public class MainActivity extends Tools {
                         if (commandLine.hasOption("t")) {
                             String t = commandLine.getOptionValue("t");
                             if (t.equals("mrvl")) {
-                                new Thread(new RunCode(g, "mrvl")).start();
+                                new RunCode(g, "mrvl",optionsModel).start();
                             } else if (t.equals("samsung")) {
-                                new Thread(new RunCode(g, "samsung")).start();
+                                new RunCode(g, "samsung",optionsModel).start();
                             } else if (t.equals("mtk") || t.equals("mt")) {
-                                new Thread(new RunCode(g, "mtk")).start();
+                                new RunCode(g, "mtk",optionsModel).start();
                             }
                         } else {
-                            new Thread(new RunCode(g)).start();
+                            new RunCode(g,optionsModel).start();
                         }
                     } else {
                         System.out.println("Please remove spaces from filename. ");
@@ -92,7 +93,7 @@ public class MainActivity extends Tools {
                 }
             }
             if (commandLine.hasOption("l")) {
-                MakeTree.landscape = true;
+                optionsModel.setLandscape(true);
             }
         } catch (ParseException parseException)  // checked exception
         {
