@@ -26,19 +26,6 @@ public interface ToolsInterface {
 
     String propFile();
 
-    String getModel();
-
-    String getBrand();
-
-    String getCodename();
-
-    String getPlatform();
-
-    String getApi();
-
-    String getFingerPrint();
-
-    String getPath();
     void Write(String name, String data);
     void Clean();
     void extract(String name);

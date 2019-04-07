@@ -1,10 +1,13 @@
 package com.github.twrpbuilder.Interface;
 
+import com.github.twrpbuilder.Models.DeviceModel;
+import com.github.twrpbuilder.Models.PropData;
 import com.github.twrpbuilder.util.Config;
 import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import static com.github.twrpbuilder.MainActivity.rName;
@@ -22,6 +25,7 @@ public class Tools implements ToolsInterface {
     public Config config = null;
     public String out = config.outDir;
 
+    @Override
     public boolean fexist(String name) {
         if (new File(name).exists())
             return true;
@@ -29,6 +33,7 @@ public class Tools implements ToolsInterface {
             return false;
     }
 
+    @Override
     public String command(String run) {
         Process process;
         String o = null;
@@ -48,6 +53,7 @@ public class Tools implements ToolsInterface {
         return linkedList.toString();
     }
 
+    @Override
     public LinkedList command(String run, boolean LinkList) {
         Process process;
         String o = null;
@@ -67,6 +73,7 @@ public class Tools implements ToolsInterface {
         return linkedList;
     }
 
+    @Override
     public boolean mkdir(String name) {
         File theDir = new File(name).getAbsoluteFile();
 
@@ -91,6 +98,7 @@ public class Tools implements ToolsInterface {
         return theDir.isDirectory();
     }
 
+    @Override
     public boolean rm(String name) {
         if (fexist(name)) {
             File file = new File(name);
@@ -112,6 +120,7 @@ public class Tools implements ToolsInterface {
             return false;
     }
 
+    @Override
     public String CopyRight() {
         String copy = "#\n" +
                 "# Copyright (C) 2018 The TwrpBuilder Open-Source Project\n" +
@@ -132,6 +141,7 @@ public class Tools implements ToolsInterface {
         return copy;
     }
 
+    @Override
     public void cp(String from, String to) {
         File f = new File(from);
         File t = new File(to);
@@ -141,12 +151,11 @@ public class Tools implements ToolsInterface {
         try {
             Files.copy(f.toPath(), t.toPath());
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
-
+    @Override
     public String propFile() {
         config = new Config();
         String prop = null;
@@ -160,35 +169,80 @@ public class Tools implements ToolsInterface {
         return prop;
     }
 
-    public String getModel() {
-        model = command("cat " + propFile() + " | grep -m 1 ro.product.model= | cut -d = -f 2");
-        return model;
+
+    LinkedList<PropData>  propDataArray=new LinkedList<>();
+
+    public void PropData(OnDataRequest request){
+        DeviceModel deviceModel=new DeviceModel();
+        propDataArray.add(new PropData(commonStr("ro.product.model"),"model"));
+        propDataArray.add(new PropData(commonStr("ro.product.brand"),"brand"));
+        propDataArray.add(new PropData(commonStr("ro.build.product"),"codename"));
+        propDataArray.add(new PropData(commonStr("ro.board.platform"),"platform"));
+        propDataArray.add(new PropData(commonStr("ro.product.cpu.abi"),"abi"));
+        propDataArray.add(new PropData(commonStr("ro.build.fingerprint"),"fingerprint"));
+        propDataArray.add(new PropData("path"));
+
+        Iterator<PropData> iterator=propDataArray.iterator();
+        while (iterator.hasNext())
+        {
+            PropData propData=iterator.next();
+            String chs;
+            if (propData.getType().equals("path"))
+            {
+                chs = "device" + seprator + deviceModel.getBrand() + seprator + deviceModel.getCodename() + seprator;
+                deviceModel.setPath(chs);
+            }
+            else {
+                chs= command(propData.getCommand());
+            }
+            if (propData.getType().equals("model"))
+            {
+                deviceModel.setModel(chs);
+            }
+            else if (propData.getType().equals("brand"))
+            {
+                if (chs.contains("-")) {
+                    chs = chs.replace("-", "_");
+                } else if (brand.contains(" ")) {
+                    chs = brand.replace(" ", "_");
+                }
+                deviceModel.setBrand(chs);
+            }
+            else  if (propData.getType().equals("codename"))
+            {
+                if (chs.equals(deviceModel.getBrand()) || codename.isEmpty())
+                {
+                    chs=checkData(deviceModel.getModel()).toLowerCase();
+                }
+                deviceModel.setCodename(chs);
+            }
+            else  if (propData.getType().equals("platform"))
+            {
+                if (chs.isEmpty()) {
+                    chs = command(commonStr("ro.mediatek.platform"));
+                    if (chs.isEmpty()) {
+                        chs="generic";
+                    }
+                }
+                deviceModel.setPlatform(chs);
+            }
+            else  if (propData.getType().equals("abi"))
+            {
+                deviceModel.setAbi(chs);
+            }
+            else  if (propData.getType().equals("fingerprint"))
+            {
+                deviceModel.setFingerprint(chs);
+            }
+        }
+        request.getData(deviceModel);
     }
 
-    public String getBrand() {
-        brand = command("cat " + propFile() + " | grep -m 1 ro.product.brand= | cut -d = -f 2").toLowerCase();
-        if (brand.contains("-")) {
-            String newstr = brand.replace("-", "_");
-            return newstr;
-        } else if (brand.contains(" ")) {
-            String str = brand.replace(" ", "_");
-            return str;
-        } else {
-            return brand;
-        }
+
+    private String commonStr(String data){
+        return "cat " + propFile() + " | grep -m 1 "+data+"= | cut -d = -f 2";
     }
 
-    public String getCodename() {
-        codename =checkData(command("cat " + propFile() + " | grep  -m 1 ro.build.product= | cut -d = -f 2").toLowerCase());
-        if (codename.equals(getBrand()) || codename.isEmpty())
-        {
-            return checkData(getModel()).toLowerCase();
-        }
-        else
-        {
-            return codename;
-        }
-    }
 
     private String checkData(String data){
         if (data.contains("-")) {
@@ -208,44 +262,17 @@ public class Tools implements ToolsInterface {
         }
     }
 
-    public String getPlatform() {
-        platform = command("cat " + propFile() + " | grep -m 1 ro.board.platform= | cut -d = -f 2");
-        if (platform.isEmpty()) {
-            platform = command("cat " + propFile() + " | grep -m 1 ro.mediatek.platform= | cut -d = -f 2");
-            if (platform.isEmpty()) {
-                /*System.out.println("Board platform not defined");
-                Clean();
-                System.exit(1);*/
-                return "generic";
-            }
-        }
-        return platform;
-    }
-
-    public String getApi() {
-        api = command("cat " + propFile() + " | grep -m 1 ro.product.cpu.abi= | cut -d = -f 2");
-        return api;
-    }
-
-    public String getFingerPrint() {
-        fingerprint = command("cat " + propFile() + " | grep -m 1 ro.build.fingerprint= | cut -d = -f 2");
-        return fingerprint;
-    }
 
     public Long getSize() {
         size = new File(Config.recoveryFile).length();
         return size;
     }
 
-    public String getPath() {
-        String path = "device" + seprator + getBrand() + seprator + getCodename() + seprator;
-        return path;
-    }
-
+    @Override
     public void Write(String name, String data) {
         PrintWriter writer;
         try {
-            writer = new PrintWriter(new FileOutputStream(getPath() + name, false));
+            writer = new PrintWriter(new FileOutputStream( name, false));
             writer.println(data);
             writer.close();
         } catch (FileNotFoundException e) {
@@ -264,6 +291,7 @@ public class Tools implements ToolsInterface {
         }
     }
 
+    @Override
     public void Clean() {
         file("build.prop");
         if (rName == null)
@@ -279,6 +307,7 @@ public class Tools implements ToolsInterface {
         file("build.tar.gz");
     }
 
+    @Override
     public void extract(String name) {
         InputStream stream = null;
         OutputStream resStreamOut = null;

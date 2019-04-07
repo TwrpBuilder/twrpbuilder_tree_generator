@@ -8,7 +8,10 @@ public class DeviceModel implements Serializable {
     private String codename;
     private String model;
     private String platform;
+    private String abi;
+    private String fingerprint;
     private String type;
+    private String path;
     private boolean mtk;
     private boolean encrypted;
     private boolean mrvl;
@@ -22,6 +25,9 @@ public class DeviceModel implements Serializable {
             String model,
             String type,
             String platform,
+            String abi,
+            String fingerprint,
+            String path,
             boolean mtk,
             boolean mrvl,
             boolean samsung,
@@ -31,7 +37,10 @@ public class DeviceModel implements Serializable {
         this.codename=codename;
         this.model=model;
         this.platform=platform;
+        this.abi=abi;
+        this.fingerprint=fingerprint;
         this.type=type;
+        this.path=path;
         this.mtk=mtk;
         this.encrypted=encrypted;
         this.mrvl=mrvl;
@@ -68,6 +77,30 @@ public class DeviceModel implements Serializable {
 
     public String getPlatform() {
         return platform;
+    }
+
+    public void setAbi(String abi) {
+        this.abi = abi;
+    }
+
+    public String getAbi() {
+        return abi;
+    }
+
+    public void setFingerprint(String fingerprint) {
+        this.fingerprint = fingerprint;
+    }
+
+    public String getFingerprint() {
+        return fingerprint;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     public void setMtk(boolean mtk) {
