@@ -180,61 +180,52 @@ public class Tools implements ToolsInterface {
         propDataArray.add(new PropData(commonStr("ro.board.platform"),"platform"));
         propDataArray.add(new PropData(commonStr("ro.product.cpu.abi"),"abi"));
         propDataArray.add(new PropData(commonStr("ro.build.fingerprint"),"fingerprint"));
-        propDataArray.add(new PropData("path"));
 
         Iterator<PropData> iterator=propDataArray.iterator();
         while (iterator.hasNext())
         {
             PropData propData=iterator.next();
             String chs;
-            if (propData.getType().equals("path"))
+            chs= command(propData.getCommand());
+            switch (propData.getType())
             {
-                chs = "device" + seprator + deviceModel.getBrand() + seprator + deviceModel.getCodename() + seprator;
-                deviceModel.setPath(chs);
-            }
-            else {
-                chs= command(propData.getCommand());
-            }
-            if (propData.getType().equals("model"))
-            {
-                deviceModel.setModel(chs);
-            }
-            else if (propData.getType().equals("brand"))
-            {
-                if (chs.contains("-")) {
-                    chs = chs.replace("-", "_");
-                } else if (brand.contains(" ")) {
-                    chs = brand.replace(" ", "_");
-                }
-                deviceModel.setBrand(chs);
-            }
-            else  if (propData.getType().equals("codename"))
-            {
-                if (chs.equals(deviceModel.getBrand()) || codename.isEmpty())
-                {
-                    chs=checkData(deviceModel.getModel()).toLowerCase();
-                }
-                deviceModel.setCodename(chs);
-            }
-            else  if (propData.getType().equals("platform"))
-            {
-                if (chs.isEmpty()) {
-                    chs = command(commonStr("ro.mediatek.platform"));
-                    if (chs.isEmpty()) {
-                        chs="generic";
+                case "model":
+                    deviceModel.setModel(chs);
+                    break;
+                case "brand":
+                    if (chs.contains("-")) {
+                        chs = chs.replace("-", "_");
+                    } else if (brand.contains(" ")) {
+                        chs = brand.replace(" ", "_");
                     }
-                }
-                deviceModel.setPlatform(chs);
-            }
-            else  if (propData.getType().equals("abi"))
-            {
-                deviceModel.setAbi(chs);
-            }
-            else  if (propData.getType().equals("fingerprint"))
-            {
-                deviceModel.setFingerprint(chs);
+                    deviceModel.setBrand(chs);
+                    break;
+                case "codename":
+                    if (chs.equals(deviceModel.getBrand()) || codename.isEmpty())
+                    {
+                        chs=checkData(deviceModel.getModel()).toLowerCase();
+                    }
+                    deviceModel.setCodename(chs);
+                    break;
+                case "platform":
+                    if (chs.isEmpty()) {
+                        chs = command(commonStr("ro.mediatek.platform"));
+                        if (chs.isEmpty()) {
+                            chs="generic";
+                        }
+                    }
+                    deviceModel.setPlatform(chs);
+                    break;
+                case "abi":
+                    deviceModel.setAbi(chs);
+                    break;
+                case "fingerprint":
+                    deviceModel.setFingerprint(chs);
+                    break;
             }
         }
+        String path = "device" + seprator + deviceModel.getBrand() + seprator + deviceModel.getCodename() + seprator;
+        deviceModel.setPath(path);
         request.getData(deviceModel);
     }
 
