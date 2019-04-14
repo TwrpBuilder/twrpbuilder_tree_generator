@@ -149,14 +149,17 @@ public class Tools implements ToolsInterface {
     }
 
     @Override
-    public String propFile() {
+   public String propFile() {
         config = new Config();
         String prop = null;
         if (new File("build.prop").exists()) {
             prop = "build.prop";
         } else if (new File(out + "default.prop").exists()) {
             prop = out + "default.prop";
-        } else {
+        } else if(new File(out + "prop.default").exists()){
+        	prop = out + "prop.default";
+        }
+        else {
             prop = "null";
         }
         return prop;
