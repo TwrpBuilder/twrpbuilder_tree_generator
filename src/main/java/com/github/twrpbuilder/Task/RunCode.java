@@ -10,7 +10,7 @@ import com.github.twrpbuilder.util.ExtractBackup;
 public class RunCode extends Thread implements Runnable {
 
     private DeviceModel deviceModel=new DeviceModel();
-    private ToolsInterface tool=(ToolsInterface)this;
+    private ToolsInterface tool = new Tools();
     private OptionsModel model;
 
     public RunCode(String name, OptionsModel model) {
