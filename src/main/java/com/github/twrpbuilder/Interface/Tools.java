@@ -47,12 +47,12 @@ public class Tools implements ToolsInterface {
     }
 
     @Override
-    public LinkedList command(String run, boolean LinkList) {
+    public LinkedList<String> command(String run, boolean LinkList) {
         Process process;
         String o = null;
         StringBuilder sb = null;
         String[] commands = new String[]{"/bin/bash", "-c", run};
-        LinkedList<String> linkedList = new LinkedList();
+        LinkedList<String> linkedList = new LinkedList<>();
         try {
             process = Runtime.getRuntime().exec(commands);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
