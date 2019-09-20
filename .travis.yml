@@ -13,20 +13,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#language: java
-#sudo: false
-#jdk:
-#- oraclejdk8
-#script: ./gradlew build && ./gradlew shadowJar
-#deploy:
-#  skip_cleanup: true
-#  provider: releases
-#  api_key: "$GIT_OAUTH_TOKEN_TB"
-#  file: "/home/travis/build/TwrpBuilder/twrpbuilder_tree_generator/build/libs/TwrpBuilder-1.0-SNAPSHOT.jar"
-#  on:
-#    tags: false
-#    repo: TwrpBuilder/twrpbuilder_tree_generator
-#    branch: master
-#branches:
-#  except:
-#    - /^(?i:untagged)-.*$/
+language: java
+sudo: false
+jdk:
+- openjdk8
+script: ./gradlew build && ./gradlew shadowJar
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key: "$GIT_OAUTH_TOKEN_TB"
+  file: "/home/travis/build/TwrpBuilder/twrpbuilder_tree_generator/build/libs/TwrpBuilder-1.0-SNAPSHOT.jar"
+  on:
+    tags: false
+    repo: TwrpBuilder/twrpbuilder_tree_generator
+    branch: master
+branches:
+  except:
+    - /^(?i:untagged)-.*$/
