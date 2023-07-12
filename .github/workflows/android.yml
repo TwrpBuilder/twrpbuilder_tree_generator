@@ -1,0 +1,36 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
+    
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '8'
+        distribution: 'zulu'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      run: ./gradlew build && ./gradlew shadowJar
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+          name: App-Artifact
+          path: |
+            build/libs/*.jar
+     #       ${{steps.sign_app.outputs.signedReleaseFile}}
